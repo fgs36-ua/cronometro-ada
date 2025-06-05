@@ -14,11 +14,12 @@ class DebateTimer {
         this.setupEventListeners();
         this.loadConfiguration(); // Cargar configuración guardada
         this.updateConfiguration();
-    }initializeElements() {
+    }    initializeElements() {
         // Elementos del DOM
         this.timerDisplay = document.getElementById('timer');
         this.currentSpeakerDisplay = document.getElementById('current-speaker');
-        this.progressFill = document.getElementById('progress-fill');        this.startBtn = document.getElementById('start-btn');
+        this.progressFill = document.getElementById('progress-fill');
+        this.progressBar = document.querySelector('.progress-bar');        this.startBtn = document.getElementById('start-btn');
         this.pauseBtn = document.getElementById('pause-btn');
         this.resetBtn = document.getElementById('reset-btn');
         this.resetDebateBtn = document.getElementById('reset-debate-btn');
@@ -98,9 +99,147 @@ class DebateTimer {
         this.resetDebateBtn.addEventListener('click', () => this.resetDebate());
         this.prevBtn.addEventListener('click', () => this.previousPhase());
         this.nextBtn.addEventListener('click', () => this.nextPhase());
-        
-        // Listener para ajustar el tamaño del cronómetro en pantallas pequeñas
+          // Listener para ajustar el tamaño del cronómetro en pantallas pequeñas
         window.addEventListener('resize', () => this.adjustTimerSize());
+        
+        // Event listeners para la barra de progreso interactiva
+        this.setupProgressBarInteraction();
+    }    setupProgressBarInteraction() {
+        let isDragging = false;
+        let tooltip = null;
+        
+        // Create tooltip element
+        const createTooltip = () => {
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.style.cssText = `
+                    position: absolute;
+                    background: rgba(44, 62, 80, 0.9);
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    pointer-events: none;
+                    z-index: 1000;
+                    opacity: 0;
+                    transition: opacity 0.2s ease;
+                    transform: translateX(-50%);
+                `;
+                document.body.appendChild(tooltip);
+            }
+            return tooltip;
+        };
+        
+        // Show tooltip with time preview
+        const showTooltip = (event) => {
+            if (this.phases.length === 0) return;
+            
+            const rect = this.progressBar.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const progressBarWidth = rect.width;
+            let progressPercentage = Math.max(0, Math.min(1, clickX / progressBarWidth));
+            
+            const phase = this.phases[this.currentPhaseIndex];
+            const previewTime = Math.round(phase.duration - (progressPercentage * phase.duration));
+            
+            const minutes = Math.floor(Math.abs(previewTime) / 60);
+            const seconds = Math.abs(previewTime) % 60;
+            const timeString = `${previewTime < 0 ? '-' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const tooltipEl = createTooltip();
+            tooltipEl.textContent = timeString;
+            tooltipEl.style.left = `${event.clientX}px`;
+            tooltipEl.style.top = `${rect.top - 30}px`;
+            tooltipEl.style.opacity = '1';
+        };
+        
+        // Hide tooltip
+        const hideTooltip = () => {
+            if (tooltip) {
+                tooltip.style.opacity = '0';
+            }
+        };
+          // Mouse events
+        this.progressBar.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            this.handleProgressBarInteraction(e, true); // Usar versión optimizada
+            showTooltip(e);
+            e.preventDefault();
+        });
+        
+        this.progressBar.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                this.handleProgressBarInteraction(e, true); // Usar versión optimizada durante arrastre
+                showTooltip(e);
+            } else {
+                showTooltip(e);
+            }
+        });
+        
+        this.progressBar.addEventListener('mouseleave', () => {
+            hideTooltip();
+        });
+          document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                // Actualización completa solo al terminar el arrastre
+                this.updateDisplay();
+            }
+            isDragging = false;
+            hideTooltip();
+        });
+        
+        // Click event (when not dragging)
+        this.progressBar.addEventListener('click', (e) => {
+            if (!isDragging) {
+                this.handleProgressBarInteraction(e, false); // Actualización completa en click
+            }
+        });
+          // Touch events for mobile
+        this.progressBar.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            this.handleProgressBarInteraction(e.touches[0], true); // Usar versión optimizada
+            e.preventDefault();
+        });
+        
+        this.progressBar.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                this.handleProgressBarInteraction(e.touches[0], true); // Usar versión optimizada
+                e.preventDefault();
+            }
+        });
+        
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                // Actualización completa solo al terminar el arrastre táctil
+                this.updateDisplay();
+            }
+            isDragging = false;
+        });
+    }    handleProgressBarInteraction(event, optimized = false) {
+        // Solo permitir interacción si no está corriendo o si hay un cronómetro pausado
+        if (this.phases.length === 0) return;
+        
+        const rect = this.progressBar.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
+        const progressBarWidth = rect.width;
+        
+        // Calcular el porcentaje de progreso (0 a 1)
+        let progressPercentage = Math.max(0, Math.min(1, clickX / progressBarWidth));
+        
+        // Calcular el nuevo tiempo basado en el progreso
+        const phase = this.phases[this.currentPhaseIndex];
+        const newTime = Math.round(phase.duration - (progressPercentage * phase.duration));
+        
+        // Actualizar el tiempo actual
+        this.currentTime = newTime;
+        
+        // Usar actualización optimizada durante el arrastre para mejor rendimiento
+        if (optimized) {
+            this.updateDisplayOptimized();
+        } else {
+            this.updateDisplay();
+        }
     }
 
     adjustTimerSize() {
@@ -845,6 +984,33 @@ class DebateTimer {
         // Eliminar configuración guardada
         localStorage.removeItem('ada-debate-config');
         console.log('Configuración reseteada a valores por defecto');
+    }
+
+    updateDisplayOptimized() {
+        // Versión optimizada que solo actualiza elementos esenciales durante el arrastre
+        if (this.phases.length === 0) return;
+
+        // Solo actualizar el cronómetro
+        const minutes = Math.floor(Math.abs(this.currentTime) / 60);
+        const seconds = Math.abs(this.currentTime) % 60;
+        const timeString = `${this.currentTime < 0 ? '-' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        this.timerDisplay.textContent = timeString;
+
+        // Solo actualizar la barra de progreso
+        const progress = Math.max(0, (this.totalTime - this.currentTime) / this.totalTime * 100);
+        this.progressFill.style.width = `${progress}%`;
+
+        // Solo actualizar colores críticos (sin actualizaciones costosas del DOM)
+        this.timerDisplay.className = 'timer';
+        this.progressFill.className = 'progress-fill';
+
+        if (this.currentTime <= -11) {
+            this.timerDisplay.classList.add('danger');
+            this.progressFill.classList.add('danger');
+        } else if (this.currentTime <= 10 && this.currentTime >= -10) {
+            this.timerDisplay.classList.add('warning');
+            this.progressFill.classList.add('warning');
+        }
     }
 }
 

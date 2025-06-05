@@ -344,6 +344,33 @@ h1 {
     border-radius: 4px;
     overflow: hidden;
     margin-bottom: 30px;
+    cursor: pointer;
+    position: relative;
+    transition: height 0.2s ease;
+}
+
+.progress-bar:hover {
+    height: 12px;
+}
+
+.progress-bar:active {
+    height: 14px;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(139, 92, 246, 0.3);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.progress-bar:hover::after {
+    opacity: 1;
 }
 
 .progress-fill {
