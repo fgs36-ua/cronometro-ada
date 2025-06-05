@@ -11,7 +11,6 @@ Cronómetro web profesional diseñado para la Asociación de Debate de Alicante 
 ### Funcionalidades Principales
 - **Cronómetro con conteo negativo**: Continúa contando después de llegar a cero
 - **Alertas visuales**: Cambios de color (amarillo a los 10s, rojo a los -11s)
-- **Alerta sonora**: Notificación audible al llegar a cero
 - **Diseño responsive**: Optimizado para móviles, tablets y proyección
 - **Navegación por fases**: Salto directo a cualquier fase del debate
 - **Configuración avanzada**: Nombres de equipos, tiempos personalizables
