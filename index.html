@@ -3,9 +3,11 @@
 <head>    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cronómetro de Debate - ADA</title>
-    <link rel="icon" type="image/png" href="ada.png">
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="ada.png">    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">      <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
 </head>
 <body>
     <!-- Botón de configuración -->
@@ -106,12 +108,35 @@
                     <input type="text" id="feedback-desc" value="Feedback" placeholder="Ej: Feedback">
                 </div>
             </div>
-        </div>
-
-        <!-- Botón aceptar configuración -->
+        </div>        <!-- Botón aceptar configuración -->
         <div class="config-actions">
             <button class="apply-config-btn" id="apply-config-btn">Guardar y Aplicar</button>
             <button class="reset-defaults-btn" id="reset-defaults-btn">Restaurar Valores por Defecto</button>
+            
+            <!-- Separador visual -->
+            <div class="config-separator">
+                <hr style="margin: 20px 0; border: 1px solid #ecf0f1;">
+                <h3 style="color: #2c3e50; font-size: 1rem; margin-bottom: 15px;">☁️ Sincronización en la Nube</h3>
+            </div>
+            
+            <!-- Sistema Firebase -->
+            <div class="firebase-section">
+                <div class="config-item">
+                    <label for="firebase-code">Código de configuración:</label>
+                    <input type="text" id="firebase-code" placeholder="Ingresa tu código o deja vacío para crear uno nuevo" maxlength="20">
+                    <small style="color: #7f8c8d; font-size: 0.9rem;">Comparte este código para usar la misma configuración en otros dispositivos</small>
+                </div>
+                
+                <div class="firebase-actions">
+                    <button class="save-cloud-btn" id="save-cloud-btn">☁️ Guardar en la Nube</button>
+                    <button class="load-cloud-btn" id="load-cloud-btn">📥 Cargar de la Nube</button>
+                    <button class="generate-code-btn" id="generate-code-btn">🎲 Generar Código</button>
+                </div>
+                
+                <div class="firebase-status" id="firebase-status" style="display: none;">
+                    <small id="firebase-status-text"></small>
+                </div>
+            </div>
         </div>
     </div>    <div class="container">
         <!-- Header integrado en el mismo contenedor -->

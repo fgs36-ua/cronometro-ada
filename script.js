@@ -59,7 +59,15 @@ class DebateTimer {
         this.deliberacionDesc = document.getElementById('deliberacion-desc');
         this.feedbackTime = document.getElementById('feedback-time');
         this.feedbackDesc = document.getElementById('feedback-desc');
-    }    setupEventListeners() {
+        
+        // Elementos de Firebase
+        this.firebaseCode = document.getElementById('firebase-code');
+        this.saveCloudBtn = document.getElementById('save-cloud-btn');
+        this.loadCloudBtn = document.getElementById('load-cloud-btn');
+        this.generateCodeBtn = document.getElementById('generate-code-btn');
+        this.firebaseStatus = document.getElementById('firebase-status');
+        this.firebaseStatusText = document.getElementById('firebase-status-text');
+    }setupEventListeners() {
         // Selector de formato
         document.querySelectorAll('.format-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -68,10 +76,14 @@ class DebateTimer {
         });        // Panel de configuración
         this.configBtn.addEventListener('click', () => this.toggleConfigPanel());
         this.applyConfigBtn.addEventListener('click', () => this.applyConfiguration());
-        
-        // Botón para resetear a valores por defecto
+          // Botón para resetear a valores por defecto
         this.resetDefaultsBtn = document.getElementById('reset-defaults-btn');
         this.resetDefaultsBtn.addEventListener('click', () => this.resetToDefaults());
+
+        // Eventos de Firebase
+        this.saveCloudBtn.addEventListener('click', () => this.saveToCloud());
+        this.loadCloudBtn.addEventListener('click', () => this.loadFromCloud());
+        this.generateCodeBtn.addEventListener('click', () => this.generateFirebaseCode());
 
         // Checkbox para última refutación diferente
         this.ultimaRefutacionDiferente.addEventListener('change', () => this.toggleUltimaRefutacionConfig());
@@ -640,6 +652,169 @@ class DebateTimer {
             console.log('Configuración cargada correctamente');
         } catch (error) {
             console.error('Error al cargar configuración:', error);
+        }    }
+
+    // Métodos de Firebase
+    generateFirebaseCode() {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = '';
+        for (let i = 0; i < 8; i++) {
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        this.firebaseCode.value = result;
+        this.showFirebaseStatus('Código generado: ' + result, 'success');
+    }
+
+    async saveToCloud() {
+        const code = this.firebaseCode.value.trim().toUpperCase();
+        
+        if (!code) {
+            this.showFirebaseStatus('Por favor, introduce un código o genera uno nuevo', 'error');
+            return;
+        }
+
+        if (code.length < 4 || code.length > 20) {
+            this.showFirebaseStatus('El código debe tener entre 4 y 20 caracteres', 'error');
+            return;
+        }
+
+        try {
+            this.showFirebaseStatus('Guardando configuración...', 'loading');
+            
+            const config = this.gatherConfiguration();
+            config.timestamp = new Date().toISOString();
+            config.version = '2.0';
+            
+            await db.collection('configurations').doc(code).set(config);
+            
+            this.showFirebaseStatus('✓ Configuración guardada correctamente en: ' + code, 'success');
+            
+        } catch (error) {
+            console.error('Error al guardar en Firebase:', error);
+            this.showFirebaseStatus('Error al guardar: ' + error.message, 'error');
+        }
+    }
+
+    async loadFromCloud() {
+        const code = this.firebaseCode.value.trim().toUpperCase();
+        
+        if (!code) {
+            this.showFirebaseStatus('Por favor, introduce un código para cargar', 'error');
+            return;
+        }
+
+        try {
+            this.showFirebaseStatus('Cargando configuración...', 'loading');
+            
+            const doc = await db.collection('configurations').doc(code).get();
+            
+            if (!doc.exists) {
+                this.showFirebaseStatus('No se encontró configuración con ese código', 'error');
+                return;
+            }
+
+            const config = doc.data();
+            this.applyLoadedConfiguration(config);
+            this.updateConfiguration();
+            
+            this.showFirebaseStatus('✓ Configuración cargada correctamente', 'success');
+            
+        } catch (error) {
+            console.error('Error al cargar desde Firebase:', error);
+            this.showFirebaseStatus('Error al cargar: ' + error.message, 'error');
+        }
+    }
+
+    gatherConfiguration() {
+        return {
+            format: this.currentFormat,
+            academico: {
+                introTime: parseInt(this.introTime.value),
+                preguntasTime: parseInt(this.preguntasTime.value),
+                refutacionTime: parseInt(this.refutacionTime.value),
+                conclusionTime: parseInt(this.conclusionTime.value),
+                numRefutaciones: parseInt(this.numRefutaciones.value),
+                equipo1Name: this.equipo1Name.value,
+                equipo2Name: this.equipo2Name.value,
+                ultimaRefutacionDiferente: this.ultimaRefutacionDiferente.checked,
+                ultimaRefutacionTime: parseInt(this.ultimaRefutacionTime.value)
+            },
+            bp: {
+                speechTime: parseInt(this.bpSpeechTime.value),
+                equipoCamaraAltaFavor: this.equipoCamaraAltaFavor.value,
+                equipoCamaraAltaContra: this.equipoCamaraAltaContra.value,
+                equipoCamaraBajaFavor: this.equipoCamaraBajaFavor.value,
+                equipoCamaraBajaContra: this.equipoCamaraBajaContra.value
+            },
+            fases: {
+                deliberacionTime: parseInt(this.deliberacionTime.value),
+                deliberacionDesc: this.deliberacionDesc.value,
+                feedbackTime: parseInt(this.feedbackTime.value),
+                feedbackDesc: this.feedbackDesc.value
+            }
+        };
+    }
+
+    applyLoadedConfiguration(config) {
+        // Aplicar configuración académico
+        if (config.academico) {
+            this.introTime.value = config.academico.introTime || 240;
+            this.preguntasTime.value = config.academico.preguntasTime || 120;
+            this.refutacionTime.value = config.academico.refutacionTime || 300;
+            this.conclusionTime.value = config.academico.conclusionTime || 180;
+            this.numRefutaciones.value = config.academico.numRefutaciones || 2;
+            this.equipo1Name.value = config.academico.equipo1Name || 'Equipo A';
+            this.equipo2Name.value = config.academico.equipo2Name || 'Equipo B';
+            this.ultimaRefutacionDiferente.checked = config.academico.ultimaRefutacionDiferente || false;
+            this.ultimaRefutacionTime.value = config.academico.ultimaRefutacionTime || 90;
+        }
+
+        // Aplicar configuración BP
+        if (config.bp) {
+            this.bpSpeechTime.value = config.bp.speechTime || 420;
+            this.equipoCamaraAltaFavor.value = config.bp.equipoCamaraAltaFavor || 'Equipo A';
+            this.equipoCamaraAltaContra.value = config.bp.equipoCamaraAltaContra || 'Equipo B';
+            this.equipoCamaraBajaFavor.value = config.bp.equipoCamaraBajaFavor || 'Equipo C';
+            this.equipoCamaraBajaContra.value = config.bp.equipoCamaraBajaContra || 'Equipo D';
+        }
+
+        // Aplicar configuración de fases adicionales
+        if (config.fases) {
+            this.deliberacionTime.value = config.fases.deliberacionTime || 1200;
+            this.deliberacionDesc.value = config.fases.deliberacionDesc || 'Deliberación de jueces';
+            this.feedbackTime.value = config.fases.feedbackTime || 900;
+            this.feedbackDesc.value = config.fases.feedbackDesc || 'Feedback';
+        }
+
+        // Cambiar formato si es necesario
+        if (config.format && config.format !== this.currentFormat) {
+            this.switchFormat(config.format);
+        }
+
+        this.toggleUltimaRefutacionConfig();
+    }
+
+    showFirebaseStatus(message, type) {
+        this.firebaseStatusText.textContent = message;
+        this.firebaseStatus.style.display = 'block';
+        
+        // Remover clases previas
+        this.firebaseStatus.className = 'firebase-status';
+        
+        // Agregar clase según el tipo
+        if (type === 'success') {
+            this.firebaseStatus.classList.add('success');
+        } else if (type === 'error') {
+            this.firebaseStatus.classList.add('error');
+        } else if (type === 'loading') {
+            this.firebaseStatus.classList.add('loading');
+        }
+        
+        // Auto-ocultar después de 5 segundos para mensajes de éxito
+        if (type === 'success') {
+            setTimeout(() => {
+                this.firebaseStatus.style.display = 'none';
+            }, 5000);
         }
     }
 

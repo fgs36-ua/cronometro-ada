@@ -584,6 +584,109 @@ h1 {
     color: #bdc3c7;
 }
 
+/* Estilos para la sección Firebase */
+.config-separator h3 {
+    text-align: center;
+    margin: 0;
+}
+
+.firebase-section {
+    margin-top: 15px;
+    background: rgba(52, 152, 219, 0.05);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(52, 152, 219, 0.2);
+}
+
+.firebase-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.save-cloud-btn,
+.load-cloud-btn,
+.generate-code-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.save-cloud-btn {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+}
+
+.save-cloud-btn:hover {
+    background: linear-gradient(135deg, #229954, #27ae60);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.load-cloud-btn {
+    background: linear-gradient(135deg, #3498db, #5dade2);
+    color: white;
+}
+
+.load-cloud-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #3498db);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.generate-code-btn {
+    background: linear-gradient(135deg, #9b59b6, #bb8fce);
+    color: white;
+}
+
+.generate-code-btn:hover {
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+}
+
+.firebase-status {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.firebase-status.success {
+    background: rgba(39, 174, 96, 0.1);
+    border: 1px solid rgba(39, 174, 96, 0.3);
+    color: #27ae60;
+}
+
+.firebase-status.error {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    color: #e74c3c;
+}
+
+.firebase-status.loading {
+    background: rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    color: #3498db;
+}
+
+.firebase-status small {
+    font-size: 0.9rem;
+    display: block;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .timer {
