@@ -148,18 +148,17 @@ class DebateTimer {
                 tooltip.style.opacity = '0';
             }
         };
-        
-        // Mouse events
+          // Mouse events
         this.progressBar.addEventListener('mousedown', (e) => {
             isDragging = true;
-            this.handleProgressBarInteraction(e);
+            this.handleProgressBarInteraction(e, true); // Usar versión optimizada
             showTooltip(e);
             e.preventDefault();
         });
         
         this.progressBar.addEventListener('mousemove', (e) => {
             if (isDragging) {
-                this.handleProgressBarInteraction(e);
+                this.handleProgressBarInteraction(e, true); // Usar versión optimizada durante arrastre
                 showTooltip(e);
             } else {
                 showTooltip(e);
@@ -169,8 +168,11 @@ class DebateTimer {
         this.progressBar.addEventListener('mouseleave', () => {
             hideTooltip();
         });
-        
-        document.addEventListener('mouseup', () => {
+          document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                // Actualización completa solo al terminar el arrastre
+                this.updateDisplay();
+            }
             isDragging = false;
             hideTooltip();
         });
@@ -178,30 +180,31 @@ class DebateTimer {
         // Click event (when not dragging)
         this.progressBar.addEventListener('click', (e) => {
             if (!isDragging) {
-                this.handleProgressBarInteraction(e);
+                this.handleProgressBarInteraction(e, false); // Actualización completa en click
             }
         });
-        
-        // Touch events for mobile
+          // Touch events for mobile
         this.progressBar.addEventListener('touchstart', (e) => {
             isDragging = true;
-            this.handleProgressBarInteraction(e.touches[0]);
+            this.handleProgressBarInteraction(e.touches[0], true); // Usar versión optimizada
             e.preventDefault();
         });
         
         this.progressBar.addEventListener('touchmove', (e) => {
             if (isDragging) {
-                this.handleProgressBarInteraction(e.touches[0]);
+                this.handleProgressBarInteraction(e.touches[0], true); // Usar versión optimizada
                 e.preventDefault();
             }
         });
         
         document.addEventListener('touchend', () => {
+            if (isDragging) {
+                // Actualización completa solo al terminar el arrastre táctil
+                this.updateDisplay();
+            }
             isDragging = false;
         });
-    }
-
-    handleProgressBarInteraction(event) {
+    }    handleProgressBarInteraction(event, optimized = false) {
         // Solo permitir interacción si no está corriendo o si hay un cronómetro pausado
         if (this.phases.length === 0) return;
         
@@ -219,8 +222,12 @@ class DebateTimer {
         // Actualizar el tiempo actual
         this.currentTime = newTime;
         
-        // Actualizar la visualización
-        this.updateDisplay();
+        // Usar actualización optimizada durante el arrastre para mejor rendimiento
+        if (optimized) {
+            this.updateDisplayOptimized();
+        } else {
+            this.updateDisplay();
+        }
     }
 
     adjustTimerSize() {
@@ -802,6 +809,33 @@ class DebateTimer {
         // Eliminar configuración guardada
         localStorage.removeItem('ada-debate-config');
         console.log('Configuración reseteada a valores por defecto');
+    }
+
+    updateDisplayOptimized() {
+        // Versión optimizada que solo actualiza elementos esenciales durante el arrastre
+        if (this.phases.length === 0) return;
+
+        // Solo actualizar el cronómetro
+        const minutes = Math.floor(Math.abs(this.currentTime) / 60);
+        const seconds = Math.abs(this.currentTime) % 60;
+        const timeString = `${this.currentTime < 0 ? '-' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        this.timerDisplay.textContent = timeString;
+
+        // Solo actualizar la barra de progreso
+        const progress = Math.max(0, (this.totalTime - this.currentTime) / this.totalTime * 100);
+        this.progressFill.style.width = `${progress}%`;
+
+        // Solo actualizar colores críticos (sin actualizaciones costosas del DOM)
+        this.timerDisplay.className = 'timer';
+        this.progressFill.className = 'progress-fill';
+
+        if (this.currentTime <= -11) {
+            this.timerDisplay.classList.add('danger');
+            this.progressFill.classList.add('danger');
+        } else if (this.currentTime <= 10 && this.currentTime >= -10) {
+            this.timerDisplay.classList.add('warning');
+            this.progressFill.classList.add('warning');
+        }
     }
 }
 
