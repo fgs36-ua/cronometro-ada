@@ -12,6 +12,10 @@ const firebaseConfig = {
 // Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 
+// Inicializar App Check con reCAPTCHA v3
+const appCheck = firebase.appCheck();
+appCheck.activate('6LfJx1YrAAAAAEyIjPlaydguIXAobdsPjVVjoBTl', true); // Reemplaza con tu site key
+
 // Obtener referencia a Firestore
 const db = firebase.firestore();
 
