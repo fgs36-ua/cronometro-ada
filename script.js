@@ -8,12 +8,13 @@ class DebateTimer {
         this.currentPhaseIndex = 0;
         this.phases = [];
         this.timer = null;
+        this.debateEnded = false;
 
         this.initializeElements();
         this.setupEventListeners();
         this.loadConfiguration(); // Cargar configuración guardada
         this.updateConfiguration();
-    }    initializeElements() {
+    }initializeElements() {
         // Elementos del DOM
         this.timerDisplay = document.getElementById('timer');
         this.currentSpeakerDisplay = document.getElementById('current-speaker');
@@ -130,6 +131,7 @@ class DebateTimer {
         this.academicoConfig.classList.toggle('hidden', format !== 'academico');
         this.bpConfig.classList.toggle('hidden', format !== 'bp');        // Reset automático al cambiar formato
         this.currentPhaseIndex = 0;
+        this.debateEnded = false;
         this.updateConfiguration();
         this.resetDebate();
     }
@@ -304,15 +306,14 @@ class DebateTimer {
 
         this.updateDisplay();
         this.updateControlButtons();
-    }
-
-    resetDebate() {
+    }    resetDebate() {
         // Resetear todo el debate desde el principio
         this.isRunning = false;
         this.isPaused = false;
         this.currentTime = 0;
         this.totalTime = 0;
         this.currentPhaseIndex = 0;
+        this.debateEnded = false;
         
         clearInterval(this.timer);
         
@@ -327,6 +328,14 @@ class DebateTimer {
     }previousPhase() {
         // No permitir cambio si el cronómetro está funcionando
         if (this.isRunning) {
+            return;
+        }
+        
+        // Si el debate había terminado, volver a la última fase
+        if (this.debateEnded) {
+            this.debateEnded = false;
+            this.currentPhaseIndex = this.phases.length - 1;
+            this.loadCurrentPhase();
             return;
         }
         
@@ -355,12 +364,13 @@ class DebateTimer {
         const phase = this.phases[this.currentPhaseIndex];
         this.currentTime = phase.duration;
         this.totalTime = phase.duration;
+        this.debateEnded = false;
         
         // NO iniciar automáticamente el cronómetro, solo cargar la fase
         // El usuario debe presionar "Iniciar" manualmente
         
         this.updateDisplay();
-    }    startTimer() {
+    }startTimer() {
         this.timer = setInterval(() => {
             this.currentTime--;
             
@@ -430,17 +440,16 @@ class DebateTimer {
 
     hideNavigationControls() {
         this.navigationControls.classList.add('hidden');
-    }
-
-    showDebateEnd() {
+    }    showDebateEnd() {
         this.currentSpeakerDisplay.textContent = '¡Debate terminado!';
         this.timerDisplay.textContent = '00:00';
         this.progressFill.style.width = '100%';
         this.isRunning = false;
         this.isPaused = false;
+        this.debateEnded = true;
         clearInterval(this.timer);
         this.updateControlButtons();
-    }    updatePhasesList() {
+    }updatePhasesList() {
         if (!this.phasesList) return;
         
         // Limpiar lista actual
@@ -495,9 +504,7 @@ class DebateTimer {
             this.currentPhaseDisplay.textContent = currentPhase ? currentPhase.name : 'Listo para comenzar';
             this.phaseCounterDisplay.textContent = `${this.currentPhaseIndex + 1} / ${this.phases.length}`;
         }
-    }
-
-    jumpToPhase(phaseIndex) {
+    }    jumpToPhase(phaseIndex) {
         // No permitir salto si el cronómetro está funcionando
         if (this.isRunning) {
             return;
@@ -510,6 +517,7 @@ class DebateTimer {
         
         // Cambiar a la fase seleccionada
         this.currentPhaseIndex = phaseIndex;
+        this.debateEnded = false;
         this.loadCurrentPhase();
         
         // Actualizar visualización
