@@ -36,11 +36,10 @@ class DebateTimer {
         // Panel de configuración
         this.configBtn = document.getElementById('config-btn');
         this.configPanel = document.getElementById('config-panel');
-        this.applyConfigBtn = document.getElementById('apply-config-btn');
-        
-        // Secciones de configuración
+        this.applyConfigBtn = document.getElementById('apply-config-btn');        // Secciones de configuración
         this.academicoConfig = document.getElementById('academico-config');
-        this.bpConfig = document.getElementById('bp-config');          // Inputs de configuración académico
+        this.bpConfig = document.getElementById('bp-config');
+        this.fasesAdicionalesConfig = document.getElementById('fases-adicionales-config');// Inputs de configuración académico
         this.introTime = document.getElementById('intro-time');
         this.preguntasTime = document.getElementById('preguntas-time');
         this.refutacionTime = document.getElementById('refutacion-time');
@@ -50,13 +49,16 @@ class DebateTimer {
         this.equipo2Name = document.getElementById('equipo2-name');
         this.ultimaRefutacionDiferente = document.getElementById('ultima-refutacion-diferente');
         this.ultimaRefutacionTime = document.getElementById('ultima-refutacion-time');
-        this.ultimaRefutacionConfig = document.getElementById('ultima-refutacion-config');
-          // Inputs de configuración BP
+        this.ultimaRefutacionConfig = document.getElementById('ultima-refutacion-config');        // Inputs de configuración BP
         this.bpSpeechTime = document.getElementById('bp-speech-time');
         this.equipoCamaraAltaFavor = document.getElementById('equipo-camara-alta-favor');
         this.equipoCamaraAltaContra = document.getElementById('equipo-camara-alta-contra');
         this.equipoCamaraBajaFavor = document.getElementById('equipo-camara-baja-favor');
-        this.equipoCamaraBajaContra = document.getElementById('equipo-camara-baja-contra');
+        this.equipoCamaraBajaContra = document.getElementById('equipo-camara-baja-contra');        // Inputs de configuración Deliberación y Feedback
+        this.deliberacionTime = document.getElementById('deliberacion-time');
+        this.deliberacionDesc = document.getElementById('deliberacion-desc');
+        this.feedbackTime = document.getElementById('feedback-time');
+        this.feedbackDesc = document.getElementById('feedback-desc');
     }    setupEventListeners() {
         // Selector de formato
         document.querySelectorAll('.format-btn').forEach(btn => {
@@ -125,11 +127,11 @@ class DebateTimer {
         // Actualizar botones activos
         document.querySelectorAll('.format-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.format === format);
-        });
-
-        // Mostrar/ocultar secciones de configuración
+        });        // Mostrar/ocultar secciones de configuración
         this.academicoConfig.classList.toggle('hidden', format !== 'academico');
-        this.bpConfig.classList.toggle('hidden', format !== 'bp');        // Reset automático al cambiar formato
+        this.bpConfig.classList.toggle('hidden', format !== 'bp');
+        // Las fases adicionales (Deliberación y Feedback) siempre están visibles
+        this.fasesAdicionalesConfig.classList.remove('hidden');// Reset automático al cambiar formato
         this.currentPhaseIndex = 0;
         this.debateEnded = false;
         this.updateConfiguration();
@@ -187,10 +189,10 @@ class DebateTimer {
             this.applyConfigBtn.textContent = originalText;
             this.applyConfigBtn.style.background = '#27ae60';
         }, 2000);
-    }updateConfiguration() {
+    }    updateConfiguration() {
         if (this.currentFormat === 'academico') {
             this.setupAcademicoPhases();
-        } else {
+        } else if (this.currentFormat === 'bp') {
             this.setupBPPhases();
         }
         
@@ -233,12 +235,21 @@ class DebateTimer {
                     { name: `Refutación ${i + 1} - ${equipo1} (a favor)`, duration: tiempoAUsar },
                     { name: `Refutación ${i + 1} - ${equipo2} (en contra)`, duration: tiempoAUsar }
                 ];
-            }),
-            
-            // Conclusiones (primero B, luego A)
+            }),        // Conclusiones (primero B, luego A)
             { name: `Conclusión ${equipo2} (en contra)`, duration: conclusion },
             { name: `Conclusión ${equipo1} (a favor)`, duration: conclusion }
         ];
+
+        // Añadir fases de Deliberación y Feedback al final
+        const deliberacionDuration = parseInt(this.deliberacionTime.value) || 1200;
+        const deliberacionDesc = this.deliberacionDesc.value.trim() || 'Deliberación de jueces';
+        const feedbackDuration = parseInt(this.feedbackTime.value) || 900;
+        const feedbackDesc = this.feedbackDesc.value.trim() || 'Feedback';
+
+        this.phases.push(
+            { name: deliberacionDesc, duration: deliberacionDuration },
+            { name: feedbackDesc, duration: feedbackDuration }
+        );
     }setupBPPhases() {
         const speechDuration = parseInt(this.bpSpeechTime.value); // ya en segundos
         const camaraAltaFavor = this.equipoCamaraAltaFavor.value.trim() || 'Equipo A';
@@ -252,10 +263,20 @@ class DebateTimer {
             { name: `Viceprimer Ministro (${camaraAltaFavor})`, duration: speechDuration },
             { name: `Vicelíder de Oposición (${camaraAltaContra})`, duration: speechDuration },
             { name: `Extensión de Gobierno (${camaraBajaFavor})`, duration: speechDuration },
-            { name: `Extensión de la Oposición (${camaraBajaContra})`, duration: speechDuration },
-            { name: `Látigo de Gobierno (${camaraBajaFavor})`, duration: speechDuration },
+            { name: `Extensión de la Oposición (${camaraBajaContra})`, duration: speechDuration },            { name: `Látigo de Gobierno (${camaraBajaFavor})`, duration: speechDuration },
             { name: `Látigo de la Oposición (${camaraBajaContra})`, duration: speechDuration }
         ];
+
+        // Añadir fases de Deliberación y Feedback al final
+        const deliberacionDuration = parseInt(this.deliberacionTime.value) || 1200;
+        const deliberacionDesc = this.deliberacionDesc.value.trim() || 'Deliberación de jueces';
+        const feedbackDuration = parseInt(this.feedbackTime.value) || 900;
+        const feedbackDesc = this.feedbackDesc.value.trim() || 'Feedback';
+
+        this.phases.push(
+            { name: deliberacionDesc, duration: deliberacionDuration },
+            { name: feedbackDesc, duration: feedbackDuration }
+        );
     }
 
     start() {
@@ -538,13 +559,19 @@ class DebateTimer {
                 equipo2Name: this.equipo2Name.value,
                 ultimaRefutacionDiferente: this.ultimaRefutacionDiferente.checked,
                 ultimaRefutacionTime: this.ultimaRefutacionTime.value
-            },
-            bp: {
+            },            bp: {
                 speechTime: this.bpSpeechTime.value,
                 camaraAltaFavor: this.equipoCamaraAltaFavor.value,
                 camaraAltaContra: this.equipoCamaraAltaContra.value,
                 camaraBajaFavor: this.equipoCamaraBajaFavor.value,
                 camaraBajaContra: this.equipoCamaraBajaContra.value
+            },            deliberacion: {
+                time: this.deliberacionTime.value,
+                description: this.deliberacionDesc.value
+            },
+            feedback: {
+                time: this.feedbackTime.value,
+                description: this.feedbackDesc.value
             }
         };
         
@@ -578,8 +605,7 @@ class DebateTimer {
                 this.ultimaRefutacionDiferente.checked = config.academico.ultimaRefutacionDiferente || false;
                 this.ultimaRefutacionTime.value = config.academico.ultimaRefutacionTime || 90;
             }
-            
-            // Cargar configuración BP
+              // Cargar configuración BP
             if (config.bp) {
                 this.bpSpeechTime.value = config.bp.speechTime || 420;
                 this.equipoCamaraAltaFavor.value = config.bp.camaraAltaFavor || 'Equipo A';
@@ -587,15 +613,26 @@ class DebateTimer {
                 this.equipoCamaraBajaFavor.value = config.bp.camaraBajaFavor || 'Equipo C';
                 this.equipoCamaraBajaContra.value = config.bp.camaraBajaContra || 'Equipo D';
             }
+              // Cargar configuración Deliberación
+            if (config.deliberacion) {
+                this.deliberacionTime.value = config.deliberacion.time || 1200;
+                this.deliberacionDesc.value = config.deliberacion.description || 'Deliberación de jueces';
+            }
+            
+            // Cargar configuración Feedback
+            if (config.feedback) {
+                this.feedbackTime.value = config.feedback.time || 900;
+                this.feedbackDesc.value = config.feedback.description || 'Feedback';
+            }
             
             // Actualizar UI de formato
             document.querySelectorAll('.format-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.format === this.currentFormat);
-            });
-            
-            // Mostrar/ocultar secciones de configuración
+            });              // Mostrar/ocultar secciones de configuración
             this.academicoConfig.classList.toggle('hidden', this.currentFormat !== 'academico');
             this.bpConfig.classList.toggle('hidden', this.currentFormat !== 'bp');
+            // Las fases adicionales siempre están visibles
+            this.fasesAdicionalesConfig.classList.remove('hidden');
             
             // Actualizar checkbox de última refutación
             this.toggleUltimaRefutacionConfig();
@@ -617,12 +654,16 @@ class DebateTimer {
         this.equipo2Name.value = 'Equipo B';
         this.ultimaRefutacionDiferente.checked = false;
         this.ultimaRefutacionTime.value = 90;
-        
-        this.bpSpeechTime.value = 420;
+          this.bpSpeechTime.value = 420;
         this.equipoCamaraAltaFavor.value = 'Equipo A';
         this.equipoCamaraAltaContra.value = 'Equipo B';
         this.equipoCamaraBajaFavor.value = 'Equipo C';
         this.equipoCamaraBajaContra.value = 'Equipo D';
+          this.deliberacionTime.value = 1200;
+        this.deliberacionDesc.value = 'Deliberación de jueces';
+        
+        this.feedbackTime.value = 900;
+        this.feedbackDesc.value = 'Feedback';
         
         this.toggleUltimaRefutacionConfig();
         

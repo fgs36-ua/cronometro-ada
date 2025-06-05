@@ -83,8 +83,32 @@
                     <label for="equipo-camara-baja-contra">Cámara Baja (en contra):</label>
                     <input type="text" id="equipo-camara-baja-contra" value="Equipo D" placeholder="Ej: Equipo D">
                 </div>
+            </div>        </div>
+
+        <!-- Configuración Fases Adicionales -->
+        <div id="fases-adicionales-config" class="config-section">
+            <h2>Fases Adicionales</h2>
+            <div class="config-grid">
+                <div class="config-item">
+                    <label for="deliberacion-time">Deliberación (segundos):</label>
+                    <input type="number" id="deliberacion-time" value="1200">
+                </div>
+                <div class="config-item">
+                    <label for="deliberacion-desc">Descripción Deliberación:</label>
+                    <input type="text" id="deliberacion-desc" value="Deliberación de jueces" placeholder="Ej: Deliberación de jueces">
+                </div>
+                <div class="config-item">
+                    <label for="feedback-time">Feedback (segundos):</label>
+                    <input type="number" id="feedback-time" value="900">
+                </div>
+                <div class="config-item">
+                    <label for="feedback-desc">Descripción Feedback:</label>
+                    <input type="text" id="feedback-desc" value="Feedback" placeholder="Ej: Feedback y comentarios">
+                </div>
             </div>
-        </div>        <!-- Botón aceptar configuración -->
+        </div>
+
+        <!-- Botón aceptar configuración -->
         <div class="config-actions">
             <button class="apply-config-btn" id="apply-config-btn">Guardar y Aplicar</button>
             <button class="reset-defaults-btn" id="reset-defaults-btn">Restaurar Valores por Defecto</button>
