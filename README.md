@@ -14,6 +14,7 @@ Cronómetro web profesional diseñado para la Asociación de Debate de Alicante 
 - **Diseño responsive**: Optimizado para móviles, tablets y proyección
 - **Navegación por fases**: Salto directo a cualquier fase del debate
 - **Configuración avanzada**: Nombres de equipos, tiempos personalizables
+- **Guardado automático**: Las configuraciones se guardan automáticamente en el navegador
 
 ### Controles Específicos
 - **Iniciar/Pausar/Reanudar**: Control total del cronómetro
@@ -54,6 +55,21 @@ Cronómetro web profesional diseñado para la Asociación de Debate de Alicante 
 ### Configuración
 - **Duración de discursos**: (por defecto: 420s)
 - **Nombres de equipos**: Configurables para cada cámara
+
+## Gestión de Configuraciones
+
+### Guardado Automático
+- Las configuraciones se guardan automáticamente en el navegador al hacer clic en "Guardar y Aplicar"
+- No requiere login ni conexión a internet
+- Las configuraciones persisten entre sesiones del navegador
+
+### Opciones de Configuración
+- **Guardar y Aplicar**: Guarda la configuración actual y la aplica al cronómetro
+- **Restaurar Valores por Defecto**: Restablece todos los valores a la configuración inicial de ADA
+
+### Limitaciones
+- Las configuraciones solo se guardan en el navegador específico donde se configuraron
+- Si se borra el caché del navegador, se perderán las configuraciones guardadas
 
 ## Contribuciones
 

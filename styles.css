@@ -144,9 +144,12 @@ h1 {
     padding-top: 20px;
     border-top: 2px solid #ecf0f1;
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.apply-config-btn {
+.apply-config-btn, .reset-defaults-btn {
     padding: 15px 40px;
     border: none;
     border-radius: 25px;
@@ -154,6 +157,9 @@ h1 {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+}
+
+.apply-config-btn {
     background: #27ae60;
     color: white;
     box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
@@ -163,6 +169,19 @@ h1 {
     background: #219a52;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+.reset-defaults-btn {
+    background: #95a5a6;
+    color: white;
+    box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+    font-size: 1rem;
+}
+
+.reset-defaults-btn:hover {
+    background: #7f8c8d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
 }
 
 .config-section {

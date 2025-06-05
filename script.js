@@ -7,8 +7,11 @@ class DebateTimer {
         this.totalTime = 0;
         this.currentPhaseIndex = 0;
         this.phases = [];
-        this.timer = null;        this.initializeElements();
+        this.timer = null;
+
+        this.initializeElements();
         this.setupEventListeners();
+        this.loadConfiguration(); // Cargar configuración guardada
         this.updateConfiguration();
     }    initializeElements() {
         // Elementos del DOM
@@ -62,6 +65,10 @@ class DebateTimer {
         });        // Panel de configuración
         this.configBtn.addEventListener('click', () => this.toggleConfigPanel());
         this.applyConfigBtn.addEventListener('click', () => this.applyConfiguration());
+        
+        // Botón para resetear a valores por defecto
+        this.resetDefaultsBtn = document.getElementById('reset-defaults-btn');
+        this.resetDefaultsBtn.addEventListener('click', () => this.resetToDefaults());
 
         // Checkbox para última refutación diferente
         this.ultimaRefutacionDiferente.addEventListener('change', () => this.toggleUltimaRefutacionConfig());
@@ -160,13 +167,25 @@ class DebateTimer {
         } else {
             this.ultimaRefutacionConfig.style.display = 'none';
         }
-    }
-
-    applyConfiguration() {
+    }    applyConfiguration() {
+        this.saveConfiguration(); // Guardar configuración automáticamente
         this.updateConfiguration();
         this.resetDebate(); // Reset completo después de aplicar configuración
+        this.showSaveNotification(); // Mostrar notificación de guardado
         this.toggleConfigPanel(); // Cerrar panel
-    }    updateConfiguration() {
+    }
+
+    showSaveNotification() {
+        // Cambiar texto del botón temporalmente para indicar que se guardó
+        const originalText = this.applyConfigBtn.textContent;
+        this.applyConfigBtn.textContent = '✅ Configuración Guardada';
+        this.applyConfigBtn.style.background = '#2ecc71';
+        
+        setTimeout(() => {
+            this.applyConfigBtn.textContent = originalText;
+            this.applyConfigBtn.style.background = '#27ae60';
+        }, 2000);
+    }updateConfiguration() {
         if (this.currentFormat === 'academico') {
             this.setupAcademicoPhases();
         } else {
@@ -496,6 +515,112 @@ class DebateTimer {
         // Actualizar visualización
         this.updateDisplay();
         this.updateControlButtons();
+    }
+
+    saveConfiguration() {
+        const config = {
+            currentFormat: this.currentFormat,
+            academico: {
+                introTime: this.introTime.value,
+                preguntasTime: this.preguntasTime.value,
+                refutacionTime: this.refutacionTime.value,
+                conclusionTime: this.conclusionTime.value,
+                numRefutaciones: this.numRefutaciones.value,
+                equipo1Name: this.equipo1Name.value,
+                equipo2Name: this.equipo2Name.value,
+                ultimaRefutacionDiferente: this.ultimaRefutacionDiferente.checked,
+                ultimaRefutacionTime: this.ultimaRefutacionTime.value
+            },
+            bp: {
+                speechTime: this.bpSpeechTime.value,
+                camaraAltaFavor: this.equipoCamaraAltaFavor.value,
+                camaraAltaContra: this.equipoCamaraAltaContra.value,
+                camaraBajaFavor: this.equipoCamaraBajaFavor.value,
+                camaraBajaContra: this.equipoCamaraBajaContra.value
+            }
+        };
+        
+        try {
+            localStorage.setItem('ada-debate-config', JSON.stringify(config));
+            console.log('Configuración guardada correctamente');
+        } catch (error) {
+            console.error('Error al guardar configuración:', error);
+        }
+    }
+
+    loadConfiguration() {
+        try {
+            const savedConfig = localStorage.getItem('ada-debate-config');
+            if (!savedConfig) return; // No hay configuración guardada
+
+            const config = JSON.parse(savedConfig);
+            
+            // Cargar formato
+            this.currentFormat = config.currentFormat || 'academico';
+            
+            // Cargar configuración académico
+            if (config.academico) {
+                this.introTime.value = config.academico.introTime || 240;
+                this.preguntasTime.value = config.academico.preguntasTime || 120;
+                this.refutacionTime.value = config.academico.refutacionTime || 300;
+                this.conclusionTime.value = config.academico.conclusionTime || 180;
+                this.numRefutaciones.value = config.academico.numRefutaciones || 2;
+                this.equipo1Name.value = config.academico.equipo1Name || 'Equipo A';
+                this.equipo2Name.value = config.academico.equipo2Name || 'Equipo B';
+                this.ultimaRefutacionDiferente.checked = config.academico.ultimaRefutacionDiferente || false;
+                this.ultimaRefutacionTime.value = config.academico.ultimaRefutacionTime || 90;
+            }
+            
+            // Cargar configuración BP
+            if (config.bp) {
+                this.bpSpeechTime.value = config.bp.speechTime || 420;
+                this.equipoCamaraAltaFavor.value = config.bp.camaraAltaFavor || 'Equipo A';
+                this.equipoCamaraAltaContra.value = config.bp.camaraAltaContra || 'Equipo B';
+                this.equipoCamaraBajaFavor.value = config.bp.camaraBajaFavor || 'Equipo C';
+                this.equipoCamaraBajaContra.value = config.bp.camaraBajaContra || 'Equipo D';
+            }
+            
+            // Actualizar UI de formato
+            document.querySelectorAll('.format-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.format === this.currentFormat);
+            });
+            
+            // Mostrar/ocultar secciones de configuración
+            this.academicoConfig.classList.toggle('hidden', this.currentFormat !== 'academico');
+            this.bpConfig.classList.toggle('hidden', this.currentFormat !== 'bp');
+            
+            // Actualizar checkbox de última refutación
+            this.toggleUltimaRefutacionConfig();
+            
+            console.log('Configuración cargada correctamente');
+        } catch (error) {
+            console.error('Error al cargar configuración:', error);
+        }
+    }
+
+    resetToDefaults() {
+        // Resetear valores por defecto
+        this.introTime.value = 240;
+        this.preguntasTime.value = 120;
+        this.refutacionTime.value = 300;
+        this.conclusionTime.value = 180;
+        this.numRefutaciones.value = 2;
+        this.equipo1Name.value = 'Equipo A';
+        this.equipo2Name.value = 'Equipo B';
+        this.ultimaRefutacionDiferente.checked = false;
+        this.ultimaRefutacionTime.value = 90;
+        
+        this.bpSpeechTime.value = 420;
+        this.equipoCamaraAltaFavor.value = 'Equipo A';
+        this.equipoCamaraAltaContra.value = 'Equipo B';
+        this.equipoCamaraBajaFavor.value = 'Equipo C';
+        this.equipoCamaraBajaContra.value = 'Equipo D';
+        
+        this.toggleUltimaRefutacionConfig();
+        
+        // Eliminar configuración guardada
+        localStorage.removeItem('ada-debate-config');
+        console.log('Configuración reseteada a valores por defecto');
     }
 }
 
