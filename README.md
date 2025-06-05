@@ -66,4 +66,4 @@ Proyecto de código abierto desarrollado para uso educativo y de debate académi
 
 ---
 
-**Desarrollado con 💜 para la comunidad de debate de Alicante**
+**Desarrollado con 💜 para la Asociación de Debate de Alicante**
