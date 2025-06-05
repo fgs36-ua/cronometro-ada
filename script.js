@@ -140,9 +140,9 @@ class DebateTimer {
         
         // Cambiar texto del botón
         if (this.configPanel.classList.contains('show')) {
-            this.configBtn.textContent = '⚙️ Cerrar Configuración';
+            this.configBtn.textContent = 'Cerrar Configuración';
         } else {
-            this.configBtn.textContent = '⚙️ Configuración';
+            this.configBtn.textContent = 'Configuración';
         }
     }    togglePhasesPanel() {
         this.phasesPanel.classList.toggle('show');
@@ -150,9 +150,9 @@ class DebateTimer {
         
         // Cambiar texto del botón
         if (this.phasesPanel.classList.contains('show')) {
-            this.phasesBtn.textContent = '📋 Cerrar Fases';
+            this.phasesBtn.textContent = 'Cerrar Fases';
         } else {
-            this.phasesBtn.textContent = '📋 Fases';
+            this.phasesBtn.textContent = 'Fases';
         }
         
         // Actualizar la lista de fases cuando se abre
