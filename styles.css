@@ -695,10 +695,10 @@ h1 {
         width: 100%;
         max-width: 250px;
     }
-    
-    .navigation-controls {
-        flex-direction: column;
-        align-items: center;
+      .navigation-controls {
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
     }
   
     
@@ -761,11 +761,18 @@ h1 {
         line-height: 1.2;
         padding: 0 5px;
     }
-    
-    .control-btn {
+      .control-btn {
         padding: 12px 20px;
         font-size: 1rem;
         min-width: 100px;
+    }
+    
+    .nav-btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        min-width: auto;
+        flex: 1;
+        max-width: 120px;
     }
     
     .phases-panel {
@@ -809,11 +816,18 @@ h1 {
         font-size: 0.9rem;
         padding: 0 3px;
     }
-    
-    .control-btn {
+      .control-btn {
         padding: 10px 15px;
         font-size: 0.9rem;
         min-width: 80px;
+    }
+    
+    .nav-btn {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+        min-width: auto;
+        flex: 1;
+        max-width: 110px;
     }
 }
 
@@ -853,11 +867,18 @@ h1 {
         padding: 0 2px;
         margin-bottom: 8px;
     }
-    
-    .control-btn {
+      .control-btn {
         padding: 8px 12px;
         font-size: 0.8rem;
         min-width: 70px;
+    }
+    
+    .nav-btn {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+        min-width: auto;
+        flex: 1;
+        max-width: 100px;
     }
     
     .controls {
