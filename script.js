@@ -251,25 +251,13 @@ class DebateTimer {
             const baseSize = Math.min(containerWidth / textLength * adjustmentFactor, containerWidth * 0.22);
             const minSize = Math.max(baseSize * 0.5, 28); // Tamaño mínimo
             const maxSize = Math.min(baseSize, hasNegativeSign ? 100 : 120); // Límite menor para negativos
-            
-            this.timerDisplay.style.fontSize = `${Math.max(minSize, Math.min(maxSize, baseSize))}px`;
+              this.timerDisplay.style.fontSize = `${Math.max(minSize, Math.min(maxSize, baseSize))}px`;
             this.timerDisplay.style.whiteSpace = 'normal';
             this.timerDisplay.style.wordBreak = 'break-all';
             this.timerDisplay.style.overflow = 'visible';
             this.timerDisplay.style.letterSpacing = hasNegativeSign ? '0.01em' : '0.02em';
             this.timerDisplay.style.lineHeight = '1';
             this.timerDisplay.style.textAlign = 'center';
-            
-            // Verificación adicional para asegurar que cabe
-            setTimeout(() => {
-                const actualWidth = this.timerDisplay.scrollWidth;
-                if (actualWidth > containerWidth) {
-                    // Reducir más agresivamente si no cabe
-                    const reductionFactor = containerWidth / actualWidth;
-                    const newSize = Math.max(minSize, maxSize * reductionFactor * 0.95);
-                    this.timerDisplay.style.fontSize = `${newSize}px`;
-                }
-            }, 10);
         }
     }
 
@@ -577,15 +565,16 @@ class DebateTimer {
         const minutes = Math.floor(Math.abs(this.currentTime) / 60);
         const seconds = Math.abs(this.currentTime) % 60;
         const timeString = `${this.currentTime < 0 ? '-' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        const previousTimeString = this.timerDisplay.textContent;
-        this.timerDisplay.textContent = timeString;
-
-        // Ajustar tamaño si cambió la longitud del texto (ej: de positivo a negativo)
-        const timerContainer = this.timerDisplay.parentElement;
-        const containerWidth = timerContainer.offsetWidth;
-        if (previousTimeString.length !== timeString.length || containerWidth < 600) {
+        
+        // Solo ajustar tamaño al inicio o cuando cambia de positivo a negativo (no en cada segundo)
+        const previousTimeString = this.timerDisplay.getAttribute('data-prev-time') || '';
+        const hasSignChange = (previousTimeString.includes('-')) !== (timeString.includes('-'));
+        if (hasSignChange || !previousTimeString) {
             this.adjustTimerSize();
         }
+        
+        this.timerDisplay.textContent = timeString;
+        this.timerDisplay.setAttribute('data-prev-time', timeString);
 
         // Actualizar barra de progreso
         const progress = Math.max(0, (this.totalTime - this.currentTime) / this.totalTime * 100);
