@@ -592,8 +592,8 @@ class DebateTimer {
 
       this.startTimer();
     }
-
     this.updateControlButtons();
+    this.updatePhasesList(); // Actualizar lista cuando inicia para deshabilitar clicks
     this.showNavigationControls();
   }
   pause() {
@@ -615,6 +615,7 @@ class DebateTimer {
     }
 
     this.updateControlButtons();
+    this.updatePhasesList(); // Actualizar lista de fases para hacer clickeables cuando se pausa
   }
   reset() {
     // Parar el cronómetro
@@ -623,9 +624,7 @@ class DebateTimer {
     clearInterval(this.timer);
     
     // Resetear timestamps
-    this.startTimestamp = null;
-
-    // Solo resetear la fase actual, no cambiar currentPhaseIndex
+    this.startTimestamp = null;    // Solo resetear la fase actual, no cambiar currentPhaseIndex
     if (this.phases.length > 0) {
       this.currentTime = this.phases[this.currentPhaseIndex].duration;
       this.totalTime = this.phases[this.currentPhaseIndex].duration;
@@ -636,6 +635,7 @@ class DebateTimer {
 
     this.updateDisplay();
     this.updateControlButtons();
+    this.updatePhasesList(); // Actualizar lista de fases al resetear
   }
   resetDebate() {
     // Resetear todo el debate desde el principio
@@ -655,9 +655,9 @@ class DebateTimer {
       this.currentTime = this.phases[0].duration;
       this.totalTime = this.phases[0].duration;
     }
-
     this.updateDisplay();
     this.updateControlButtons();
+    this.updatePhasesList(); // Actualizar lista de fases al resetear debate
     this.hideNavigationControls();
   }
   previousPhase() {
@@ -709,6 +709,7 @@ class DebateTimer {
     // El usuario debe presionar "Iniciar" manualmente
 
     this.updateDisplay();
+    this.updatePhasesList(); // Actualizar lista al cambiar de fase
   }
   startTimer() {
     this.timer = setInterval(() => {
@@ -766,9 +767,7 @@ class DebateTimer {
     );
     this.progressFill.style.width = `${progress}%`; // Cambiar colores según el tiempo restante
     this.timerDisplay.className = 'timer';
-    this.progressFill.className = 'progress-fill';
-
-    // Amarillo: desde 10 segundos hasta -10 segundos
+    this.progressFill.className = 'progress-fill';    // Amarillo: desde 10 segundos hasta -10 segundos
     // Rojo: a partir de -11 segundos
     if (this.currentTime <= -11) {
       this.timerDisplay.classList.add('danger');
@@ -778,8 +777,7 @@ class DebateTimer {
       this.progressFill.classList.add('warning');
     }
 
-    // Actualizar panel de fases siempre
-    this.updatePhasesList();
+    // Solo actualizar encabezado de fases, no la lista completa cada segundo
     this.updatePhasesHeader();
   }
   updateControlButtons() {
@@ -813,6 +811,7 @@ class DebateTimer {
     this.debateEnded = true;
     clearInterval(this.timer);
     this.updateControlButtons();
+    this.updatePhasesList(); // Actualizar lista cuando termina el debate
   }
   updatePhasesList() {
     if (!this.phasesList) return;
