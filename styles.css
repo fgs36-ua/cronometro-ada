@@ -294,6 +294,11 @@ h1 {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
 }
 
 .current-speaker {
@@ -313,17 +318,20 @@ h1 {
     color: #27ae60;
     margin-bottom: 20px;
     font-family: 'Courier New', monospace;
+    font-variant-numeric: tabular-nums;
     text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
     letter-spacing: 0.1em;
     white-space: nowrap;
     overflow: hidden;
     width: 100%;
+    min-width: 4.5ch;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 0.8em;
     max-width: 100%;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .timer.warning {
@@ -636,9 +644,9 @@ h1 {
     
     h1 {
         font-size: 2rem;
-    }
-      .timer {
+    }      .timer {
         font-size: clamp(4rem, 13vw, 8rem);
+        font-variant-numeric: tabular-nums;
         line-height: 1;
         white-space: normal;
         word-break: break-all;
@@ -734,9 +742,9 @@ h1 {
         padding: 10px;
         margin: 15px auto;
         max-width: none;
-    }
-      .timer {
+    }      .timer {
         font-size: clamp(3rem, 11vw, 5rem);
+        font-variant-numeric: tabular-nums;
         line-height: 1;
         white-space: normal;
         word-break: break-all;
@@ -792,9 +800,9 @@ h1 {
         padding: 8px;
         margin: 10px auto;
         max-width: none;
-    }
-      .timer {
+    }      .timer {
         font-size: clamp(2.5rem, 9vw, 4rem);
+        font-variant-numeric: tabular-nums;
         white-space: normal;
         word-break: break-all;
         letter-spacing: 0;
@@ -841,9 +849,9 @@ h1 {
         padding: 5px;
         margin: 5px auto;
         border-radius: 10px;
-    }
-      .timer {
+    }      .timer {
         font-size: clamp(2rem, 7vw, 3rem);
+        font-variant-numeric: tabular-nums;
         white-space: normal;
         word-break: break-all;
         letter-spacing: 0;
