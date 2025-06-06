@@ -230,7 +230,7 @@ class DebateTimer {
         }
     }    adjustTimerSize() {
         const timerContainer = this.timerDisplay.parentElement;
-        const containerWidth = timerContainer.offsetWidth;
+        const containerWidth = timerContainer.offsetWidth - 20; // Margen de seguridad
         const text = this.timerDisplay.textContent;
         
         // Resetear estilos inline primero para obtener medidas naturales
@@ -238,26 +238,36 @@ class DebateTimer {
         this.timerDisplay.style.whiteSpace = '';
         this.timerDisplay.style.wordBreak = '';
         this.timerDisplay.style.overflow = '';
+        this.timerDisplay.style.letterSpacing = '';
         
         // Solo aplicar ajustes en pantallas pequeñas
         if (containerWidth < 600) {
-            // Usar clamp para un escalado más fluido
-            const baseSize = Math.min(containerWidth / text.length * 2, containerWidth * 0.25);
-            const minSize = Math.max(baseSize * 0.4, 32); // Tamaño mínimo de 32px
-            const maxSize = Math.min(baseSize, 120); // Tamaño máximo de 120px
+            // Considerar texto más largo para tiempo negativo
+            const hasNegativeSign = text.includes('-');
+            const textLength = text.length;
+            const adjustmentFactor = hasNegativeSign ? 1.8 : 2.2; // Menos espacio para negativos
             
-            this.timerDisplay.style.fontSize = `clamp(${minSize}px, ${baseSize}px, ${maxSize}px)`;
+            // Calcular tamaño base considerando el ancho disponible y longitud del texto
+            const baseSize = Math.min(containerWidth / textLength * adjustmentFactor, containerWidth * 0.22);
+            const minSize = Math.max(baseSize * 0.5, 28); // Tamaño mínimo
+            const maxSize = Math.min(baseSize, hasNegativeSign ? 100 : 120); // Límite menor para negativos
+            
+            this.timerDisplay.style.fontSize = `${Math.max(minSize, Math.min(maxSize, baseSize))}px`;
             this.timerDisplay.style.whiteSpace = 'normal';
             this.timerDisplay.style.wordBreak = 'break-all';
             this.timerDisplay.style.overflow = 'visible';
-            this.timerDisplay.style.letterSpacing = '0.02em';
+            this.timerDisplay.style.letterSpacing = hasNegativeSign ? '0.01em' : '0.02em';
             this.timerDisplay.style.lineHeight = '1';
+            this.timerDisplay.style.textAlign = 'center';
             
-            // Verificar si aún se desborda después del ajuste
+            // Verificación adicional para asegurar que cabe
             setTimeout(() => {
-                if (this.timerDisplay.scrollWidth > containerWidth) {
-                    const adjustedSize = Math.max((containerWidth / this.timerDisplay.scrollWidth) * maxSize, minSize);
-                    this.timerDisplay.style.fontSize = `${adjustedSize}px`;
+                const actualWidth = this.timerDisplay.scrollWidth;
+                if (actualWidth > containerWidth) {
+                    // Reducir más agresivamente si no cabe
+                    const reductionFactor = containerWidth / actualWidth;
+                    const newSize = Math.max(minSize, maxSize * reductionFactor * 0.95);
+                    this.timerDisplay.style.fontSize = `${newSize}px`;
                 }
             }, 10);
         }
@@ -563,13 +573,19 @@ class DebateTimer {
         }
 
         const phase = this.phases[this.currentPhaseIndex];
-        this.currentSpeakerDisplay.textContent = phase.name;
-        
-        // Formatear tiempo
+        this.currentSpeakerDisplay.textContent = phase.name;        // Formatear tiempo
         const minutes = Math.floor(Math.abs(this.currentTime) / 60);
         const seconds = Math.abs(this.currentTime) % 60;
         const timeString = `${this.currentTime < 0 ? '-' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        const previousTimeString = this.timerDisplay.textContent;
         this.timerDisplay.textContent = timeString;
+
+        // Ajustar tamaño si cambió la longitud del texto (ej: de positivo a negativo)
+        const timerContainer = this.timerDisplay.parentElement;
+        const containerWidth = timerContainer.offsetWidth;
+        if (previousTimeString.length !== timeString.length || containerWidth < 600) {
+            this.adjustTimerSize();
+        }
 
         // Actualizar barra de progreso
         const progress = Math.max(0, (this.totalTime - this.currentTime) / this.totalTime * 100);
@@ -586,9 +602,6 @@ class DebateTimer {
             this.timerDisplay.classList.add('warning');
             this.progressFill.classList.add('warning');
         }
-
-        // Ajustar tamaño del cronómetro para dispositivos móviles
-        this.adjustTimerSize();
 
         // Actualizar panel de fases siempre
         this.updatePhasesList();

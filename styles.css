@@ -637,21 +637,23 @@ h1 {
     h1 {
         font-size: 2rem;
     }
-    
-    .timer {
-        font-size: clamp(4rem, 15vw, 8rem);
+      .timer {
+        font-size: clamp(4rem, 13vw, 8rem);
         line-height: 1;
         white-space: normal;
         word-break: break-all;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.03em;
         overflow: visible;
         text-align: center;
-        padding: 0 10px;
+        padding: 0 15px;
+        max-width: 100%;
+        box-sizing: border-box;
     }
     
     .timer-display {
-        padding: 20px 10px;
+        padding: 20px 15px;
         overflow: hidden;
+        max-width: 100%;
     }
     
     .current-speaker {
@@ -733,22 +735,24 @@ h1 {
         margin: 15px auto;
         max-width: none;
     }
-    
-    .timer {
-        font-size: clamp(3rem, 12vw, 5rem);
+      .timer {
+        font-size: clamp(3rem, 11vw, 5rem);
         line-height: 1;
         white-space: normal;
         word-break: break-all;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.01em;
         overflow: visible;
         text-align: center;
-        padding: 0 5px;
+        padding: 0 10px;
+        max-width: 100%;
+        box-sizing: border-box;
     }
     
     .timer-display {
-        padding: 15px 5px;
+        padding: 15px 10px;
         min-height: auto;
         overflow: hidden;
+        max-width: 100%;
     }
     
     .current-speaker {
@@ -782,20 +786,23 @@ h1 {
         margin: 10px auto;
         max-width: none;
     }
-    
-    .timer {
-        font-size: clamp(2.5rem, 10vw, 4rem);
+      .timer {
+        font-size: clamp(2.5rem, 9vw, 4rem);
         white-space: normal;
         word-break: break-all;
         letter-spacing: 0;
         overflow: visible;
         text-align: center;
-        padding: 0 3px;
+        padding: 0 8px;
+        max-width: 100%;
+        box-sizing: border-box;
+        line-height: 0.95;
     }
     
     .timer-display {
-        padding: 10px 3px;
+        padding: 10px 8px;
         overflow: hidden;
+        max-width: 100%;
     }
     
     .current-speaker {
@@ -821,22 +828,24 @@ h1 {
         margin: 5px auto;
         border-radius: 10px;
     }
-    
-    .timer {
-        font-size: clamp(2rem, 8vw, 3rem);
+      .timer {
+        font-size: clamp(2rem, 7vw, 3rem);
         white-space: normal;
         word-break: break-all;
         letter-spacing: 0;
         overflow: visible;
         text-align: center;
-        padding: 0 2px;
+        padding: 0 5px;
         line-height: 0.9;
+        max-width: 100%;
+        box-sizing: border-box;
     }
     
     .timer-display {
-        padding: 8px 2px;
+        padding: 8px 5px;
         overflow: hidden;
         margin-bottom: 15px;
+        max-width: 100%;
     }
     
     .current-speaker {
