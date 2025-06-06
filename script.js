@@ -9,9 +9,12 @@ class DebateTimer {
     this.phases = [];
     this.timer = null;
     this.debateEnded = false;
-
+      // Propiedades para sincronización por tiempo real
+    this.startTimestamp = null;
+    this.lastVisibilityChange = Date.now();
     this.initializeElements();
     this.setupEventListeners();
+    this.setupVisibilityChangeDetection(); // Detectar cambios de visibilidad
     this.loadConfiguration(); // Cargar configuración guardada
     this.updateConfiguration();
   }
@@ -113,10 +116,52 @@ class DebateTimer {
     this.prevBtn.addEventListener('click', () => this.previousPhase());
     this.nextBtn.addEventListener('click', () => this.nextPhase());
     // Listener para ajustar el tamaño del cronómetro en pantallas pequeñas
-    window.addEventListener('resize', () => this.adjustTimerSize());
-
-    // Event listeners para la barra de progreso interactiva
+    window.addEventListener('resize', () => this.adjustTimerSize());    // Event listeners para la barra de progreso interactiva
     this.setupProgressBarInteraction();
+  }
+
+  setupVisibilityChangeDetection() {
+    // Detectar cuando la pestaña cambia de visible/oculta
+    document.addEventListener('visibilitychange', () => {
+      if (this.isRunning && !this.isPaused) {
+        if (document.hidden) {
+          // La pestaña se oculta - guardar timestamp
+          this.lastVisibilityChange = Date.now();
+        } else {
+          // La pestaña vuelve a ser visible - sincronizar tiempo
+          this.syncTimeOnVisibilityChange();
+        }
+      }
+    });
+
+    // También detectar cambios de foco de la ventana
+    window.addEventListener('focus', () => {
+      if (this.isRunning && !this.isPaused) {
+        this.syncTimeOnVisibilityChange();
+      }
+    });
+
+    window.addEventListener('blur', () => {
+      if (this.isRunning && !this.isPaused) {
+        this.lastVisibilityChange = Date.now();
+      }
+    });
+  }
+  syncTimeOnVisibilityChange() {
+    if (!this.isRunning || this.isPaused || !this.startTimestamp) return;
+
+    // Calcular el tiempo real transcurrido
+    const currentTimestamp = Date.now();
+    const realTimeElapsed = Math.floor((currentTimestamp - this.startTimestamp) / 1000);
+    
+    // Sincronizar el tiempo actual basado en el tiempo real
+    const expectedCurrentTime = this.totalTime - realTimeElapsed;
+    
+    // Solo actualizar si hay una diferencia significativa (más de 1 segundo)
+    if (Math.abs(this.currentTime - expectedCurrentTime) > 1) {
+      this.currentTime = expectedCurrentTime;
+      this.updateDisplay();
+    }
   }
   setupProgressBarInteraction() {
     let isDragging = false;
@@ -260,6 +305,11 @@ class DebateTimer {
 
     // Actualizar el tiempo actual
     this.currentTime = newTime;
+      // Si el cronómetro está corriendo, recalcular el timestamp de inicio
+    if (this.isRunning && !this.isPaused && this.startTimestamp) {
+      const timeElapsed = this.totalTime - this.currentTime;
+      this.startTimestamp = Date.now() - (timeElapsed * 1000);
+    }
 
     // Usar actualización optimizada durante el arrastre para mejor rendimiento
     if (optimized) {
@@ -308,7 +358,6 @@ class DebateTimer {
       this.timerDisplay.style.textAlign = 'center';
     }
   }
-
   switchFormat(format) {
     // Solo cambiar si es diferente al formato actual
     if (this.currentFormat === format) return;
@@ -321,6 +370,9 @@ class DebateTimer {
       this.isRunning = false;
       this.isPaused = false;
     }
+    
+    // Resetear timestamps
+    this.startTimestamp = null;
 
     // Actualizar botones activos
     document.querySelectorAll('.format-btn').forEach((btn) => {
@@ -523,7 +575,6 @@ class DebateTimer {
       { name: feedbackDesc, duration: feedbackDuration }
     );
   }
-
   start() {
     if (this.phases.length === 0) return;
 
@@ -534,7 +585,10 @@ class DebateTimer {
       if (this.currentTime === 0) {
         this.currentTime = this.phases[this.currentPhaseIndex].duration;
         this.totalTime = this.phases[this.currentPhaseIndex].duration;
-      }
+      }      // Inicializar timestamp de inicio basado en el tiempo actual
+      // Calcular cuánto tiempo ha transcurrido basado en currentTime
+      const timeElapsed = this.totalTime - this.currentTime;
+      this.startTimestamp = Date.now() - (timeElapsed * 1000);
 
       this.startTimer();
     }
@@ -542,15 +596,21 @@ class DebateTimer {
     this.updateControlButtons();
     this.showNavigationControls();
   }
-
   pause() {
     if (this.isRunning && !this.isPaused) {
       this.isPaused = true;
       this.isRunning = false;
       clearInterval(this.timer);
+      
+      // No necesitamos modificar pausedTime aquí, solo parar el timer
+      // El currentTime ya está actualizado correctamente
     } else if (this.isPaused) {
       this.isPaused = false;
       this.isRunning = true;
+        // Recalcular timestamp basado en el tiempo actual al reanudar
+      const timeElapsed = this.totalTime - this.currentTime;
+      this.startTimestamp = Date.now() - (timeElapsed * 1000);
+      
       this.startTimer();
     }
 
@@ -561,6 +621,9 @@ class DebateTimer {
     this.isRunning = false;
     this.isPaused = false;
     clearInterval(this.timer);
+    
+    // Resetear timestamps
+    this.startTimestamp = null;
 
     // Solo resetear la fase actual, no cambiar currentPhaseIndex
     if (this.phases.length > 0) {
@@ -582,6 +645,9 @@ class DebateTimer {
     this.totalTime = 0;
     this.currentPhaseIndex = 0;
     this.debateEnded = false;
+    
+    // Resetear timestamps
+    this.startTimestamp = null;
 
     clearInterval(this.timer);
 
@@ -635,6 +701,9 @@ class DebateTimer {
     this.currentTime = phase.duration;
     this.totalTime = phase.duration;
     this.debateEnded = false;
+    
+    // Resetear timestamps al cambiar de fase
+    this.startTimestamp = null;
 
     // NO iniciar automáticamente el cronómetro, solo cargar la fase
     // El usuario debe presionar "Iniciar" manualmente
@@ -643,7 +712,15 @@ class DebateTimer {
   }
   startTimer() {
     this.timer = setInterval(() => {
-      this.currentTime--;
+      // Usar sincronización por tiempo real como método principal
+      if (this.startTimestamp) {
+        const currentTimestamp = Date.now();
+        const realTimeElapsed = Math.floor((currentTimestamp - this.startTimestamp) / 1000);
+        this.currentTime = this.totalTime - realTimeElapsed;
+      } else {
+        // Fallback al método tradicional si no hay timestamp
+        this.currentTime--;
+      }
 
       // Continuar contando en negativo, no parar en 0
       this.updateDisplay();
