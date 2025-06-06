@@ -228,25 +228,38 @@ class DebateTimer {
         } else {
             this.updateDisplay();
         }
-    }
-
-    adjustTimerSize() {
+    }    adjustTimerSize() {
         const timerContainer = this.timerDisplay.parentElement;
         const containerWidth = timerContainer.offsetWidth;
+        const text = this.timerDisplay.textContent;
         
-        // Solo ajustar en pantallas muy pequeñas
-        if (containerWidth < 400) {
-            const text = this.timerDisplay.textContent;
-            const maxWidth = containerWidth - 40; // Margen de seguridad
+        // Resetear estilos inline primero para obtener medidas naturales
+        this.timerDisplay.style.fontSize = '';
+        this.timerDisplay.style.whiteSpace = '';
+        this.timerDisplay.style.wordBreak = '';
+        this.timerDisplay.style.overflow = '';
+        
+        // Solo aplicar ajustes en pantallas pequeñas
+        if (containerWidth < 600) {
+            // Usar clamp para un escalado más fluido
+            const baseSize = Math.min(containerWidth / text.length * 2, containerWidth * 0.25);
+            const minSize = Math.max(baseSize * 0.4, 32); // Tamaño mínimo de 32px
+            const maxSize = Math.min(baseSize, 120); // Tamaño máximo de 120px
             
-            // Calcular un tamaño de fuente proporcional
-            let fontSize = Math.min(containerWidth / text.length * 1.5, 80);
-            fontSize = Math.max(fontSize, 30); // Tamaño mínimo
+            this.timerDisplay.style.fontSize = `clamp(${minSize}px, ${baseSize}px, ${maxSize}px)`;
+            this.timerDisplay.style.whiteSpace = 'normal';
+            this.timerDisplay.style.wordBreak = 'break-all';
+            this.timerDisplay.style.overflow = 'visible';
+            this.timerDisplay.style.letterSpacing = '0.02em';
+            this.timerDisplay.style.lineHeight = '1';
             
-            this.timerDisplay.style.fontSize = fontSize + 'px';
-        } else {
-            // Resetear al tamaño CSS por defecto en pantallas más grandes
-            this.timerDisplay.style.fontSize = '';
+            // Verificar si aún se desborda después del ajuste
+            setTimeout(() => {
+                if (this.timerDisplay.scrollWidth > containerWidth) {
+                    const adjustedSize = Math.max((containerWidth / this.timerDisplay.scrollWidth) * maxSize, minSize);
+                    this.timerDisplay.style.fontSize = `${adjustedSize}px`;
+                }
+            }, 10);
         }
     }
 
