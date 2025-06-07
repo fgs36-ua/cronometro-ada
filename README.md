@@ -67,7 +67,7 @@ Los controles de teclado pueden activarse o desactivarse desde el panel de confi
 
 - Los controles de teclado respetan las mismas limitaciones que los controles con ratón
 - La navegación entre fases está deshabilitada mientras el cronómetro está en ejecución
-- Los ajustes de tiempo están limitados al rango permitido (-300s a duración+60s)
+- Los ajustes de tiempo están limitados al rango permitido (-300s a duración)
 - Los controles se desactivan cuando hay campos de texto activos para evitar conflictos
 
 ### Disponibilidad en Dispositivos
