@@ -698,13 +698,16 @@ class DebateTimer {
     this.totalTime = phase.duration;
     this.debateEnded = false;
     
-    // Resetear timestamps al cambiar de fase
+    // Resetear estados del cronómetro al cambiar de fase
+    this.isRunning = false;
+    this.isPaused = false;
     this.startTimestamp = null;
 
     // NO iniciar automáticamente el cronómetro, solo cargar la fase
     // El usuario debe presionar "Iniciar" manualmente
 
     this.updateDisplay();
+    this.updateControlButtons(); // Actualizar botones para mostrar "Iniciar"
     this.updatePhasesList(); // Actualizar lista al cambiar de fase
   }
   startTimer() {
