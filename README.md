@@ -131,7 +131,10 @@ Los controles de teclado pueden activarse o desactivarse desde el panel de confi
 ### Opciones de Configuración
 
 - **Guardar y Aplicar**: Guarda la configuración actual y la aplica al cronómetro
-- **Restaurar Valores por Defecto**: Restablece todos los valores a la configuración inicial de ADA
+- **Restaurar Valores por Defecto**: 
+  - Restablece todos los valores a la configuración inicial de ADA
+  - **Comportamiento inteligente**: En dispositivos móviles (≤768px) desactiva automáticamente los controles de teclado
+  - En desktop mantiene los controles de teclado activados por defecto
 
 ### Limitaciones
 

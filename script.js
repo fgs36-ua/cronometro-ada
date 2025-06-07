@@ -1409,10 +1409,17 @@ class DebateTimer {  constructor() {
     this.equipoCamaraBajaFavor.value = 'Equipo C';
     this.equipoCamaraBajaContra.value = 'Equipo D';
     this.deliberacionTime.value = 1200;
-    this.deliberacionDesc.value = 'Deliberación de jueces';
-
-    this.feedbackTime.value = 900;
+    this.deliberacionDesc.value = 'Deliberación de jueces';    this.feedbackTime.value = 900;
     this.feedbackDesc.value = 'Feedback';
+
+    // Resetear configuración de controles de teclado
+    // En móvil (≤768px) desactivar por defecto, en desktop activar
+    const isMobile = window.innerWidth <= 768;
+    this.keyboardControlsEnabled = !isMobile;
+    if (this.keyboardControlsCheckbox) {
+      this.keyboardControlsCheckbox.checked = this.keyboardControlsEnabled;
+    }
+    this.updateKeyboardHelpVisibility();
 
     this.toggleUltimaRefutacionConfig();
 
