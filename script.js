@@ -24,8 +24,7 @@ class DebateTimer {
     this.currentSpeakerDisplay = document.getElementById('current-speaker');
     this.progressFill = document.getElementById('progress-fill');
     this.progressBar = document.querySelector('.progress-bar');
-    this.startBtn = document.getElementById('start-btn');
-    this.pauseBtn = document.getElementById('pause-btn');
+    this.startPauseBtn = document.getElementById('start-pause-btn');
     this.resetBtn = document.getElementById('reset-btn');
     this.resetDebateBtn = document.getElementById('reset-debate-btn');
     this.prevBtn = document.getElementById('prev-btn');
@@ -106,11 +105,8 @@ class DebateTimer {
     );
 
     // Panel de fases
-    this.phasesBtn.addEventListener('click', () => this.togglePhasesPanel());
-
-    // Controles del cronómetro
-    this.startBtn.addEventListener('click', () => this.start());
-    this.pauseBtn.addEventListener('click', () => this.pause());
+    this.phasesBtn.addEventListener('click', () => this.togglePhasesPanel());    // Controles del cronómetro
+    this.startPauseBtn.addEventListener('click', () => this.toggleStartPause());
     this.resetBtn.addEventListener('click', () => this.reset());
     this.resetDebateBtn.addEventListener('click', () => this.resetDebate());
     this.prevBtn.addEventListener('click', () => this.previousPhase());
@@ -779,11 +775,26 @@ class DebateTimer {
 
     // Solo actualizar encabezado de fases, no la lista completa cada segundo
     this.updatePhasesHeader();
-  }
-  updateControlButtons() {
-    // Deshabilitar botones de inicio y pausa según el estado
-    this.startBtn.disabled = this.isRunning && !this.isPaused;
-    this.pauseBtn.disabled = !this.isRunning && !this.isPaused;
+  }  updateControlButtons() {
+    // Manejar el botón unificado de iniciar/pausar/reanudar
+    this.startPauseBtn.disabled = false; // Siempre habilitado
+    
+    // Resetear clases CSS
+    this.startPauseBtn.className = 'control-btn';
+    
+    if (!this.isRunning && !this.isPaused) {
+      // Estado: Parado - Mostrar "Iniciar" con fondo azul
+      this.startPauseBtn.textContent = 'Iniciar';
+      this.startPauseBtn.classList.add('start');
+    } else if (this.isRunning && !this.isPaused) {
+      // Estado: Corriendo - Mostrar "Pausar" con fondo amarillo
+      this.startPauseBtn.textContent = 'Pausar';
+      this.startPauseBtn.classList.add('pause');
+    } else if (this.isPaused) {
+      // Estado: Pausado - Mostrar "Reanudar" con fondo amarillo
+      this.startPauseBtn.textContent = 'Reanudar';
+      this.startPauseBtn.classList.add('pause');
+    }
 
     // Deshabilitar botones de navegación mientras el timer está corriendo
     this.prevBtn.disabled = this.isRunning;
@@ -792,12 +803,6 @@ class DebateTimer {
     // Deshabilitar botones de reset mientras el timer está corriendo
     this.resetBtn.disabled = this.isRunning;
     this.resetDebateBtn.disabled = this.isRunning;
-
-    if (this.isPaused) {
-      this.pauseBtn.textContent = 'Reanudar';
-    } else {
-      this.pauseBtn.textContent = 'Pausar';
-    }
   }
   showNavigationControls() {
     this.navigationControls.classList.remove('hidden');
@@ -1068,6 +1073,19 @@ class DebateTimer {
     } else if (this.currentTime <= 10 && this.currentTime >= -10) {
       this.timerDisplay.classList.add('warning');
       this.progressFill.classList.add('warning');
+    }
+  }
+
+  toggleStartPause() {
+    if (!this.isRunning && !this.isPaused) {
+      // Estado: Parado - Iniciar cronómetro
+      this.start();
+    } else if (this.isRunning && !this.isPaused) {
+      // Estado: Corriendo - Pausar cronómetro
+      this.pause();
+    } else if (this.isPaused) {
+      // Estado: Pausado - Reanudar cronómetro
+      this.pause(); // El método pause maneja tanto pausar como reanudar
     }
   }
 }

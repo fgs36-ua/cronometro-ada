@@ -435,12 +435,17 @@ h1 {
 }
 
 .start {
-  background: #8b5cf6;
+  background: #3b82f6;
   color: white;
 }
 
 .pause {
   background: #f59e0b;
+  color: white;
+}
+
+.running {
+  background: #3b82f6;
   color: white;
 }
 
