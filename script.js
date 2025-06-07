@@ -17,6 +17,7 @@ class DebateTimer {  constructor() {
     this.setupVisibilityChangeDetection(); // Detectar cambios de visibilidad
     this.loadConfiguration(); // Cargar configuración guardada
     this.updateConfiguration();
+    this.initializeDarkMode(); // Inicializar modo oscuro
   }
   initializeElements() {
     // Elementos del DOM
@@ -80,9 +81,11 @@ class DebateTimer {  constructor() {
     this.deliberacionDesc = document.getElementById('deliberacion-desc');
     this.feedbackTime = document.getElementById('feedback-time');
     this.feedbackDesc = document.getElementById('feedback-desc');
-    
-    // Input de configuración de controles de teclado
+      // Input de configuración de controles de teclado
     this.keyboardControlsCheckbox = document.getElementById('keyboard-controls-enabled');
+    
+    // Botón de toggle para modo oscuro
+    this.darkModeToggle = document.getElementById('dark-mode-toggle');
   }
   setupEventListeners() {
     // Selector de formato
@@ -108,10 +111,11 @@ class DebateTimer {  constructor() {
     // Checkbox para controles de teclado
     this.keyboardControlsCheckbox.addEventListener('change', () =>
       this.toggleKeyboardControls()
-    );
+    );    // Panel de fases
+    this.phasesBtn.addEventListener('click', () => this.togglePhasesPanel());
 
-    // Panel de fases
-    this.phasesBtn.addEventListener('click', () => this.togglePhasesPanel());    // Controles del cronómetro
+    // Modo oscuro
+    this.darkModeToggle.addEventListener('click', () => this.toggleDarkMode());// Controles del cronómetro
     this.startPauseBtn.addEventListener('click', () => this.toggleStartPause());
     this.resetBtn.addEventListener('click', () => this.reset());
     this.resetDebateBtn.addEventListener('click', () => this.resetDebate());
@@ -348,10 +352,8 @@ class DebateTimer {  constructor() {
       // No ejecutar si hay un input enfocado o si hay modificadores como Ctrl/Alt
       if (isInputFocused || e.ctrlKey || e.altKey || e.metaKey) {
         return;
-      }
-
-      // Prevenir comportamiento por defecto para teclas que manejamos
-      const handledKeys = [' ', 'ArrowLeft', 'ArrowRight', 'r', 'R', 'd', 'D', 'c', 'C', 'f', 'F', '1', '2', 'h', 'H', 'ArrowUp', 'ArrowDown', '+', '=', '-', 'Enter', 'Escape'];
+      }      // Prevenir comportamiento por defecto para teclas que manejamos
+      const handledKeys = [' ', 'ArrowLeft', 'ArrowRight', 'r', 'R', 'd', 'D', 'c', 'C', 'f', 'F', '1', '2', 'h', 'H', 't', 'T', 'ArrowUp', 'ArrowDown', '+', '=', '-', 'Enter', 'Escape'];
       if (handledKeys.includes(e.key)) {
         e.preventDefault();
       }
@@ -407,11 +409,16 @@ class DebateTimer {  constructor() {
         case '2': // 2 - Formato British Parliament
           this.switchFormat('bp');
           break;
-
-        // AYUDA
+          // AYUDA
         case 'h':
         case 'H': // H - Mostrar/ocultar ayuda
           this.toggleKeyboardHelp();
+          break;
+
+        // MODO OSCURO
+        case 't':
+        case 'T': // T - Alternar modo oscuro
+          this.toggleDarkMode();
           break;
 
         // NAVEGACIÓN EN BARRA DE PROGRESO
@@ -527,39 +534,36 @@ class DebateTimer {  constructor() {
     // Crear elemento de ayuda de teclado fijo
     if (document.getElementById('keyboard-help-indicator')) return;
 
+    this.createKeyboardHelpIndicator();
+  }
+  createKeyboardHelpIndicator() {
     const helpIndicator = document.createElement('div');
     helpIndicator.id = 'keyboard-help-indicator';
+    
     helpIndicator.innerHTML = `
       <div style="font-weight: 600; margin-bottom: 5px;">Controles:</div>
       <div style="font-size: 0.75rem; opacity: 0.8;">Presiona H para ver todos</div>
     `;
-    helpIndicator.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(44, 62, 80, 0.9);
-      color: white;
-      padding: 10px 15px;
-      border-radius: 10px;
-      font-size: 0.8rem;
-      z-index: 1000;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    `;
 
     helpIndicator.addEventListener('click', () => this.toggleKeyboardHelp());
-    helpIndicator.addEventListener('mouseenter', () => {
-      helpIndicator.style.background = 'rgba(44, 62, 80, 1)';
-      helpIndicator.style.transform = 'translateY(-2px)';
-    });
-    helpIndicator.addEventListener('mouseleave', () => {
-      helpIndicator.style.background = 'rgba(44, 62, 80, 0.9)';
-      helpIndicator.style.transform = 'translateY(0)';
-    });
 
     document.body.appendChild(helpIndicator);
+  }
+  updateKeyboardHelpTheme() {
+    // El panel ahora usa clases CSS que automáticamente responden a los cambios de tema
+    // Solo necesitamos recrear el panel si existe y está visible para aplicar los nuevos estilos
+    const helpPanel = document.getElementById('keyboard-help-panel');
+    if (helpPanel) {
+      const wasVisible = helpPanel.style.display !== 'none';
+      helpPanel.remove();
+      this.createKeyboardHelpPanel();
+      
+      // Mantener visibilidad si estaba visible
+      const newPanel = document.getElementById('keyboard-help-panel');
+      if (newPanel && !wasVisible) {
+        newPanel.style.display = 'none';
+      }
+    }
   }
 
   toggleKeyboardHelp() {
@@ -577,64 +581,49 @@ class DebateTimer {  constructor() {
     if (helpPanel) {
       helpPanel.style.display = 'none';
     }
-  }
-
-  createKeyboardHelpPanel() {
+  }  createKeyboardHelpPanel() {
     const helpPanel = document.createElement('div');
     helpPanel.id = 'keyboard-help-panel';
+    
     helpPanel.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h3 style="margin: 0; color: #2c3e50;">Controles de Teclado</h3>
-        <button onclick="this.parentElement.parentElement.style.display='none'" 
-                style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #7f8c8d;">×</button>
+      <div class="keyboard-help-header">
+        <h3 class="keyboard-help-title">Controles de Teclado</h3>
+        <button class="keyboard-help-close" onclick="this.closest('#keyboard-help-panel').style.display='none'">×</button>
       </div>
       
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.85rem;">
-        <div>
-          <h4 style="color: #8b5cf6; margin-bottom: 8px;">Cronómetro</h4>
-          <div><strong>Espacio:</strong> Iniciar/Pausar/Reanudar</div>
-          <div><strong>R:</strong> Resetear fase actual</div>
-          <div><strong>D:</strong> Resetear debate completo</div>
+      <div class="keyboard-help-content">
+        <div class="keyboard-help-section">
+          <h4>Cronómetro</h4>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">Espacio:</span> Iniciar/Pausar/Reanudar</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">R:</span> Resetear fase actual</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">D:</span> Resetear debate completo</div>
           
-          <h4 style="color: #8b5cf6; margin: 15px 0 8px 0;">Navegación</h4>
-          <div><strong>← →:</strong> Cambiar fase</div>
-          <div><strong>↑ ↓:</strong> Ajustar tiempo (±10s)</div>
-          <div><strong>+ -:</strong> Ajustar tiempo (±30s)</div>
+          <h4>Navegación</h4>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">← →:</span> Cambiar fase</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">↑ ↓:</span> Ajustar tiempo (±10s)</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">+ -:</span> Ajustar tiempo (±30s)</div>
         </div>
         
-        <div>
-          <h4 style="color: #8b5cf6; margin-bottom: 8px;">Paneles</h4>
-          <div><strong>C:</strong> Configuración</div>
-          <div><strong>F:</strong> Panel de fases</div>
-          <div><strong>Escape:</strong> Cerrar paneles</div>
-          <div><strong>Enter:</strong> Aplicar configuración</div>
+        <div class="keyboard-help-section">
+          <h4>Paneles</h4>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">C:</span> Configuración</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">F:</span> Panel de fases</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">Escape:</span> Cerrar paneles</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">Enter:</span> Aplicar configuración</div>
           
-          <h4 style="color: #8b5cf6; margin: 15px 0 8px 0;">Formatos</h4>
-          <div><strong>1:</strong> Formato Académico</div>
-          <div><strong>2:</strong> British Parliament</div>
-          <div><strong>H:</strong> Mostrar/ocultar ayuda</div>
+          <h4>Formatos</h4>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">1:</span> Formato Académico</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">2:</span> British Parliament</div>
+          
+          <h4>Otros</h4>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">H:</span> Mostrar/ocultar ayuda</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">T:</span> Alternar modo oscuro</div>
         </div>
       </div>
       
-      <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #ecf0f1; font-size: 0.75rem; color: #7f8c8d; text-align: center;">
+      <div class="keyboard-help-footer">
         Los controles de tiempo solo funcionan cuando el cronómetro está detenido o pausado
       </div>
-    `;
-    
-    helpPanel.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 600px;
-      background: rgba(255, 255, 255, 0.98);
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(20px);
-      z-index: 10001;
-      border: 1px solid rgba(255, 255, 255, 0.2);
     `;
 
     document.body.appendChild(helpPanel);
@@ -1449,13 +1438,51 @@ class DebateTimer {  constructor() {
       'Controles de teclado desactivados';
     this.showTemporaryFeedback(message);
   }
-
   // Función para actualizar la visibilidad del indicador de ayuda
   updateKeyboardHelpVisibility() {
     const helpIndicator = document.getElementById('keyboard-help-indicator');
     if (helpIndicator) {
       helpIndicator.style.display = this.keyboardControlsEnabled ? 'block' : 'none';
     }
+  }
+
+  // Inicializar modo oscuro
+  initializeDarkMode() {
+    // Cargar preferencia guardada o usar preferencia del sistema
+    const savedTheme = localStorage.getItem('debate-timer-theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme) {
+      this.setTheme(savedTheme);
+    } else if (systemPrefersDark) {
+      this.setTheme('dark');
+    } else {
+      this.setTheme('light');
+    }
+
+    // Escuchar cambios en la preferencia del sistema
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('debate-timer-theme')) {
+        this.setTheme(e.matches ? 'dark' : 'light');
+      }
+    });  }
+  
+  // Alternar entre modo claro y oscuro
+  toggleDarkMode() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    this.setTheme(newTheme);
+    
+    // Guardar preferencia del usuario
+    localStorage.setItem('debate-timer-theme', newTheme);
+  }
+
+  // Establecer tema
+  setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Actualizar elementos de ayuda de teclado con el nuevo tema
+    this.updateKeyboardHelpTheme();
   }
 }
 
