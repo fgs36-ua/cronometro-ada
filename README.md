@@ -58,7 +58,7 @@ Los controles de teclado pueden activarse o desactivarse desde el panel de confi
 
 - **Ubicación**: Panel de Configuración → Configuración de Controles
 - **Estado por defecto**: Activado
-- **Funcionamiento**: 
+- **Funcionamiento**:
   - **Activado**: Todos los atajos de teclado funcionan y se muestra el indicador de ayuda
   - **Desactivado**: Los atajos de teclado no responden y se oculta el indicador de ayuda
 - **Guardado**: La configuración se guarda automáticamente y persiste entre sesiones
@@ -72,8 +72,14 @@ Los controles de teclado pueden activarse o desactivarse desde el panel de confi
 
 ### Disponibilidad en Dispositivos
 
-- **Escritorio/Laptop**: Todos los controles de teclado están disponibles, con indicador de ayuda visible en la esquina inferior izquierda
-- **Tablet/Móvil**: Los controles de teclado están ocultos automáticamente en pantallas menores a 1024px de ancho para optimizar la experiencia táctil
+- **Escritorio/Laptop**: 
+  - Todos los controles de teclado están disponibles
+  - Indicador de ayuda visible en la esquina inferior izquierda
+  - Configuración de controles disponible en el panel de configuración
+- **Tablet/Móvil**: 
+  - Los controles de teclado están ocultos automáticamente en pantallas menores a 1024px de ancho
+  - La sección de configuración de controles de teclado se oculta en pantallas menores a 768px
+  - Interfaz optimizada para experiencia táctil sin elementos de teclado innecesarios
 
 ## Configuración del Formato Académico
 

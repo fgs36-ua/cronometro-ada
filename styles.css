@@ -645,6 +645,11 @@ h1 {
 }
 
 @media (max-width: 768px) {
+  /* Hide keyboard controls configuration on mobile devices */
+  #controles-config {
+    display: none !important;
+  }
+  
   /* Keyboard help panel adjustments for mobile */
   #keyboard-help-panel {
     width: 95%;
@@ -984,6 +989,11 @@ h1 {
 }
 
 @media (max-width: 768px) {
+  /* Hide keyboard controls configuration on mobile devices */
+  #controles-config {
+    display: none !important;
+  }
+  
   /* Keyboard help panel adjustments for mobile */
   #keyboard-help-panel {
     width: 95%;
@@ -1323,6 +1333,11 @@ h1 {
 }
 
 @media (max-width: 768px) {
+  /* Hide keyboard controls configuration on mobile devices */
+  #controles-config {
+    display: none !important;
+  }
+  
   /* Keyboard help panel adjustments for mobile */
   #keyboard-help-panel {
     width: 95%;
