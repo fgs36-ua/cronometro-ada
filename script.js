@@ -457,9 +457,9 @@ class DebateTimer {  constructor() {
     const newTime = this.currentTime + seconds;
     const phase = this.phases[this.currentPhaseIndex];
     
-    // Permitir tiempo negativo (hasta -300 segundos) y positivo (hasta duración + 60 segundos)
+    // Permitir tiempo negativo (hasta -300 segundos) y positivo (hasta duración)
     const minTime = -300;
-    const maxTime = phase.duration + 60;
+    const maxTime = phase.duration;
     
     this.currentTime = Math.max(minTime, Math.min(maxTime, newTime));
     
