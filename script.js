@@ -789,6 +789,10 @@ class DebateTimer {
     this.prevBtn.disabled = this.isRunning;
     this.nextBtn.disabled = this.isRunning;
 
+    // Deshabilitar botones de reset mientras el timer está corriendo
+    this.resetBtn.disabled = this.isRunning;
+    this.resetDebateBtn.disabled = this.isRunning;
+
     if (this.isPaused) {
       this.pauseBtn.textContent = 'Reanudar';
     } else {
