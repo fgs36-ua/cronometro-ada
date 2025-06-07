@@ -52,6 +52,17 @@ Cronómetro web profesional diseñado para la Asociación de Debate de Alicante 
 - **2**: Cambiar a formato British Parliament
 - **H**: Mostrar/ocultar ayuda de controles de teclado
 
+### Configuración de Controles de Teclado
+
+Los controles de teclado pueden activarse o desactivarse desde el panel de configuración:
+
+- **Ubicación**: Panel de Configuración → Configuración de Controles
+- **Estado por defecto**: Activado
+- **Funcionamiento**: 
+  - **Activado**: Todos los atajos de teclado funcionan y se muestra el indicador de ayuda
+  - **Desactivado**: Los atajos de teclado no responden y se oculta el indicador de ayuda
+- **Guardado**: La configuración se guarda automáticamente y persiste entre sesiones
+
 ### Limitaciones de los Controles de Teclado
 
 - Los controles de teclado respetan las mismas limitaciones que los controles con ratón

@@ -1,5 +1,4 @@
-class DebateTimer {
-  constructor() {
+class DebateTimer {  constructor() {
     this.currentFormat = 'academico';
     this.isRunning = false;
     this.isPaused = false;
@@ -9,6 +8,7 @@ class DebateTimer {
     this.phases = [];
     this.timer = null;
     this.debateEnded = false;
+    this.keyboardControlsEnabled = true; // Añadido: controla si los controles de teclado están activos
       // Propiedades para sincronización por tiempo real
     this.startTimestamp = null;
     this.lastVisibilityChange = Date.now();
@@ -75,11 +75,14 @@ class DebateTimer {
     );
     this.equipoCamaraBajaContra = document.getElementById(
       'equipo-camara-baja-contra'
-    ); // Inputs de configuración Deliberación y Feedback
+    );    // Inputs de configuración Deliberación y Feedback
     this.deliberacionTime = document.getElementById('deliberacion-time');
     this.deliberacionDesc = document.getElementById('deliberacion-desc');
     this.feedbackTime = document.getElementById('feedback-time');
     this.feedbackDesc = document.getElementById('feedback-desc');
+    
+    // Input de configuración de controles de teclado
+    this.keyboardControlsCheckbox = document.getElementById('keyboard-controls-enabled');
   }
   setupEventListeners() {
     // Selector de formato
@@ -97,11 +100,14 @@ class DebateTimer {
     this.resetDefaultsBtn = document.getElementById('reset-defaults-btn');
     this.resetDefaultsBtn.addEventListener('click', () =>
       this.resetToDefaults()
-    );
-
-    // Checkbox para última refutación diferente
+    );    // Checkbox para última refutación diferente
     this.ultimaRefutacionDiferente.addEventListener('change', () =>
       this.toggleUltimaRefutacionConfig()
+    );
+    
+    // Checkbox para controles de teclado
+    this.keyboardControlsCheckbox.addEventListener('change', () =>
+      this.toggleKeyboardControls()
     );
 
     // Panel de fases
@@ -332,10 +338,13 @@ class DebateTimer {
     });
 
     // Agregar indicador visual de ayuda de teclado
-    this.showKeyboardHelp();
-
-    // Evento principal de teclado
+    this.showKeyboardHelp();    // Evento principal de teclado
     document.addEventListener('keydown', (e) => {
+      // No ejecutar si los controles de teclado están deshabilitados
+      if (!this.keyboardControlsEnabled) {
+        return;
+      }
+      
       // No ejecutar si hay un input enfocado o si hay modificadores como Ctrl/Alt
       if (isInputFocused || e.ctrlKey || e.altKey || e.metaKey) {
         return;
@@ -511,8 +520,10 @@ class DebateTimer {
     // Ocultar ayuda de teclado si está visible
     this.hideKeyboardHelp();
   }
-
   showKeyboardHelp() {
+    // No mostrar si los controles están deshabilitados
+    if (!this.keyboardControlsEnabled) return;
+    
     // Crear elemento de ayuda de teclado fijo
     if (document.getElementById('keyboard-help-indicator')) return;
 
@@ -767,8 +778,11 @@ class DebateTimer {
     } else {
       this.ultimaRefutacionConfig.style.display = 'none';
     }
-  }
-  applyConfiguration() {
+  }  applyConfiguration() {
+    // Actualizar estado de controles de teclado
+    this.keyboardControlsEnabled = this.keyboardControlsCheckbox.checked;
+    this.updateKeyboardHelpVisibility();
+    
     this.saveConfiguration(); // Guardar configuración automáticamente
     this.updateConfiguration();
     this.resetDebate(); // Reset completo después de aplicar configuración
@@ -779,7 +793,7 @@ class DebateTimer {
   showSaveNotification() {
     // Cambiar texto del botón temporalmente para indicar que se guardó
     const originalText = this.applyConfigBtn.textContent;
-    this.applyConfigBtn.textContent = '✅ Configuración Guardada';
+    this.applyConfigBtn.textContent = 'Configuración Guardada';
     this.applyConfigBtn.style.background = '#2ecc71';
 
     setTimeout(() => {
@@ -1257,7 +1271,10 @@ class DebateTimer {
 
   saveConfiguration() {
     const config = {
-      currentFormat: this.currentFormat,
+      currentFormat: 
+      this.currentFormat,
+      keyboardControlsEnabled: 
+      this.keyboardControlsEnabled, // Añadido: configuración de controles de teclado
       academico: {
         introTime: this.introTime.value,
         preguntasTime: this.preguntasTime.value,
@@ -1299,10 +1316,18 @@ class DebateTimer {
       const savedConfig = localStorage.getItem('ada-debate-config');
       if (!savedConfig) return; // No hay configuración guardada
 
-      const config = JSON.parse(savedConfig);
-
-      // Cargar formato
+      const config = JSON.parse(savedConfig);      // Cargar formato
       this.currentFormat = config.currentFormat || 'academico';
+        // Cargar configuración de controles de teclado
+      this.keyboardControlsEnabled = config.keyboardControlsEnabled !== undefined ? config.keyboardControlsEnabled : true;
+      
+      // Actualizar checkbox en la interfaz
+      if (this.keyboardControlsCheckbox) {
+        this.keyboardControlsCheckbox.checked = this.keyboardControlsEnabled;
+      }
+      
+      // Actualizar visibilidad del indicador de ayuda
+      this.updateKeyboardHelpVisibility();
 
       // Cargar configuración académico
       if (config.academico) {
@@ -1399,10 +1424,30 @@ class DebateTimer {
   toggleStartPause() {
     if (!this.isRunning && !this.isPaused) {
       this.start();
-    } else if (this.isRunning) {
+  } else if (this.isRunning) {
       this.pause();
     } else if (this.isPaused) {
       this.pause(); // Resume
+    }
+  }
+
+  // Función para activar/desactivar controles de teclado
+  toggleKeyboardControls() {
+    this.keyboardControlsEnabled = this.keyboardControlsCheckbox.checked;
+    this.updateKeyboardHelpVisibility();
+    
+    // Mostrar feedback al usuario
+    const message = this.keyboardControlsEnabled ? 
+      'Controles de teclado activados' : 
+      'Controles de teclado desactivados';
+    this.showTemporaryFeedback(message);
+  }
+
+  // Función para actualizar la visibilidad del indicador de ayuda
+  updateKeyboardHelpVisibility() {
+    const helpIndicator = document.getElementById('keyboard-help-indicator');
+    if (helpIndicator) {
+      helpIndicator.style.display = this.keyboardControlsEnabled ? 'block' : 'none';
     }
   }
 }
