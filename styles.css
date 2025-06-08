@@ -899,6 +899,7 @@ h1 {
     padding: 20px 15px;
     overflow: hidden;
     max-width: 100%;
+    margin-bottom: 0;
   }
 
   .current-speaker {
@@ -999,6 +1000,7 @@ h1 {
     min-height: auto;
     overflow: hidden;
     max-width: 100%;
+    margin-bottom: 0;
   }
 
   .current-speaker {
@@ -1057,6 +1059,7 @@ h1 {
     padding: 10px 8px;
     overflow: hidden;
     max-width: 100%;
+    margin-bottom: 0;
   }
 
   .current-speaker {
@@ -1106,8 +1109,8 @@ h1 {
   .timer-display {
     padding: 8px 5px;
     overflow: hidden;
-    margin-bottom: 15px;
     max-width: 100%;
+    margin-bottom: 0;
   }
 
   .current-speaker {
