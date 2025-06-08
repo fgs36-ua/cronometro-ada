@@ -13,6 +13,7 @@ Cronómetro web profesional diseñado para la Asociación de Debate de Alicante 
 
 - **Cronómetro con conteo negativo**: Continúa contando después de llegar a cero
 - **Alertas visuales**: Cambios de color (amarillo a los 10s, rojo a los -11s)
+- **Modo oscuro inteligente**: Tema claro/oscuro con detección automática del sistema
 - **Diseño responsive**: Optimizado para móviles, tablets y proyección
 - **Navegación por fases**: Salto directo a cualquier fase del debate
 - **Configuración avanzada**: Nombres de equipos, tiempos personalizables
@@ -24,6 +25,7 @@ Cronómetro web profesional diseñado para la Asociación de Debate de Alicante 
 - **Resetear Fase**: Reinicia solo la fase actual
 - **Resetear Debate**: Reinicia todo el debate desde el inicio
 - **Navegación**: Botones anterior/siguiente (deshabilitados durante reproducción)
+- **Modo Oscuro**: Botón de alternancia en esquina inferior derecha para cambio de tema
 
 ## Controles de Teclado
 
@@ -51,6 +53,7 @@ Cronómetro web profesional diseñado para la Asociación de Debate de Alicante 
 - **1**: Cambiar a formato Académico
 - **2**: Cambiar a formato British Parliament
 - **H**: Mostrar/ocultar ayuda de controles de teclado
+- **T**: Alternar entre modo claro y oscuro
 
 ### Configuración de Controles de Teclado
 
@@ -75,10 +78,12 @@ Los controles de teclado pueden activarse o desactivarse desde el panel de confi
 - **Escritorio/Laptop**: 
   - Todos los controles de teclado están disponibles
   - Indicador de ayuda visible en la esquina inferior izquierda
+  - Botón de modo oscuro visible en la esquina inferior derecha
   - Configuración de controles disponible en el panel de configuración
 - **Tablet/Móvil**: 
   - Los controles de teclado están ocultos automáticamente en pantallas menores a 1024px de ancho
   - La sección de configuración de controles de teclado se oculta en pantallas menores a 768px
+  - Botón de modo oscuro disponible en todos los tamaños de pantalla
   - Interfaz optimizada para experiencia táctil sin elementos de teclado innecesarios
 
 ## Configuración del Formato Académico
