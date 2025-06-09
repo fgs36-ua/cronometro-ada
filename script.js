@@ -353,7 +353,7 @@ class DebateTimer {  constructor() {
       if (isInputFocused || e.ctrlKey || e.altKey || e.metaKey) {
         return;
       }      // Prevenir comportamiento por defecto para teclas que manejamos
-      const handledKeys = [' ', 'ArrowLeft', 'ArrowRight', 'r', 'R', 'd', 'D', 'c', 'C', 'f', 'F', '1', '2', 'h', 'H', 't', 'T', 'ArrowUp', 'ArrowDown', '+', '=', '-', 'Enter', 'Escape'];
+      const handledKeys = [' ', 'ArrowLeft', 'ArrowRight', 'r', 'R', 'd', 'D', 'c', 'C', 'f', 'F', '1', '2', 'h', 'H', 't', 'T', 'ArrowUp', 'ArrowDown', '+', '=', '-', ',', '.', 'Enter', 'Escape'];
       if (handledKeys.includes(e.key)) {
         e.preventDefault();
       }
@@ -433,10 +433,17 @@ class DebateTimer {  constructor() {
         case '+':
         case '=': // Más - Adelantar 30 segundos
           this.adjustTimeKeyboard(30);
-          break;
-
+          break;        
         case '-': // Menos - Retroceder 30 segundos
           this.adjustTimeKeyboard(-30);
+          break;
+
+        case ',': // Punto - Adelantar 1 segundo
+          this.adjustTimeKeyboard(1);
+          break;
+
+        case '.': // Coma - Retroceder 1 segundo
+          this.adjustTimeKeyboard(-1);
           break;
 
         // APLICAR CONFIGURACIÓN
@@ -597,9 +604,9 @@ class DebateTimer {  constructor() {
           <div class="keyboard-help-item"><span class="keyboard-help-key">Espacio:</span> Iniciar/Pausar/Reanudar</div>
           <div class="keyboard-help-item"><span class="keyboard-help-key">R:</span> Resetear fase actual</div>
           <div class="keyboard-help-item"><span class="keyboard-help-key">D:</span> Resetear debate completo</div>
-          
-          <h4>Navegación</h4>
+            <h4>Navegación</h4>
           <div class="keyboard-help-item"><span class="keyboard-help-key">← →:</span> Cambiar fase</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">, .:</span> Ajustar tiempo (±1s)</div>
           <div class="keyboard-help-item"><span class="keyboard-help-key">↑ ↓:</span> Ajustar tiempo (±10s)</div>
           <div class="keyboard-help-item"><span class="keyboard-help-key">+ -:</span> Ajustar tiempo (±30s)</div>
         </div>
