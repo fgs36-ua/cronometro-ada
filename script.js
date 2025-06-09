@@ -950,6 +950,7 @@ class DebateTimer {  constructor() {
     this.updateControlButtons();
     this.updatePhasesList(); // Actualizar lista cuando inicia para deshabilitar clicks
     this.showNavigationControls();
+    this.updatePageTitle(); // Actualizar título al iniciar
   }
   pause() {
     if (this.isRunning && !this.isPaused) {
@@ -968,9 +969,9 @@ class DebateTimer {  constructor() {
       
       this.startTimer();
     }
-
     this.updateControlButtons();
     this.updatePhasesList(); // Actualizar lista de fases para hacer clickeables cuando se pausa
+    this.updatePageTitle(); // Actualizar título al pausar/reanudar
   }
   reset() {
     // Parar el cronómetro
@@ -987,11 +988,12 @@ class DebateTimer {  constructor() {
       this.currentTime = 0;
       this.totalTime = 0;
     }
-
     this.updateDisplay();
     this.updateControlButtons();
     this.updatePhasesList(); // Actualizar lista de fases al resetear
+    this.updatePageTitle(); // Actualizar título al resetear
   }
+  
   resetDebate() {
     // Resetear todo el debate desde el principio
     this.isRunning = false;
@@ -1014,7 +1016,9 @@ class DebateTimer {  constructor() {
     this.updateControlButtons();
     this.updatePhasesList(); // Actualizar lista de fases al resetear debate
     this.hideNavigationControls();
+    this.updatePageTitle(); // Actualizar título al resetear debate
   }
+  
   previousPhase() {
     // No permitir cambio si el cronómetro está funcionando
     if (this.isRunning) {
@@ -1064,11 +1068,11 @@ class DebateTimer {  constructor() {
 
     // NO iniciar automáticamente el cronómetro, solo cargar la fase
     // El usuario debe presionar "Iniciar" manualmente
-
     this.updateDisplay();
-    this.updateControlButtons(); // Actualizar botones para mostrar "Iniciar"
-    this.updatePhasesList(); // Actualizar lista al cambiar de fase
+    this.updateControlButtons(); // Actualizar botones para mostrar "Iniciar"    this.updatePhasesList(); // Actualizar lista al cambiar de fase
+    this.updatePageTitle(); // Actualizar título al cambiar de fase
   }
+  
   startTimer() {
     this.timer = setInterval(() => {
       // Usar sincronización por tiempo real como método principal
@@ -1089,6 +1093,21 @@ class DebateTimer {  constructor() {
     // Este método ya no se usa - el timer continúa en negativo
     // Sin sonido ni notificaciones
   }
+  updatePageTitle() {
+    if (this.isRunning && !this.isPaused && this.phases.length > 0) {
+      // Si está corriendo, mostrar tiempo actual en el título
+      const minutes = Math.floor(Math.abs(this.currentTime) / 60);
+      const seconds = Math.abs(this.currentTime) % 60;
+      const timeString = `${this.currentTime < 0 ? '-' : ''}${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      document.title = `${timeString} - Cronómetro de Debate`;
+    } else {
+      // Si no está corriendo, mostrar título estático
+      document.title = 'Cronómetro de Debate';
+    }
+  }
+
   updateDisplay() {
     if (this.phases.length === 0) {
       this.currentSpeakerDisplay.textContent = 'Configura el formato de debate';
@@ -1137,6 +1156,7 @@ class DebateTimer {  constructor() {
 
     // Solo actualizar encabezado de fases, no la lista completa cada segundo
     this.updatePhasesHeader();
+    this.updatePageTitle(); // Actualizar título de la página
   }  updateControlButtons() {
     // Manejar el botón unificado de iniciar/pausar/reanudar
     this.startPauseBtn.disabled = false; // Siempre habilitado
@@ -1178,11 +1198,11 @@ class DebateTimer {  constructor() {
     this.timerDisplay.textContent = '00:00';
     this.progressFill.style.width = '100%';
     this.isRunning = false;
-    this.isPaused = false;
-    this.debateEnded = true;
+    this.isPaused = false;    this.debateEnded = true;
     clearInterval(this.timer);
     this.updateControlButtons();
     this.updatePhasesList(); // Actualizar lista cuando termina el debate
+    this.updatePageTitle(); // Actualizar título cuando termina el debate
   }
   updatePhasesList() {
     if (!this.phasesList) return;
