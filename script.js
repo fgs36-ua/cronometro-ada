@@ -1037,6 +1037,8 @@ class DebateTimer {  constructor() {
       this.currentPhaseIndex--;
       this.loadCurrentPhase();
     }
+
+    this.updatePhasesList(); //actualizar lista al cambiar a la fase previa
   }
 
   nextPhase() {
@@ -1052,6 +1054,8 @@ class DebateTimer {  constructor() {
       // Debate terminado
       this.showDebateEnd();
     }
+
+    this.updatePhasesList(); // Actualizar lista al cambiar a la fase siguiente
   }
   loadCurrentPhase() {
     if (this.phases.length === 0) return;
@@ -1069,7 +1073,8 @@ class DebateTimer {  constructor() {
     // NO iniciar automáticamente el cronómetro, solo cargar la fase
     // El usuario debe presionar "Iniciar" manualmente
     this.updateDisplay();
-    this.updateControlButtons(); // Actualizar botones para mostrar "Iniciar"    this.updatePhasesList(); // Actualizar lista al cambiar de fase
+    this.updateControlButtons(); // Actualizar botones para mostrar "Iniciar"    
+    this.updatePhasesList(); // Actualizar lista al cambiar de fase
     this.updatePageTitle(); // Actualizar título al cambiar de fase
   }
   
