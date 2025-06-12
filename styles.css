@@ -66,6 +66,7 @@ h1 {
   backdrop-filter: blur(10px);
   white-space: nowrap;
   min-width: 160px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
 .format-btn:hover {
@@ -78,6 +79,7 @@ h1 {
   background: var(--bg-primary);
   color: var(--text-accent);
   box-shadow: 0 4px 15px var(--shadow-color);
+  text-shadow: none;
 }
 
 .config-toggle {
@@ -108,6 +110,7 @@ h1 {
   color: white;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 15px var(--shadow-color);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
 .config-btn:hover {
@@ -513,6 +516,7 @@ h1 {
   color: white;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 15px var(--shadow-color);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
 .phases-btn:hover {
@@ -1162,6 +1166,7 @@ h1 {
   backdrop-filter: blur(10px);
   white-space: nowrap;
   min-width: 160px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
 #keyboard-help-indicator:hover {
