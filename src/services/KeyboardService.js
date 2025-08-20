@@ -187,172 +187,51 @@ export class KeyboardService extends EventEmitter {
 
     helpPanel = document.createElement('div');
     helpPanel.id = 'keyboard-help-panel';
-    helpPanel.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 600px;
-      background: var(--bg-secondary, #2c3e50);
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(20px);
-      z-index: 10001;
-      border: 1px solid var(--border-light, rgba(255, 255, 255, 0.1));
-      font-family: 'Roboto', sans-serif;
-      color: var(--text-primary, #ecf0f1);
-    `;
-
-    // Create header
-    const header = document.createElement('div');
-    header.className = 'keyboard-help-header';
-    header.style.cssText = `
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    `;
-
-    const title = document.createElement('h3');
-    title.className = 'keyboard-help-title';
-    title.textContent = 'Controles de Teclado';
-    title.style.cssText = `
-      margin: 0;
-      color: var(--text-accent, #3498db);
-    `;
-
-    const closeButton = document.createElement('button');
-    closeButton.className = 'keyboard-help-close';
-    closeButton.innerHTML = '×';
-    closeButton.style.cssText = `
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--text-secondary, #bdc3c7);
-    `;
-    closeButton.addEventListener('click', () => this.hideHelp());
-
-    header.appendChild(title);
-    header.appendChild(closeButton);
-
-    // Create content grid
-    const content = document.createElement('div');
-    content.className = 'keyboard-help-content';
-    content.style.cssText = `
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      font-size: 0.85rem;
-      color: var(--text-primary, #ecf0f1);
-    `;
-
-    // Group shortcuts by category (using original layout)
-    const shortcuts = {
-      'Cronómetro': [
-        { key: ' ', desc: 'Iniciar/Pausar/Reanudar' },
-        { key: 'r', desc: 'Resetear fase actual' },
-        { key: 'd', desc: 'Resetear debate completo' }
-      ],
-      'Navegación': [
-        { key: 'ArrowLeft', desc: 'Cambiar fase' },
-        { key: ',', desc: 'Ajustar tiempo (±1s)' },
-        { key: 'ArrowUp', desc: 'Ajustar tiempo (±10s)' },
-        { key: '+', desc: 'Ajustar tiempo (±30s)' }
-      ],
-      'Paneles': [
-        { key: 'c', desc: 'Configuración' },
-        { key: 'f', desc: 'Panel de fases' },
-        { key: 'Escape', desc: 'Cerrar paneles' },
-        { key: 'Enter', desc: 'Aplicar configuración' }
-      ],
-      'Formatos': [
-        { key: '1', desc: 'Formato Académico' },
-        { key: '2', desc: 'British Parliament' }
-      ],
-      'Otros': [
-        { key: 'h', desc: 'Mostrar/ocultar ayuda' },
-        { key: 't', desc: 'Alternar modo oscuro' }
-      ]
-    };
-
-    // Create sections
-    Object.entries(shortcuts).forEach(([category, items]) => {
-      const section = document.createElement('div');
-      section.className = 'keyboard-help-section';
-      
-      const categoryTitle = document.createElement('h4');
-      categoryTitle.textContent = category;
-      categoryTitle.style.cssText = `
-        color: var(--text-accent, #3498db);
-        margin-bottom: 8px;
-        margin-top: ${category !== 'Cronómetro' ? '15px' : '0'};
-      `;
-      section.appendChild(categoryTitle);
-
-      items.forEach(item => {
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'keyboard-help-item';
-        itemDiv.style.marginBottom = '4px';
-        
-        const keySpan = document.createElement('span');
-        keySpan.className = 'keyboard-help-key';
-        keySpan.textContent = this.getKeyDisplayName(item.key) + ': ';
-        keySpan.style.fontWeight = 'bold';
-        
-        const descSpan = document.createElement('span');
-        descSpan.textContent = item.desc;
-        
-        itemDiv.appendChild(keySpan);
-        itemDiv.appendChild(descSpan);
-        section.appendChild(itemDiv);
-      });
-
-      content.appendChild(section);
-    });
-
-    // Create footer
-    const footer = document.createElement('div');
-    footer.className = 'keyboard-help-footer';
-    footer.style.cssText = `
-      margin-top: 15px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border-light, rgba(255, 255, 255, 0.1));
-      font-size: 0.75rem;
-      color: var(--text-secondary, #bdc3c7);
-      text-align: center;
-    `;
-    footer.textContent = 'Los controles de tiempo solo funcionan cuando el cronómetro está detenido o pausado';
-
-    helpPanel.appendChild(header);
-    helpPanel.appendChild(content);
-    helpPanel.appendChild(footer);
-    document.body.appendChild(helpPanel);
-
-    // Handle responsive design
-    const mediaQuery = window.matchMedia('(max-width: 768px)');
-    const handleResize = () => {
-      if (mediaQuery.matches) {
-        content.style.gridTemplateColumns = '1fr';
-        content.style.gap = '10px';
-        helpPanel.style.width = '95%';
-        helpPanel.style.maxWidth = 'none';
-        helpPanel.style.padding = '15px';
-        helpPanel.style.borderRadius = '10px';
-      } else {
-        content.style.gridTemplateColumns = '1fr 1fr';
-        content.style.gap = '15px';
-        helpPanel.style.width = '90%';
-        helpPanel.style.maxWidth = '600px';
-        helpPanel.style.padding = '20px';
-        helpPanel.style.borderRadius = '15px';
-      }
-    };
     
-    handleResize();
-    mediaQuery.addListener(handleResize);
+    // Use original layout structure exactly as it was
+    helpPanel.innerHTML = `
+      <div class="keyboard-help-header">
+        <h3 class="keyboard-help-title">Controles de Teclado</h3>
+        <button class="keyboard-help-close" onclick="this.closest('#keyboard-help-panel').style.display='none'">×</button>
+      </div>
+      
+      <div class="keyboard-help-content">
+        <div class="keyboard-help-section">
+          <h4>Cronómetro</h4>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">Espacio:</span> Iniciar/Pausar/Reanudar</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">R:</span> Resetear fase actual</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">D:</span> Resetear debate completo</div>
+          
+          <h4>Navegación</h4>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">← →:</span> Cambiar fase</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">, .:</span> Ajustar tiempo (±1s)</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">↑ ↓:</span> Ajustar tiempo (±10s)</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">+ -:</span> Ajustar tiempo (±30s)</div>
+        </div>
+        
+        <div class="keyboard-help-section">
+          <h4>Paneles</h4>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">C:</span> Configuración</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">F:</span> Panel de fases</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">Escape:</span> Cerrar paneles</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">Enter:</span> Aplicar configuración</div>
+          
+          <h4>Formatos</h4>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">1:</span> Formato Académico</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">2:</span> British Parliament</div>
+          
+          <h4>Otros</h4>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">H:</span> Mostrar/ocultar ayuda</div>
+          <div class="keyboard-help-item"><span class="keyboard-help-key">T:</span> Alternar modo oscuro</div>
+        </div>
+      </div>
+      
+      <div class="keyboard-help-footer">
+        Los controles de tiempo solo funcionan cuando el cronómetro está detenido o pausado
+      </div>
+    `;
+
+    document.body.appendChild(helpPanel);
   }
 
   /**
@@ -395,24 +274,6 @@ export class KeyboardService extends EventEmitter {
 
     const indicator = document.createElement('div');
     indicator.id = 'keyboard-help-indicator';
-    indicator.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: var(--bg-tertiary, rgba(52, 73, 94, 0.9));
-      color: var(--text-primary, #ecf0f1);
-      padding: 10px 16px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      z-index: 1000;
-      backdrop-filter: blur(10px);
-      border: 2px solid var(--border-light, rgba(255, 255, 255, 0.1));
-      transition: all 0.3s ease;
-      user-select: none;
-      text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-    `;
 
     indicator.innerHTML = `
       <div style="font-weight: 600; margin-bottom: 5px;">Controles:</div>
@@ -420,14 +281,6 @@ export class KeyboardService extends EventEmitter {
     `;
 
     indicator.addEventListener('click', () => this.toggleHelp());
-    indicator.addEventListener('mouseenter', () => {
-      indicator.style.transform = 'translateY(-2px)';
-      indicator.style.borderColor = 'rgba(255, 255, 255, 0.5)';
-    });
-    indicator.addEventListener('mouseleave', () => {
-      indicator.style.transform = 'translateY(0px)';
-      indicator.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-    });
     
     document.body.appendChild(indicator);
     

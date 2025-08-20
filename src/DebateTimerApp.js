@@ -347,8 +347,26 @@ export class DebateTimerApp {
    * @param {number} seconds - Seconds to adjust (can be negative)
    */
   adjustTime(seconds) {
+    if (this.timer.isRunning || this.phases.length === 0) return;
+    
     this.timer.adjustTime(seconds);
     this.updateDisplay();
+    
+    // Show temporary feedback on timer display
+    this.showTimeAdjustmentFeedback(seconds);
+  }
+
+  /**
+   * Show temporary feedback when adjusting time with keyboard
+   * @param {number} seconds - Seconds adjusted
+   * @private
+   */
+  showTimeAdjustmentFeedback(seconds) {
+    const sign = seconds > 0 ? '+' : '';
+    const feedbackText = `${sign}${seconds}s`;
+    
+    // Show feedback on timer display
+    this.timerDisplay.showFeedback(feedbackText, 1500);
   }
 
   /**

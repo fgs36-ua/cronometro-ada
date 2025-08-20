@@ -230,6 +230,58 @@ export class TimerDisplay extends EventEmitter {
   }
 
   /**
+   * Show time adjustment feedback (+/-seconds)
+   * @param {string} feedback - Feedback text (e.g., "+30s", "-10s")
+   * @param {number} duration - Duration in milliseconds (default: 1500)
+   */
+  showFeedback(feedback, duration = 1500) {
+    if (!this.timerElement) return;
+
+    // Create a temporary feedback element
+    const feedbackElement = document.createElement('div');
+    feedbackElement.className = 'timer-feedback';
+    feedbackElement.textContent = feedback;
+    feedbackElement.style.cssText = `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    `;
+
+    // Position relative to timer container
+    const timerContainer = this.timerElement.closest('.timer-section') || this.timerElement.parentElement;
+    if (timerContainer) {
+      timerContainer.style.position = 'relative';
+      timerContainer.appendChild(feedbackElement);
+      
+      // Fade in
+      setTimeout(() => {
+        feedbackElement.style.opacity = '1';
+      }, 10);
+      
+      // Fade out and remove
+      setTimeout(() => {
+        feedbackElement.style.opacity = '0';
+        setTimeout(() => {
+          if (feedbackElement.parentElement) {
+            feedbackElement.parentElement.removeChild(feedbackElement);
+          }
+        }, 300);
+      }, duration);
+    }
+  }
+
+  /**
    * Get current display state
    * @returns {Object} Current display state
    */

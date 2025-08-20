@@ -29,7 +29,10 @@ export class Timer extends EventEmitter {
 
     if (!this.isPaused) {
       this.currentTime = duration || this.currentTime;
-      this.totalTime = this.currentTime;
+      // Keep totalTime as the original phase duration, not current time
+      if (duration) {
+        this.totalTime = duration;
+      }
     }
 
     this.isRunning = true;

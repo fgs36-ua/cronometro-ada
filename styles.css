@@ -1160,24 +1160,27 @@ h1 {
   bottom: 20px;
   left: 20px;
   padding: 10px 16px;
-  border: 2px solid var(--help-border);
+  border: 2px solid var(--border-light);
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: var(--help-indicator-bg);
-  color: white;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
   backdrop-filter: blur(10px);
   white-space: nowrap;
   min-width: 160px;
-  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  user-select: none;
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 #keyboard-help-indicator:hover {
   background: var(--overlay-bg);
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: var(--text-accent);
+  box-shadow: 0 6px 16px var(--shadow-color);
 }
 
 #keyboard-help-panel {
@@ -1187,14 +1190,15 @@ h1 {
   transform: translate(-50%, -50%);
   width: 90%;
   max-width: 600px;
-  background: var(--help-content-bg);
+  background: var(--bg-secondary);
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(20px);
-  z-index: 10001;
-  border: 1px solid var(--help-border);
+  z-index: 998;
+  border: 1px solid var(--border-light);
   font-family: 'Roboto', sans-serif;
+  color: var(--text-primary);
 }
 
 .keyboard-help-header {
