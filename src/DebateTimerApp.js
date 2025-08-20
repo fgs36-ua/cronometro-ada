@@ -409,19 +409,23 @@ export class DebateTimerApp {
   onTimerStarted(data) {
     this.updateDisplay();
     this.phasesPanel.setNavigationEnabled(false);
+    this.phasesPanel.setTimerRunning(true);
   }
 
   onTimerPaused(data) {
     this.updateDisplay();
+    this.phasesPanel.setTimerRunning(false);
   }
 
   onTimerResumed(data) {
     this.updateDisplay();
+    this.phasesPanel.setTimerRunning(true);
   }
 
   onTimerStopped(data) {
     this.updateDisplay();
     this.phasesPanel.setNavigationEnabled(true);
+    this.phasesPanel.setTimerRunning(false);
   }
 
   onTimerReset(data) {

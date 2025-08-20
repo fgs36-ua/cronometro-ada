@@ -22,18 +22,21 @@ export class KeyboardService extends EventEmitter {
   setupKeyMap() {
     this.keyMap.set(' ', { command: 'toggleTimer', description: 'Iniciar/Pausar/Reanudar' });
     this.keyMap.set('r', { command: 'resetPhase', description: 'Resetear fase actual' });
-    this.keyMap.set('d', { command: 'resetDebate', description: 'Resetear todo el debate' });
+    this.keyMap.set('d', { command: 'resetDebate', description: 'Resetear debate completo' });
     this.keyMap.set('ArrowLeft', { command: 'previousPhase', description: 'Fase anterior' });
     this.keyMap.set('ArrowRight', { command: 'nextPhase', description: 'Siguiente fase' });
-    this.keyMap.set('ArrowUp', { command: 'adjustTime', description: 'Aumentar tiempo (+10s)', args: 10 });
-    this.keyMap.set('ArrowDown', { command: 'adjustTime', description: 'Reducir tiempo (-10s)', args: -10 });
-    this.keyMap.set('+', { command: 'adjustTime', description: 'Aumentar tiempo (+30s)', args: 30 });
-    this.keyMap.set('-', { command: 'adjustTime', description: 'Reducir tiempo (-30s)', args: -30 });
-    this.keyMap.set('c', { command: 'toggleConfig', description: 'Abrir configuración' });
-    this.keyMap.set('f', { command: 'togglePhases', description: 'Abrir panel de fases' });
+    this.keyMap.set('ArrowUp', { command: 'adjustTime', description: 'Ajustar tiempo (+10s)', args: 10 });
+    this.keyMap.set('ArrowDown', { command: 'adjustTime', description: 'Ajustar tiempo (-10s)', args: -10 });
+    this.keyMap.set('+', { command: 'adjustTime', description: 'Ajustar tiempo (+30s)', args: 30 });
+    this.keyMap.set('-', { command: 'adjustTime', description: 'Ajustar tiempo (-30s)', args: -30 });
+    this.keyMap.set(',', { command: 'adjustTime', description: 'Ajustar tiempo (+1s)', args: 1 });
+    this.keyMap.set('.', { command: 'adjustTime', description: 'Ajustar tiempo (-1s)', args: -1 });
+    this.keyMap.set('c', { command: 'toggleConfig', description: 'Configuración' });
+    this.keyMap.set('f', { command: 'togglePhases', description: 'Panel de fases' });
     this.keyMap.set('Escape', { command: 'closePanels', description: 'Cerrar paneles' });
     this.keyMap.set('Enter', { command: 'applyConfig', description: 'Aplicar configuración' });
     this.keyMap.set('h', { command: 'toggleHelp', description: 'Mostrar/ocultar ayuda' });
+    this.keyMap.set('t', { command: 'toggleTheme', description: 'Alternar modo oscuro' });
     this.keyMap.set('1', { command: 'switchFormat', description: 'Formato Académico', args: 'academico' });
     this.keyMap.set('2', { command: 'switchFormat', description: 'British Parliament', args: 'bp' });
   }
@@ -59,7 +62,12 @@ export class KeyboardService extends EventEmitter {
     // Skip if user is typing in an input field
     if (this.isInputFocused()) return;
 
-    const key = e.key;
+    let key = e.key;
+    // Handle case-insensitive keys
+    if (key.length === 1) {
+      key = key.toLowerCase();
+    }
+    
     const mapping = this.keyMap.get(key);
     
     if (mapping) {
@@ -241,31 +249,32 @@ export class KeyboardService extends EventEmitter {
       color: var(--text-primary, #ecf0f1);
     `;
 
-    // Group shortcuts by category
+    // Group shortcuts by category (using original layout)
     const shortcuts = {
-      'Controles Principales': [
+      'Cronómetro': [
         { key: ' ', desc: 'Iniciar/Pausar/Reanudar' },
         { key: 'r', desc: 'Resetear fase actual' },
-        { key: 'd', desc: 'Resetear todo el debate' }
+        { key: 'd', desc: 'Resetear debate completo' }
       ],
       'Navegación': [
-        { key: 'ArrowLeft', desc: 'Fase anterior' },
-        { key: 'ArrowRight', desc: 'Siguiente fase' },
-        { key: 'ArrowUp', desc: 'Aumentar tiempo (+10s)' },
-        { key: 'ArrowDown', desc: 'Reducir tiempo (-10s)' },
-        { key: '+', desc: 'Aumentar tiempo (+30s)' },
-        { key: '-', desc: 'Reducir tiempo (-30s)' }
+        { key: 'ArrowLeft', desc: 'Cambiar fase' },
+        { key: ',', desc: 'Ajustar tiempo (±1s)' },
+        { key: 'ArrowUp', desc: 'Ajustar tiempo (±10s)' },
+        { key: '+', desc: 'Ajustar tiempo (±30s)' }
       ],
       'Paneles': [
-        { key: 'c', desc: 'Abrir configuración' },
-        { key: 'f', desc: 'Abrir panel de fases' },
+        { key: 'c', desc: 'Configuración' },
+        { key: 'f', desc: 'Panel de fases' },
         { key: 'Escape', desc: 'Cerrar paneles' },
         { key: 'Enter', desc: 'Aplicar configuración' }
       ],
-      'Otros': [
-        { key: 'h', desc: 'Mostrar/ocultar ayuda' },
+      'Formatos': [
         { key: '1', desc: 'Formato Académico' },
         { key: '2', desc: 'British Parliament' }
+      ],
+      'Otros': [
+        { key: 'h', desc: 'Mostrar/ocultar ayuda' },
+        { key: 't', desc: 'Alternar modo oscuro' }
       ]
     };
 
@@ -279,7 +288,7 @@ export class KeyboardService extends EventEmitter {
       categoryTitle.style.cssText = `
         color: var(--text-accent, #3498db);
         margin-bottom: 8px;
-        margin-top: ${category !== 'Controles Principales' ? '15px' : '0'};
+        margin-top: ${category !== 'Cronómetro' ? '15px' : '0'};
       `;
       section.appendChild(categoryTitle);
 
@@ -315,7 +324,7 @@ export class KeyboardService extends EventEmitter {
       color: var(--text-secondary, #bdc3c7);
       text-align: center;
     `;
-    footer.textContent = 'Presiona Esc o H para cerrar esta ayuda';
+    footer.textContent = 'Los controles de tiempo solo funcionan cuando el cronómetro está detenido o pausado';
 
     helpPanel.appendChild(header);
     helpPanel.appendChild(content);
@@ -355,12 +364,24 @@ export class KeyboardService extends EventEmitter {
   getKeyDisplayName(key) {
     const displayNames = {
       ' ': 'Espacio',
-      'ArrowLeft': '←',
-      'ArrowRight': '→',
-      'ArrowUp': '↑',
-      'ArrowDown': '↓',
-      'Escape': 'Esc',
-      'Enter': 'Enter'
+      'ArrowLeft': '← →',
+      'ArrowRight': '← →',
+      'ArrowUp': '↑ ↓',
+      'ArrowDown': '↑ ↓',
+      ',': ', .',
+      '.': ', .',
+      '+': '+ -',
+      '-': '+ -',
+      'Escape': 'Escape',
+      'Enter': 'Enter',
+      'c': 'C',
+      'f': 'F',
+      'h': 'H',
+      't': 'T',
+      'r': 'R',
+      'd': 'D',
+      '1': '1',
+      '2': '2'
     };
     
     return displayNames[key] || key.toUpperCase();
@@ -420,14 +441,21 @@ export class KeyboardService extends EventEmitter {
   updateHelpIndicatorVisibility() {
     const indicator = document.getElementById('keyboard-help-indicator');
     
-    if (this.enabled && !this.helpIndicatorVisible) {
-      this.createHelpIndicator();
-    } else if (!this.enabled && indicator) {
-      indicator.style.display = 'none';
-      this.helpIndicatorVisible = false;
-    } else if (this.enabled && indicator) {
-      indicator.style.display = 'block';
-      this.helpIndicatorVisible = true;
+    if (this.enabled) {
+      if (!indicator) {
+        // Create indicator if it doesn't exist and keyboard is enabled
+        this.createHelpIndicator();
+      } else {
+        // Show existing indicator
+        indicator.style.display = 'block';
+        this.helpIndicatorVisible = true;
+      }
+    } else {
+      // Hide indicator when keyboard is disabled
+      if (indicator) {
+        indicator.style.display = 'none';
+        this.helpIndicatorVisible = false;
+      }
     }
   }
 

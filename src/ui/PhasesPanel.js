@@ -16,6 +16,7 @@ export class PhasesPanel extends EventEmitter {
     this.isVisible = false;
     this.phases = [];
     this.currentPhaseIndex = 0;
+    this.isTimerRunning = false; // Track timer state for phase interaction
     
     this.initializeElements();
     this.bindEvents();
@@ -59,6 +60,11 @@ export class PhasesPanel extends EventEmitter {
     DOMHelper.toggleClass(this.panel, 'hidden', false);
     DOMHelper.toggleClass(this.panel, 'show', true);
     
+    // Update button text
+    if (this.phasesButton) {
+      this.phasesButton.textContent = 'Cerrar Fases';
+    }
+    
     this.emit('panelShown');
   }
 
@@ -71,6 +77,11 @@ export class PhasesPanel extends EventEmitter {
     this.isVisible = false;
     DOMHelper.toggleClass(this.panel, 'show', false);
     DOMHelper.toggleClass(this.panel, 'hidden', true);
+    
+    // Update button text
+    if (this.phasesButton) {
+      this.phasesButton.textContent = 'Fases';
+    }
     
     this.emit('panelHidden');
   }
@@ -155,8 +166,15 @@ export class PhasesPanel extends EventEmitter {
       phaseItem.classList.add('pending');
     }
 
-    // Make clickable if not running
-    phaseItem.classList.add('clickable');
+    // Make clickable only if timer is not running
+    if (!this.isTimerRunning) {
+      phaseItem.classList.add('clickable');
+      
+      // Add click handler for phase navigation
+      DOMHelper.addEventListener(phaseItem, 'click', () => {
+        this.jumpToPhase(index);
+      });
+    }
 
     // Create phase content
     const phaseName = DOMHelper.createElement('span', {
@@ -170,12 +188,16 @@ export class PhasesPanel extends EventEmitter {
     phaseItem.appendChild(phaseName);
     phaseItem.appendChild(phaseStatus);
 
-    // Add click handler for phase navigation
-    DOMHelper.addEventListener(phaseItem, 'click', () => {
-      this.jumpToPhase(index);
-    });
-
     return phaseItem;
+  }
+
+  /**
+   * Set timer running state to control phase interactions
+   * @param {boolean} isRunning - Whether timer is running
+   */
+  setTimerRunning(isRunning) {
+    this.isTimerRunning = isRunning;
+    this.updatePhasesList(); // Refresh the list to update clickability
   }
 
   /**
@@ -184,6 +206,11 @@ export class PhasesPanel extends EventEmitter {
    * @private
    */
   jumpToPhase(index) {
+    // Don't allow phase jumping if timer is running
+    if (this.isTimerRunning) {
+      return;
+    }
+    
     if (index >= 0 && index < this.phases.length) {
       this.emit('phaseJumped', { 
         fromIndex: this.currentPhaseIndex, 
