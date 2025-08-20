@@ -1,6 +1,62 @@
-# Cronómetro de Debate - ADA
+# Cronómetro de Debate - ADA (Refactored)
 
 Cronómetro web profesional diseñado para la Asociación de Debate de Alicante (ADA) que soporta múltiples formatos de debate con configuración flexible y visualización optimizada para proyección.
+
+## ✨ Refactoring Highlights
+
+This project has been completely refactored from a monolithic 1500+ line class to a modern, modular architecture following **SOLID principles** and implementing proven **design patterns**.
+
+### 🏗️ New Architecture
+
+```
+src/
+├── index.js                 # Main entry point
+├── DebateTimerApp.js       # Application orchestrator
+├── core/                   # Core business logic
+│   ├── EventEmitter.js     # Observer pattern implementation
+│   ├── Timer.js            # Core timer with accurate timing
+│   └── DebatePhase.js      # Phase data model
+├── formats/                # Strategy pattern for debate formats
+│   ├── DebateFormat.js     # Abstract base class
+│   ├── AcademicFormat.js   # Academic debate implementation
+│   └── BritishParliamentFormat.js # BP debate implementation
+├── ui/                     # UI components (separation of concerns)
+│   ├── TimerDisplay.js     # Timer visualization
+│   ├── ControlPanel.js     # Control buttons
+│   ├── ConfigurationPanel.js # Configuration interface
+│   └── PhasesPanel.js      # Phases navigation
+├── services/               # Service layer
+│   ├── ConfigurationService.js # Config management & persistence
+│   ├── ThemeService.js     # Theme switching
+│   └── KeyboardService.js  # Keyboard shortcuts & help
+└── utils/                  # Utility functions
+    ├── TimeFormatter.js    # Time formatting utilities
+    └── DOMHelper.js        # Safe DOM manipulation
+```
+
+### 🎯 SOLID Principles Applied
+
+- **Single Responsibility**: Each class has one clear purpose
+- **Open/Closed**: New debate formats can be added without modifying existing code
+- **Liskov Substitution**: Components can be replaced with compatible implementations
+- **Interface Segregation**: Small, focused interfaces for each component
+- **Dependency Inversion**: Components depend on abstractions (EventEmitter) not concrete implementations
+
+### 🎨 Design Patterns Implemented
+
+- **Observer Pattern**: EventEmitter enables loose coupling between components
+- **Strategy Pattern**: Different debate formats (Academic, British Parliament) 
+- **Service Pattern**: Configuration, theme, and keyboard management
+- **Factory Pattern**: UI component creation and management
+- **Command Pattern**: Keyboard shortcuts and action handling
+
+### 🔧 Technical Improvements
+
+- **ES6 Modules**: Proper import/export structure for better maintainability
+- **Event-Driven Architecture**: Components communicate via events, not direct calls
+- **Error Handling**: Comprehensive error handling in all components
+- **Performance**: Optimized timer with accurate tab-inactive handling
+- **Extensibility**: Easy to add new debate formats, UI components, or features
 
 ## Características
 

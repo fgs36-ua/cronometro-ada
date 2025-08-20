@@ -261,6 +261,11 @@
       <div class="main-circle"></div>
     </button>
 
-    <script src="script.js"></script>
+    <script type="module" src="src/index.js"></script>
+    
+    <!-- Fallback for browsers that don't support modules -->
+    <script nomodule>
+      alert('Este navegador no soporta módulos ES6. Por favor, actualiza a una versión más reciente.');
+    </script>
   </body>
 </html>
