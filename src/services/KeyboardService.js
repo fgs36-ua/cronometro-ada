@@ -184,75 +184,166 @@ export class KeyboardService extends EventEmitter {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: var(--bg-secondary, #2c3e50);
-      color: var(--text-primary, #ecf0f1);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(10px);
-      z-index: 9999;
+      width: 90%;
       max-width: 600px;
-      max-height: 80vh;
-      overflow-y: auto;
+      background: var(--bg-secondary, #2c3e50);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(20px);
+      z-index: 10001;
+      border: 1px solid var(--border-light, rgba(255, 255, 255, 0.1));
       font-family: 'Roboto', sans-serif;
+      color: var(--text-primary, #ecf0f1);
+    `;
+
+    // Create header
+    const header = document.createElement('div');
+    header.className = 'keyboard-help-header';
+    header.style.cssText = `
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
     `;
 
     const title = document.createElement('h3');
+    title.className = 'keyboard-help-title';
     title.textContent = 'Controles de Teclado';
     title.style.cssText = `
-      margin: 0 0 20px 0;
-      text-align: center;
+      margin: 0;
       color: var(--text-accent, #3498db);
     `;
 
-    const grid = document.createElement('div');
-    grid.style.cssText = `
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 10px 20px;
-      align-items: center;
-    `;
-
-    // Add keyboard shortcuts to grid
-    this.keyMap.forEach((mapping, key) => {
-      const keyElement = document.createElement('kbd');
-      keyElement.textContent = this.getKeyDisplayName(key);
-      keyElement.style.cssText = `
-        background: var(--bg-tertiary, #34495e);
-        border: 1px solid var(--border-light, #4a5568);
-        border-radius: 4px;
-        padding: 4px 8px;
-        font-family: monospace;
-        font-size: 0.9rem;
-        white-space: nowrap;
-      `;
-
-      const descElement = document.createElement('span');
-      descElement.textContent = mapping.description;
-      descElement.style.fontSize = '0.9rem';
-
-      grid.appendChild(keyElement);
-      grid.appendChild(descElement);
-    });
-
     const closeButton = document.createElement('button');
-    closeButton.textContent = 'Cerrar (Esc)';
+    closeButton.className = 'keyboard-help-close';
+    closeButton.innerHTML = '×';
     closeButton.style.cssText = `
-      margin-top: 20px;
-      padding: 8px 16px;
-      background: var(--bg-tertiary, #34495e);
-      color: var(--text-primary, #ecf0f1);
-      border: 1px solid var(--border-light, #4a5568);
-      border-radius: 6px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
       cursor: pointer;
-      width: 100%;
+      color: var(--text-secondary, #bdc3c7);
     `;
     closeButton.addEventListener('click', () => this.hideHelp());
 
-    helpPanel.appendChild(title);
-    helpPanel.appendChild(grid);
-    helpPanel.appendChild(closeButton);
+    header.appendChild(title);
+    header.appendChild(closeButton);
+
+    // Create content grid
+    const content = document.createElement('div');
+    content.className = 'keyboard-help-content';
+    content.style.cssText = `
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      font-size: 0.85rem;
+      color: var(--text-primary, #ecf0f1);
+    `;
+
+    // Group shortcuts by category
+    const shortcuts = {
+      'Controles Principales': [
+        { key: ' ', desc: 'Iniciar/Pausar/Reanudar' },
+        { key: 'r', desc: 'Resetear fase actual' },
+        { key: 'd', desc: 'Resetear todo el debate' }
+      ],
+      'Navegación': [
+        { key: 'ArrowLeft', desc: 'Fase anterior' },
+        { key: 'ArrowRight', desc: 'Siguiente fase' },
+        { key: 'ArrowUp', desc: 'Aumentar tiempo (+10s)' },
+        { key: 'ArrowDown', desc: 'Reducir tiempo (-10s)' },
+        { key: '+', desc: 'Aumentar tiempo (+30s)' },
+        { key: '-', desc: 'Reducir tiempo (-30s)' }
+      ],
+      'Paneles': [
+        { key: 'c', desc: 'Abrir configuración' },
+        { key: 'f', desc: 'Abrir panel de fases' },
+        { key: 'Escape', desc: 'Cerrar paneles' },
+        { key: 'Enter', desc: 'Aplicar configuración' }
+      ],
+      'Otros': [
+        { key: 'h', desc: 'Mostrar/ocultar ayuda' },
+        { key: '1', desc: 'Formato Académico' },
+        { key: '2', desc: 'British Parliament' }
+      ]
+    };
+
+    // Create sections
+    Object.entries(shortcuts).forEach(([category, items]) => {
+      const section = document.createElement('div');
+      section.className = 'keyboard-help-section';
+      
+      const categoryTitle = document.createElement('h4');
+      categoryTitle.textContent = category;
+      categoryTitle.style.cssText = `
+        color: var(--text-accent, #3498db);
+        margin-bottom: 8px;
+        margin-top: ${category !== 'Controles Principales' ? '15px' : '0'};
+      `;
+      section.appendChild(categoryTitle);
+
+      items.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'keyboard-help-item';
+        itemDiv.style.marginBottom = '4px';
+        
+        const keySpan = document.createElement('span');
+        keySpan.className = 'keyboard-help-key';
+        keySpan.textContent = this.getKeyDisplayName(item.key) + ': ';
+        keySpan.style.fontWeight = 'bold';
+        
+        const descSpan = document.createElement('span');
+        descSpan.textContent = item.desc;
+        
+        itemDiv.appendChild(keySpan);
+        itemDiv.appendChild(descSpan);
+        section.appendChild(itemDiv);
+      });
+
+      content.appendChild(section);
+    });
+
+    // Create footer
+    const footer = document.createElement('div');
+    footer.className = 'keyboard-help-footer';
+    footer.style.cssText = `
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-light, rgba(255, 255, 255, 0.1));
+      font-size: 0.75rem;
+      color: var(--text-secondary, #bdc3c7);
+      text-align: center;
+    `;
+    footer.textContent = 'Presiona Esc o H para cerrar esta ayuda';
+
+    helpPanel.appendChild(header);
+    helpPanel.appendChild(content);
+    helpPanel.appendChild(footer);
     document.body.appendChild(helpPanel);
+
+    // Handle responsive design
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const handleResize = () => {
+      if (mediaQuery.matches) {
+        content.style.gridTemplateColumns = '1fr';
+        content.style.gap = '10px';
+        helpPanel.style.width = '95%';
+        helpPanel.style.maxWidth = 'none';
+        helpPanel.style.padding = '15px';
+        helpPanel.style.borderRadius = '10px';
+      } else {
+        content.style.gridTemplateColumns = '1fr 1fr';
+        content.style.gap = '15px';
+        helpPanel.style.width = '90%';
+        helpPanel.style.maxWidth = '600px';
+        helpPanel.style.padding = '20px';
+        helpPanel.style.borderRadius = '15px';
+      }
+    };
+    
+    handleResize();
+    mediaQuery.addListener(handleResize);
   }
 
   /**
@@ -286,28 +377,37 @@ export class KeyboardService extends EventEmitter {
     indicator.style.cssText = `
       position: fixed;
       bottom: 20px;
-      right: 80px;
+      left: 20px;
       background: var(--bg-tertiary, rgba(52, 73, 94, 0.9));
       color: var(--text-primary, #ecf0f1);
-      padding: 8px 12px;
+      padding: 10px 16px;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 500;
       cursor: pointer;
       z-index: 1000;
       backdrop-filter: blur(10px);
-      border: 1px solid var(--border-light, rgba(255, 255, 255, 0.1));
+      border: 2px solid var(--border-light, rgba(255, 255, 255, 0.1));
       transition: all 0.3s ease;
       user-select: none;
+      text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
     `;
 
     indicator.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <span>Controles:</span>
-        <span style="font-weight: 500;">Presiona H para ver todos</span>
-      </div>
+      <div style="font-weight: 600; margin-bottom: 5px;">Controles:</div>
+      <div style="font-size: 0.75rem; opacity: 0.8;">Presiona H para ver todos</div>
     `;
 
     indicator.addEventListener('click', () => this.toggleHelp());
+    indicator.addEventListener('mouseenter', () => {
+      indicator.style.transform = 'translateY(-2px)';
+      indicator.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+    });
+    indicator.addEventListener('mouseleave', () => {
+      indicator.style.transform = 'translateY(0px)';
+      indicator.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+    });
+    
     document.body.appendChild(indicator);
     
     this.helpIndicatorVisible = true;

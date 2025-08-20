@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
   background: var(--gradient-bg);
