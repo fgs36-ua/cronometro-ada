@@ -1,0 +1,59 @@
+/* ===========================================
+   Component: Timer Display
+   =========================================== */
+
+.timer-display {
+  margin-bottom: 30px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+}
+
+.current-speaker {
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin-bottom: 25px;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.timer {
+  font-size: 16rem;
+  font-weight: 700;
+  color: var(--status-success);
+  margin-bottom: 20px;
+  font-family: 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  min-width: 4.5ch;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 0.8em;
+  max-width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.timer.warning {
+  color: var(--status-warning);
+  animation: pulse 1s infinite;
+}
+
+.timer.danger {
+  color: var(--status-danger);
+  animation: pulse 0.5s infinite;
+}

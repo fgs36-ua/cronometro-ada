@@ -1,0 +1,88 @@
+/* ===========================================
+   Component: Controls & Navigation
+   =========================================== */
+
+.controls {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.control-btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.control-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.control-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.start {
+  background: var(--btn-primary);
+  color: white;
+}
+
+.pause {
+  background: var(--btn-warning);
+  color: white;
+}
+
+.running {
+  background: var(--btn-primary);
+  color: white;
+}
+
+.reset {
+  background: var(--btn-error);
+  color: white;
+}
+
+.reset-debate {
+  background: var(--btn-purple);
+  color: white;
+}
+
+/* Navigation */
+.navigation-controls {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.nav-btn {
+  padding: 10px 20px;
+  border: 2px solid var(--text-accent);
+  background: transparent;
+  color: var(--text-accent);
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--text-accent);
+  color: white;
+}
+
+.nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
+}

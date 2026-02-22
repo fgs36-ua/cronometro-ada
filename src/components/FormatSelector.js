@@ -1,0 +1,54 @@
+import Component from './Component.js';
+import eventBus from '../core/EventBus.js';
+import configManager from '../core/ConfigManager.js';
+
+/**
+ * FormatSelector — two-button selector (Académico / BP).
+ * Renders inside the config-toggle area.
+ */
+export class FormatSelector extends Component {
+  constructor(container) {
+    super(container);
+  }
+
+  mount() {
+    this.container = document.querySelector('.format-selector-panel');
+    this.bindEvents();
+    // Sync button visuals with the actual stored format on startup
+    this._updateActive();
+  }
+
+  bindEvents() {
+    this.container.querySelectorAll('.format-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const fmt = btn.dataset.format;
+        this._select(fmt);
+      });
+    });
+
+    this.listen('keyboard:action', ({ action }) => {
+      if (action === 'formatAcademico') this._select('academico');
+      if (action === 'formatBP') this._select('bp');
+    });
+
+    this.listen('format:changed', () => this._updateActive());
+    this.listen('config:reset', () => this._updateActive());
+    this.listen('config:applied', () => this._updateActive());
+  }
+
+  _select(format) {
+    if (format === configManager.getCurrentFormat()) return;
+    configManager.set('currentFormat', format);
+    eventBus.emit('format:changed', { format });
+    this._updateActive();
+  }
+
+  _updateActive() {
+    const fmt = configManager.getCurrentFormat();
+    this.container.querySelectorAll('.format-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.format === fmt);
+    });
+  }
+}
+
+
