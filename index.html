@@ -85,16 +85,16 @@
               <label for="num-refutaciones">Número de refutaciones</label>
               <div class="stepper">
                 <button type="button" class="stepper-btn stepper-minus" data-target="num-refutaciones" data-step="1">−</button>
-                <input type="number" id="num-refutaciones" value="2" min="1" max="10" step="1" />
+                <input type="number" id="num-refutaciones" value="3" min="1" max="10" step="1" />
                 <button type="button" class="stepper-btn stepper-plus" data-target="num-refutaciones" data-step="1">+</button>
               </div>
             </div>
             <label class="toggle-switch">
-              <input type="checkbox" id="ultima-refutacion-diferente" />
+              <input type="checkbox" id="ultima-refutacion-diferente" checked />
               <span class="toggle-track"><span class="toggle-thumb"></span></span>
               <span class="toggle-label">Tiempo diferente para última refutación</span>
             </label>
-            <div class="field-group" id="ultima-refutacion-config" style="display:none">
+            <div class="field-group" id="ultima-refutacion-config">
               <label for="ultima-refutacion-time">Última refutación (seg)</label>
               <div class="stepper">
                 <button type="button" class="stepper-btn stepper-minus" data-target="ultima-refutacion-time" data-step="30">−</button>

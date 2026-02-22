@@ -8,10 +8,10 @@ export const ACADEMIC_DEFAULTS = {
   preguntasTime: 120,
   refutacionTime: 300,
   conclusionTime: 180,
-  numRefutaciones: 2,
+  numRefutaciones: 3,
   equipo1Name: 'Equipo A',
   equipo2Name: 'Equipo B',
-  ultimaRefutacionDiferente: false,
+  ultimaRefutacionDiferente: true,
   ultimaRefutacionTime: 90,
 };
 
