@@ -1,5 +1,4 @@
 import Component from './Component.js';
-import eventBus from '../core/EventBus.js';
 import configManager from '../core/ConfigManager.js';
 import { ACADEMIC_DEFAULTS, BP_DEFAULTS, COMMON_DEFAULTS } from '../core/defaults.js';
 
@@ -11,137 +10,6 @@ export class ConfigPanel extends Component {
   constructor(container) {
     super(container);
     this._visible = false;
-  }
-
-  render() {
-    const cfg = configManager.getAll();
-    const ac = cfg.academico || {};
-    const bp = cfg.bp || {};
-    const dl = cfg.deliberacion || {};
-    const fb = cfg.feedback || {};
-
-    const acadHidden = cfg.currentFormat !== 'academico' ? 'hidden' : '';
-    const bpHidden = cfg.currentFormat !== 'bp' ? 'hidden' : '';
-    const ulRefDisplay = ac.ultimaRefutacionDiferente ? 'block' : 'none';
-
-    return `
-      <!-- Configuración Académico -->
-      <div id="academico-config" class="config-section ${acadHidden}">
-        <h2>Configuración Formato Académico</h2>
-        <div class="config-grid">
-          <div class="config-item">
-            <label for="equipo1-name">Nombre Equipo 1:</label>
-            <input type="text" id="equipo1-name" value="${ac.equipo1Name ?? ACADEMIC_DEFAULTS.equipo1Name}" />
-          </div>
-          <div class="config-item">
-            <label for="equipo2-name">Nombre Equipo 2:</label>
-            <input type="text" id="equipo2-name" value="${ac.equipo2Name ?? ACADEMIC_DEFAULTS.equipo2Name}" />
-          </div>
-          <div class="config-item">
-            <label for="intro-time">Introducción (segundos):</label>
-            <input type="number" id="intro-time" value="${ac.introTime ?? ACADEMIC_DEFAULTS.introTime}" />
-          </div>
-          <div class="config-item">
-            <label for="preguntas-time">Preguntas cruzadas (segundos):</label>
-            <input type="number" id="preguntas-time" value="${ac.preguntasTime ?? ACADEMIC_DEFAULTS.preguntasTime}" />
-          </div>
-          <div class="config-item">
-            <label for="refutacion-time">Refutación (segundos):</label>
-            <input type="number" id="refutacion-time" value="${ac.refutacionTime ?? ACADEMIC_DEFAULTS.refutacionTime}" />
-          </div>
-          <div class="config-item">
-            <label for="conclusion-time">Conclusión (segundos):</label>
-            <input type="number" id="conclusion-time" value="${ac.conclusionTime ?? ACADEMIC_DEFAULTS.conclusionTime}" />
-          </div>
-          <div class="config-item">
-            <label for="num-refutaciones">Número de refutaciones:</label>
-            <input type="number" id="num-refutaciones" value="${ac.numRefutaciones ?? ACADEMIC_DEFAULTS.numRefutaciones}" />
-          </div>
-          <div class="config-item">
-            <label for="ultima-refutacion-diferente">
-              <input type="checkbox" id="ultima-refutacion-diferente" ${ac.ultimaRefutacionDiferente ? 'checked' : ''} style="margin-right: 8px" />
-              Tiempo diferente para última refutación
-            </label>
-          </div>
-          <div class="config-item" id="ultima-refutacion-config" style="display: ${ulRefDisplay}">
-            <label for="ultima-refutacion-time">Última refutación (segundos):</label>
-            <input type="number" id="ultima-refutacion-time" value="${ac.ultimaRefutacionTime ?? ACADEMIC_DEFAULTS.ultimaRefutacionTime}" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Configuración BP -->
-      <div id="bp-config" class="config-section ${bpHidden}">
-        <h2>Configuración British Parliament</h2>
-        <div class="config-grid">
-          <div class="config-item">
-            <label for="bp-speech-time">Duración de discursos (segundos):</label>
-            <input type="number" id="bp-speech-time" value="${bp.speechTime ?? BP_DEFAULTS.speechTime}" />
-          </div>
-          <div class="config-item">
-            <label for="equipo-camara-alta-favor">Cámara Alta (a favor):</label>
-            <input type="text" id="equipo-camara-alta-favor" value="${bp.camaraAltaFavor ?? BP_DEFAULTS.camaraAltaFavor}" />
-          </div>
-          <div class="config-item">
-            <label for="equipo-camara-alta-contra">Cámara Alta (en contra):</label>
-            <input type="text" id="equipo-camara-alta-contra" value="${bp.camaraAltaContra ?? BP_DEFAULTS.camaraAltaContra}" />
-          </div>
-          <div class="config-item">
-            <label for="equipo-camara-baja-favor">Cámara Baja (a favor):</label>
-            <input type="text" id="equipo-camara-baja-favor" value="${bp.camaraBajaFavor ?? BP_DEFAULTS.camaraBajaFavor}" />
-          </div>
-          <div class="config-item">
-            <label for="equipo-camara-baja-contra">Cámara Baja (en contra):</label>
-            <input type="text" id="equipo-camara-baja-contra" value="${bp.camaraBajaContra ?? BP_DEFAULTS.camaraBajaContra}" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Fases Adicionales -->
-      <div id="fases-adicionales-config" class="config-section">
-        <h2>Fases Adicionales</h2>
-        <div class="config-grid">
-          <div class="config-item">
-            <label for="deliberacion-time">Deliberación (segundos):</label>
-            <input type="number" id="deliberacion-time" value="${dl.time ?? COMMON_DEFAULTS.deliberacionTime}" />
-          </div>
-          <div class="config-item">
-            <label for="deliberacion-desc">Descripción Deliberación:</label>
-            <input type="text" id="deliberacion-desc" value="${dl.description ?? COMMON_DEFAULTS.deliberacionDesc}" />
-          </div>
-          <div class="config-item">
-            <label for="feedback-time">Feedback (segundos):</label>
-            <input type="number" id="feedback-time" value="${fb.time ?? COMMON_DEFAULTS.feedbackTime}" />
-          </div>
-          <div class="config-item">
-            <label for="feedback-desc">Descripción Feedback:</label>
-            <input type="text" id="feedback-desc" value="${fb.description ?? COMMON_DEFAULTS.feedbackDesc}" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Configuración Controles -->
-      <div id="controles-config" class="config-section">
-        <h2>Configuración de Controles</h2>
-        <div class="config-grid">
-          <div class="config-item">
-            <label for="keyboard-controls-enabled">
-              <input type="checkbox" id="keyboard-controls-enabled" ${cfg.keyboardControlsEnabled ? 'checked' : ''} style="margin-right: 8px" />
-              Activar controles de teclado
-            </label>
-            <small style="display: block; margin-top: 4px; color: #7f8c8d; font-size: 0.85rem;">
-              Permite usar atajos de teclado para controlar el cronómetro (Espacio, flechas, etc.)
-            </small>
-          </div>
-        </div>
-      </div>
-
-      <!-- Botones -->
-      <div class="config-actions">
-        <button class="apply-config-btn" id="apply-config-btn">Guardar y Aplicar</button>
-        <button class="reset-defaults-btn" id="reset-defaults-btn">Restaurar Valores por Defecto</button>
-      </div>
-    `;
   }
 
   mount() {
@@ -298,4 +166,4 @@ export class ConfigPanel extends Component {
   }
 }
 
-export default ConfigPanel;
+

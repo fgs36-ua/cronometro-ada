@@ -41,40 +41,6 @@ export function defaultKeyboardEnabled() {
   return window.innerWidth > 768;
 }
 
-/**
- * Keyboard shortcut map — key → action identifier.
- * Only used for documentation / help panel; the actual handling lives in
- * KeyboardService.
- */
-export const KEYBOARD_SHORTCUTS = {
-  ' ': 'toggleStartPause',
-  ArrowLeft: 'previousPhase',
-  ArrowRight: 'nextPhase',
-  r: 'resetPhase',
-  R: 'resetPhase',
-  d: 'resetDebate',
-  D: 'resetDebate',
-  c: 'toggleConfig',
-  C: 'toggleConfig',
-  f: 'togglePhases',
-  F: 'togglePhases',
-  '1': 'formatAcademico',
-  '2': 'formatBP',
-  h: 'toggleHelp',
-  H: 'toggleHelp',
-  t: 'toggleDarkMode',
-  T: 'toggleDarkMode',
-  ArrowUp: 'adjustTime+10',
-  ArrowDown: 'adjustTime-10',
-  '+': 'adjustTime+30',
-  '=': 'adjustTime+30',
-  '-': 'adjustTime-30',
-  ',': 'adjustTime+1',
-  '.': 'adjustTime-1',
-  Enter: 'applyConfig',
-  Escape: 'closePanels',
-};
-
 /** Timer thresholds (seconds) for warning / danger colours. */
 export const TIMER_THRESHOLDS = {
   warningStart: 10,   // ≤ 10 s → warning (yellow)

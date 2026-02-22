@@ -11,14 +11,6 @@ export class FormatSelector extends Component {
     super(container);
   }
 
-  render() {
-    const fmt = configManager.getCurrentFormat();
-    return `
-      <button class="format-btn ${fmt === 'academico' ? 'active' : ''}" data-format="academico">Formato Académico</button>
-      <button class="format-btn ${fmt === 'bp' ? 'active' : ''}" data-format="bp">British Parliament</button>
-    `;
-  }
-
   mount() {
     this.container = document.querySelector('.format-selector-panel');
     this.bindEvents();
@@ -55,4 +47,4 @@ export class FormatSelector extends Component {
   }
 }
 
-export default FormatSelector;
+

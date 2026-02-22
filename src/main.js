@@ -19,7 +19,6 @@ import './styles/responsive.css';
 // --- Core ---
 import eventBus from './core/EventBus.js';
 import configManager from './core/ConfigManager.js';
-import timer from './core/Timer.js';
 import phaseManager from './core/PhaseManager.js';
 
 // --- Formats ---

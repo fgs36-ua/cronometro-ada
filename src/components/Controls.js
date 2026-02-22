@@ -1,5 +1,4 @@
 import Component from './Component.js';
-import eventBus from '../core/EventBus.js';
 import timer from '../core/Timer.js';
 import phaseManager from '../core/PhaseManager.js';
 
@@ -9,20 +8,6 @@ import phaseManager from '../core/PhaseManager.js';
 export class Controls extends Component {
   constructor(container) {
     super(container);
-  }
-
-  render() {
-    return `
-      <div class="controls">
-        <button class="control-btn start" id="start-pause-btn">Iniciar</button>
-        <button class="control-btn reset" id="reset-btn">Resetear Fase</button>
-        <button class="control-btn reset-debate" id="reset-debate-btn">Resetear Debate</button>
-      </div>
-      <div class="navigation-controls" id="navigation-controls">
-        <button class="nav-btn" id="prev-btn">← Anterior</button>
-        <button class="nav-btn" id="next-btn">Siguiente →</button>
-      </div>
-    `;
   }
 
   mount() {
@@ -138,4 +123,4 @@ export class Controls extends Component {
   }
 }
 
-export default Controls;
+

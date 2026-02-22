@@ -14,13 +14,6 @@ export class TimerDisplay extends Component {
     this._speakerEl = null;
   }
 
-  render() {
-    return `
-      <div class="current-speaker" id="current-speaker">Listo para comenzar</div>
-      <div class="timer" id="timer">00:00</div>
-    `;
-  }
-
   mount() {
     this._timerEl = document.querySelector('#timer');
     this._speakerEl = document.querySelector('#current-speaker');
@@ -126,4 +119,4 @@ export class TimerDisplay extends Component {
   }
 }
 
-export default TimerDisplay;
+

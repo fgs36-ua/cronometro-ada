@@ -26,19 +26,6 @@ export class PhaseList extends Component {
     super(container);
   }
 
-  render() {
-    return `
-      <div class="phases-header">
-        <h3>Progreso del Debate</h3>
-        <div class="current-phase-info">
-          <span id="current-phase-display">Listo para comenzar</span>
-          <span id="phase-counter-display">0 / 0</span>
-        </div>
-      </div>
-      <div class="phases-list" id="phases-list"></div>
-    `;
-  }
-
   mount() {
     this._listEl = document.querySelector('#phases-list');
     this._phaseDisplay = document.querySelector('#current-phase-display');
@@ -133,4 +120,4 @@ export class PhaseList extends Component {
   }
 }
 
-export default PhaseList;
+

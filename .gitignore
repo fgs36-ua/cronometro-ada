@@ -7,10 +7,6 @@ dist/
 # OpenSpec tooling (submodule/vendored)
 OpenSpec/
 
-# Legacy files (pre-refactor)
-script.legacy.js
-styles.legacy.css
-
 # OS files
 .DS_Store
 Thumbs.db

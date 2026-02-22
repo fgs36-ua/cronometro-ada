@@ -15,14 +15,6 @@ export class ProgressBar extends Component {
     this._isDragging = false;
   }
 
-  render() {
-    return `
-      <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-    `;
-  }
-
   mount() {
     this._barEl = document.querySelector('.progress-bar');
     this._fillEl = document.querySelector('#progress-fill');
@@ -201,4 +193,4 @@ export class ProgressBar extends Component {
   }
 }
 
-export default ProgressBar;
+

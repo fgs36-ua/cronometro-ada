@@ -7,7 +7,7 @@ import { ACADEMIC_DEFAULTS, COMMON_DEFAULTS } from '../core/defaults.js';
  * @param {object} [cfg] - merged academic + common config
  * @returns {Array<{name: string, duration: number}>}
  */
-export function generatePhases(cfg = {}) {
+function generatePhases(cfg = {}) {
   const intro = parseInt(cfg.introTime ?? ACADEMIC_DEFAULTS.introTime, 10);
   const preguntas = parseInt(cfg.preguntasTime ?? ACADEMIC_DEFAULTS.preguntasTime, 10);
   const refutacion = parseInt(cfg.refutacionTime ?? ACADEMIC_DEFAULTS.refutacionTime, 10);

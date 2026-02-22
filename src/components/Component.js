@@ -3,9 +3,9 @@ import eventBus from '../core/EventBus.js';
 /**
  * Component — base class for UI components.
  *
- * Lifecycle: constructor → render → mount → bindEvents → (update)* → destroy
+ * Lifecycle: constructor → mount → bindEvents → (update)* → destroy
  */
-export class Component {
+class Component {
   /**
    * @param {HTMLElement|string} container - DOM element or CSS selector
    */

@@ -10,16 +10,6 @@ export class KeyboardHelp extends Component {
     this._panelVisible = false;
   }
 
-  render() {
-    const show = configManager.isKeyboardEnabled() ? 'block' : 'none';
-    return `
-      <div id="keyboard-help-indicator" style="display:${show}">
-        <div style="font-weight:600;margin-bottom:5px;">Controles:</div>
-        <div style="font-size:0.75rem;opacity:0.8;">Presiona H para ver todos</div>
-      </div>
-    `;
-  }
-
   mount() {
     // Create indicator element dynamically (not in HTML)
     this._indicator = document.getElementById('keyboard-help-indicator');
@@ -132,4 +122,4 @@ export class KeyboardHelp extends Component {
   }
 }
 
-export default KeyboardHelp;
+

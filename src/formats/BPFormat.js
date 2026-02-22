@@ -7,7 +7,7 @@ import { BP_DEFAULTS, COMMON_DEFAULTS } from '../core/defaults.js';
  * @param {object} [cfg] - merged BP + common config
  * @returns {Array<{name: string, duration: number}>}
  */
-export function generatePhases(cfg = {}) {
+function generatePhases(cfg = {}) {
   const speechDuration = parseInt(cfg.speechTime ?? BP_DEFAULTS.speechTime, 10);
   const camaraAltaFavor = (cfg.camaraAltaFavor || BP_DEFAULTS.camaraAltaFavor).trim();
   const camaraAltaContra = (cfg.camaraAltaContra || BP_DEFAULTS.camaraAltaContra).trim();

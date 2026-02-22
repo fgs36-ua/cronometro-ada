@@ -9,15 +9,6 @@ export class DarkModeToggle extends Component {
     super(container);
   }
 
-  render() {
-    return `
-      <button class="toggle-btn" id="dark-mode-toggle" title="Alternar modo oscuro">
-        <div class="sun-rays"></div>
-        <div class="main-circle"></div>
-      </button>
-    `;
-  }
-
   mount() {
     this._btn = document.querySelector('#dark-mode-toggle');
     this.bindEvents();
@@ -32,4 +23,4 @@ export class DarkModeToggle extends Component {
   }
 }
 
-export default DarkModeToggle;
+

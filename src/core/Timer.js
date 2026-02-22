@@ -87,10 +87,6 @@ export class Timer {
     }
   }
 
-  resume() {
-    if (this._isPaused) this.pause(); // toggle
-  }
-
   reset() {
     this._stop();
     this._currentTime = this._totalTime;
@@ -134,22 +130,7 @@ export class Timer {
       this._startTimestamp = Date.now() - elapsed * 1000;
     }
 
-    eventBus.emit('time:adjusted', { delta, newTime: this._currentTime });
     eventBus.emit('timer:tick', this._tickData());
-  }
-
-  /** Sync after tab becomes visible again. */
-  syncVisibility() {
-    if (!this._isRunning || this._isPaused || !this._startTimestamp) return;
-
-    const realElapsed = Math.floor((Date.now() - this._startTimestamp) / 1000);
-    const expected = this._totalTime - realElapsed;
-
-    if (Math.abs(this._currentTime - expected) > 1) {
-      this._currentTime = expected;
-      this._emitWarningLevel();
-      eventBus.emit('timer:tick', this._tickData());
-    }
   }
 
   /* ── private helpers ──────────────────────────────────── */

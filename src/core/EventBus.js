@@ -53,20 +53,6 @@ export class EventBus {
     }
   }
 
-  /**
-   * Subscribe to an event once — auto-unsubscribes after first call.
-   * @param {string} event
-   * @param {Function} callback
-   * @returns {Function} unsubscribe function
-   */
-  once(event, callback) {
-    const wrapper = (data) => {
-      this.off(event, wrapper);
-      callback(data);
-    };
-    return this.on(event, wrapper);
-  }
-
   /** Remove all listeners (useful for tests). */
   clear() {
     this._listeners.clear();
