@@ -3,8 +3,8 @@ import configManager from '../core/ConfigManager.js';
 import { ACADEMIC_DEFAULTS, BP_DEFAULTS, COMMON_DEFAULTS } from '../core/defaults.js';
 
 /**
- * ConfigPanel — the left-sidebar configuration panel.
- * Renders all config fields and handles apply / reset.
+ * ConfigPanel — right-side drawer for configuration.
+ * Handles stepper buttons, toggle open/close, apply / reset.
  */
 export class ConfigPanel extends Component {
   constructor(container) {
@@ -15,13 +15,25 @@ export class ConfigPanel extends Component {
   mount() {
     this.container = document.querySelector('#config-panel');
     this._configBtn = document.querySelector('#config-btn');
+    this._closeBtn = document.querySelector('#config-close');
+    this._backdrop = document.querySelector('#config-backdrop');
     this.bindEvents();
   }
 
   bindEvents() {
-    // Toggle panel via button
+    // Toggle panel via toolbar button
     if (this._configBtn) {
       this._configBtn.addEventListener('click', () => this.toggle());
+    }
+
+    // Close via X button
+    if (this._closeBtn) {
+      this._closeBtn.addEventListener('click', () => this.hide());
+    }
+
+    // Close via backdrop click
+    if (this._backdrop) {
+      this._backdrop.addEventListener('click', () => this.hide());
     }
 
     // Apply
@@ -39,7 +51,26 @@ export class ConfigPanel extends Component {
         el.style.display = e.target.checked ? 'block' : 'none';
       });
 
-    // Listen to format changes to show/hide sections
+    // Stepper buttons (event delegation)
+    this.container.addEventListener('click', (e) => {
+      const btn = e.target.closest('.stepper-btn');
+      if (!btn) return;
+      const targetId = btn.dataset.target;
+      const step = parseInt(btn.dataset.step, 10) || 1;
+      const input = this.container.querySelector(`#${targetId}`);
+      if (!input) return;
+      const min = parseInt(input.min, 10) || 0;
+      const max = parseInt(input.max, 10) || 99999;
+      let val = parseInt(input.value, 10) || 0;
+      if (btn.classList.contains('stepper-plus')) {
+        val = Math.min(val + step, max);
+      } else {
+        val = Math.max(val - step, min);
+      }
+      input.value = val;
+    });
+
+    // Format changes — both sections always visible, just auto-expand the active one
     this.listen('format:changed', ({ format }) => this._onFormatChange(format));
 
     // Listen to keyboard actions
@@ -57,15 +88,18 @@ export class ConfigPanel extends Component {
   }
 
   show() {
+    this._syncDetailsState();
     this._visible = true;
-    this.container.classList.add('show');
-    this.container.classList.remove('hidden');
+    this.container.classList.add('open');
+    if (this._backdrop) this._backdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
   }
 
   hide() {
     this._visible = false;
-    this.container.classList.remove('show');
-    this.container.classList.add('hidden');
+    this.container.classList.remove('open');
+    if (this._backdrop) this._backdrop.classList.remove('active');
+    document.body.style.overflow = '';
   }
 
   get isVisible() {
@@ -115,9 +149,9 @@ export class ConfigPanel extends Component {
     // Flash button
     const btn = this.container.querySelector('#apply-config-btn');
     const orig = btn.textContent;
-    btn.textContent = 'Configuración Guardada';
+    btn.textContent = '✓ Guardado';
     btn.style.background = '#2ecc71';
-    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1500);
 
     this.hide();
   }
@@ -161,8 +195,22 @@ export class ConfigPanel extends Component {
   _onFormatChange(format) {
     const acad = this.container.querySelector('#academico-config');
     const bpEl = this.container.querySelector('#bp-config');
-    if (acad) acad.classList.toggle('hidden', format !== 'academico');
-    if (bpEl) bpEl.classList.toggle('hidden', format !== 'bp');
+    // Both sections always visible — just auto-expand the active format
+    if (acad && format === 'academico') acad.open = true;
+    if (bpEl && format === 'bp') bpEl.open = true;
+  }
+
+  /** Reset <details> open state: only the active format expanded, rest closed */
+  _syncDetailsState() {
+    const fmt = configManager.getCurrentFormat();
+    const acad = this.container.querySelector('#academico-config');
+    const bpEl = this.container.querySelector('#bp-config');
+    const fasesAd = this.container.querySelector('#fases-adicionales-config');
+    const controles = this.container.querySelector('#controles-config');
+    if (acad) acad.open = fmt === 'academico';
+    if (bpEl) bpEl.open = fmt === 'bp';
+    if (fasesAd) fasesAd.open = false;
+    if (controles) controles.open = false;
   }
 }
 

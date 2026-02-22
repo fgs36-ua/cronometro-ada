@@ -24,6 +24,7 @@ const SVG_ICONS = {
 export class PhaseList extends Component {
   constructor(container) {
     super(container);
+    this._visible = false;
   }
 
   mount() {
@@ -32,6 +33,8 @@ export class PhaseList extends Component {
     this._counterDisplay = document.querySelector('#phase-counter-display');
     this._phasesBtn = document.querySelector('#phases-btn');
     this._phasesPanel = document.querySelector('#phases-panel');
+    this._closeBtn = document.querySelector('#phases-close');
+    this._backdrop = document.querySelector('#phases-backdrop');
     this.bindEvents();
   }
 
@@ -49,6 +52,16 @@ export class PhaseList extends Component {
       this._phasesBtn.addEventListener('click', () => this._togglePanel());
     }
 
+    // Close via X button
+    if (this._closeBtn) {
+      this._closeBtn.addEventListener('click', () => this._hidePanel());
+    }
+
+    // Close via backdrop click
+    if (this._backdrop) {
+      this._backdrop.addEventListener('click', () => this._hidePanel());
+    }
+
     this.listen('keyboard:action', ({ action }) => {
       if (action === 'togglePhases') this._togglePanel();
       if (action === 'closePanels') this._hidePanel();
@@ -56,15 +69,24 @@ export class PhaseList extends Component {
   }
 
   _togglePanel() {
+    if (this._visible) this._hidePanel();
+    else this._showPanel();
+  }
+
+  _showPanel() {
     if (!this._phasesPanel) return;
-    this._phasesPanel.classList.toggle('show');
-    this._phasesPanel.classList.toggle('hidden');
+    this._visible = true;
+    this._phasesPanel.classList.add('open');
+    if (this._backdrop) this._backdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
   }
 
   _hidePanel() {
     if (!this._phasesPanel) return;
-    this._phasesPanel.classList.remove('show');
-    this._phasesPanel.classList.add('hidden');
+    this._visible = false;
+    this._phasesPanel.classList.remove('open');
+    if (this._backdrop) this._backdrop.classList.remove('active');
+    document.body.style.overflow = '';
   }
 
   /* ── private ──────────────────────────────────────────── */

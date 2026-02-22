@@ -1,210 +1,229 @@
-/* ===========================================
-   Component: Config Panel
+﻿/* ===========================================
+   Component: Config Panel (Drawer content)
    =========================================== */
 
-.config-toggle {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.config-btn {
-  padding: 12px 20px;
-  border: 2px solid var(--bg-tertiary);
-  border-radius: 25px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: var(--bg-tertiary);
-  color: white;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px var(--shadow-color);
-  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-}
-
-.config-btn:hover {
-  background: var(--overlay-bg);
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-.config-panel {
-  position: fixed;
-  top: 180px;
-  left: 20px;
-  width: 300px;
-  max-height: 0;
-  overflow: hidden;
-  transition: all 0.4s ease;
-  opacity: 0;
-  z-index: 999;
-  background: var(--bg-secondary);
-  border-radius: 15px;
-  box-shadow: 0 8px 32px var(--shadow-color);
-  backdrop-filter: blur(10px);
-}
-
-.config-panel.show {
-  max-height: 77vh;
-  opacity: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
+/*  Collapsible Sections (<details>)  */
 
 .config-section {
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
-  margin-bottom: 20px;
-  box-shadow: none;
-  backdrop-filter: none;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
 }
 
-.config-section h2 {
-  color: var(--text-primary);
-  margin-bottom: 15px;
-  font-size: 1.2rem;
-}
-
-.config-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-}
-
-.config-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.config-item label {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.config-item input {
-  padding: 10px;
-  border: 2px solid var(--border-light);
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-}
-
-.config-item input[type='text'] {
-  font-weight: 500;
-}
-
-.config-item input:focus {
-  outline: none;
+.config-section:hover {
   border-color: var(--text-accent);
 }
 
-.config-item input[type='checkbox'] {
-  width: auto;
-  height: auto;
-  margin: 0;
+.config-section.hidden {
+  display: none !important;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
   cursor: pointer;
-}
-
-.config-item label input[type='checkbox'] {
-  transform: scale(1.2);
-}
-
-#ultima-refutacion-config {
-  margin-left: 20px;
-  padding-left: 15px;
-  border-left: 3px solid var(--text-accent);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
   background: var(--bg-tertiary);
-  border-radius: 0 8px 8px 0;
+  list-style: none;
+  user-select: none;
+  transition: background 0.2s ease;
 }
 
-.config-actions {
-  text-align: center;
-  padding-top: 20px;
-  border-top: 2px solid var(--border-light);
-  margin-top: 20px;
+.section-header::-webkit-details-marker {
+  display: none;
+}
+
+.section-header:hover {
+  background: var(--phase-default);
+}
+
+.section-header .chevron {
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+details[open] > .section-header .chevron {
+  transform: rotate(180deg);
+}
+
+.section-body {
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
-.apply-config-btn,
-.reset-defaults-btn {
-  padding: 15px 40px;
+/*  Field Groups  */
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.field-group input[type="text"],
+.field-group input[type="number"] {
+  padding: 10px 12px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field-group input:focus {
+  outline: none;
+  border-color: var(--text-accent);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+.field-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 4px 0 0;
+  line-height: 1.4;
+}
+
+/*  Stepper Input  */
+
+.stepper {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stepper:focus-within {
+  border-color: var(--text-accent);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+.stepper input[type="number"] {
+  flex: 1;
+  text-align: center;
   border: none;
-  border-radius: 25px;
-  font-size: 1.1rem;
+  padding: 10px 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -moz-appearance: textfield;
+  min-width: 0;
+}
+
+.stepper input[type="number"]::-webkit-inner-spin-button,
+.stepper input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.stepper input[type="number"]:focus {
+  outline: none;
+}
+
+.stepper-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  border: none;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
+  user-select: none;
 }
 
-.apply-config-btn {
-  background: var(--btn-success);
-  color: white;
-  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
-}
-
-.apply-config-btn:hover {
-  background: var(--btn-success-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
-}
-
-.reset-defaults-btn {
-  background: var(--btn-reset);
-  color: white;
-  box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
-  font-size: 1rem;
-}
-
-.reset-defaults-btn:hover {
-  background: var(--btn-reset-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
-}
-
-/* BP format specifics */
-.bp-note {
-  background: var(--bg-tertiary);
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.stepper-btn:hover {
+  background: var(--phase-default);
   color: var(--text-accent);
-  font-weight: 500;
-  text-align: center;
 }
 
-.bp-roles {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
+.stepper-btn:active {
+  background: var(--phase-active);
+  transform: scale(0.95);
 }
 
-.bp-side h3 {
-  color: var(--text-primary);
-  margin-bottom: 10px;
-  font-size: 1rem;
-  text-align: left;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--border-light);
-}
+/*  Toggle Switch  */
 
-.bp-side ul {
-  list-style: none;
-}
-
-.bp-side li {
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
   padding: 4px 0;
-  color: var(--text-secondary);
-  font-weight: 400;
+}
+
+.toggle-switch input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--border-light);
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-switch input:checked + .toggle-track {
+  background: var(--text-accent);
+}
+
+.toggle-switch input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(20px);
+}
+
+.toggle-label {
   font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+/*  Conditional field indent  */
+
+#ultima-refutacion-config {
+  margin-left: 12px;
+  padding-left: 14px;
+  border-left: 3px solid var(--text-accent);
+  border-radius: 0;
 }

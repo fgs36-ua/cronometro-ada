@@ -15,7 +15,7 @@
     <div class="config-toggle">
       <button class="config-btn" id="config-btn">Configuración</button>
 
-      <!-- Selector de formato movido aquí -->
+      <!-- Selector de formato -->
       <div class="format-selector-panel">
         <button class="format-btn active" data-format="academico">
           Formato Académico
@@ -24,188 +24,183 @@
       </div>
     </div>
 
-    <!-- Panel de configuración desplegable -->
-    <div id="config-panel" class="config-panel hidden">
-      <!-- Configuración Académico -->
-      <div id="academico-config" class="config-section">
-        <h2>Configuración Formato Académico</h2>
-        <div class="config-grid">
-          <div class="config-item">
-            <label for="equipo1-name">Nombre Equipo 1:</label>
-            <input
-              type="text"
-              id="equipo1-name"
-              value="Equipo A"
-              placeholder="Ej: Equipo A"
-            />
-          </div>
-          <div class="config-item">
-            <label for="equipo2-name">Nombre Equipo 2:</label>
-            <input
-              type="text"
-              id="equipo2-name"
-              value="Equipo B"
-              placeholder="Ej: Equipo B"
-            />
-          </div>
-          <div class="config-item">
-            <label for="intro-time">Introducción (segundos):</label>
-            <input type="number" id="intro-time" value="240" />
-          </div>
-          <div class="config-item">
-            <label for="preguntas-time">Preguntas cruzadas (segundos):</label>
-            <input type="number" id="preguntas-time" value="120" />
-          </div>
-          <div class="config-item">
-            <label for="refutacion-time">Refutación (segundos):</label>
-            <input type="number" id="refutacion-time" value="300" />
-          </div>
-          <div class="config-item">
-            <label for="conclusion-time">Conclusión (segundos):</label>
-            <input type="number" id="conclusion-time" value="180" />
-          </div>
-          <div class="config-item">
-            <label for="num-refutaciones">Número de refutaciones:</label>
-            <input type="number" id="num-refutaciones" value="2" />
-          </div>
-          <div class="config-item">
-            <label for="ultima-refutacion-diferente">
-              <input
-                type="checkbox"
-                id="ultima-refutacion-diferente"
-                style="margin-right: 8px"
-              />
-              Tiempo diferente para última refutación
+    <!-- Config Drawer (Izquierda) -->
+    <div class="drawer-backdrop" id="config-backdrop"></div>
+    <aside class="drawer drawer-left" id="config-panel">
+      <div class="drawer-header">
+        <h3>Configuración</h3>
+        <button class="drawer-close" id="config-close">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 4.5l9 9m0-9l-9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="drawer-body">
+        <!-- Formato Académico -->
+        <details class="config-section" id="academico-config" open>
+          <summary class="section-header">
+            <span>Formato Académico</span>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </summary>
+          <div class="section-body">
+            <div class="field-group">
+              <label for="equipo1-name">Nombre Equipo 1</label>
+              <input type="text" id="equipo1-name" value="Equipo A" placeholder="Ej: Equipo A" />
+            </div>
+            <div class="field-group">
+              <label for="equipo2-name">Nombre Equipo 2</label>
+              <input type="text" id="equipo2-name" value="Equipo B" placeholder="Ej: Equipo B" />
+            </div>
+            <div class="field-group">
+              <label for="intro-time">Introducción (seg)</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn stepper-minus" data-target="intro-time" data-step="30">−</button>
+                <input type="number" id="intro-time" value="240" min="0" step="30" />
+                <button type="button" class="stepper-btn stepper-plus" data-target="intro-time" data-step="30">+</button>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="preguntas-time">Preguntas cruzadas (seg)</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn stepper-minus" data-target="preguntas-time" data-step="30">−</button>
+                <input type="number" id="preguntas-time" value="120" min="0" step="30" />
+                <button type="button" class="stepper-btn stepper-plus" data-target="preguntas-time" data-step="30">+</button>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="refutacion-time">Refutación (seg)</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn stepper-minus" data-target="refutacion-time" data-step="30">−</button>
+                <input type="number" id="refutacion-time" value="300" min="0" step="30" />
+                <button type="button" class="stepper-btn stepper-plus" data-target="refutacion-time" data-step="30">+</button>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="conclusion-time">Conclusión (seg)</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn stepper-minus" data-target="conclusion-time" data-step="30">−</button>
+                <input type="number" id="conclusion-time" value="180" min="0" step="30" />
+                <button type="button" class="stepper-btn stepper-plus" data-target="conclusion-time" data-step="30">+</button>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="num-refutaciones">Número de refutaciones</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn stepper-minus" data-target="num-refutaciones" data-step="1">−</button>
+                <input type="number" id="num-refutaciones" value="2" min="1" max="10" step="1" />
+                <button type="button" class="stepper-btn stepper-plus" data-target="num-refutaciones" data-step="1">+</button>
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="ultima-refutacion-diferente" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              <span class="toggle-label">Tiempo diferente para última refutación</span>
             </label>
+            <div class="field-group" id="ultima-refutacion-config" style="display:none">
+              <label for="ultima-refutacion-time">Última refutación (seg)</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn stepper-minus" data-target="ultima-refutacion-time" data-step="30">−</button>
+                <input type="number" id="ultima-refutacion-time" value="90" min="0" step="30" />
+                <button type="button" class="stepper-btn stepper-plus" data-target="ultima-refutacion-time" data-step="30">+</button>
+              </div>
+            </div>
           </div>
-          <div
-            class="config-item"
-            id="ultima-refutacion-config"
-            style="display: none"
-          >
-            <label for="ultima-refutacion-time"
-              >Última refutación (segundos):</label
-            >
-            <input type="number" id="ultima-refutacion-time" value="90" />
-          </div>
-        </div>
-      </div>
-      <!-- Configuración BP -->
-      <div id="bp-config" class="config-section hidden">
-        <h2>Configuración British Parliament</h2>
-        <div class="config-grid">
-          <div class="config-item">
-            <label for="bp-speech-time"
-              >Duración de discursos (segundos):</label
-            >
-            <input type="number" id="bp-speech-time" value="420" />
-          </div>
-          <div class="config-item">
-            <label for="equipo-camara-alta-favor">Cámara Alta (a favor):</label>
-            <input
-              type="text"
-              id="equipo-camara-alta-favor"
-              value="Equipo A"
-              placeholder="Ej: Equipo A"
-            />
-          </div>
-          <div class="config-item">
-            <label for="equipo-camara-alta-contra"
-              >Cámara Alta (en contra):</label
-            >
-            <input
-              type="text"
-              id="equipo-camara-alta-contra"
-              value="Equipo B"
-              placeholder="Ej: Equipo B"
-            />
-          </div>
-          <div class="config-item">
-            <label for="equipo-camara-baja-favor">Cámara Baja (a favor):</label>
-            <input
-              type="text"
-              id="equipo-camara-baja-favor"
-              value="Equipo C"
-              placeholder="Ej: Equipo C"
-            />
-          </div>
-          <div class="config-item">
-            <label for="equipo-camara-baja-contra"
-              >Cámara Baja (en contra):</label
-            >
-            <input
-              type="text"
-              id="equipo-camara-baja-contra"
-              value="Equipo D"
-              placeholder="Ej: Equipo D"
-            />
-          </div>
-        </div>
-      </div>
-      <!-- Configuración Fases Adicionales -->
-      <div id="fases-adicionales-config" class="config-section">
-        <h2>Fases Adicionales</h2>
-        <div class="config-grid">
-          <div class="config-item">
-            <label for="deliberacion-time">Deliberación (segundos):</label>
-            <input type="number" id="deliberacion-time" value="1200" />
-          </div>
-          <div class="config-item">
-            <label for="deliberacion-desc">Descripción Deliberación:</label>
-            <input
-              type="text"
-              id="deliberacion-desc"
-              value="Deliberación de jueces"
-              placeholder="Ej: Deliberación de jueces"
-            />
-          </div>
-          <div class="config-item">
-            <label for="feedback-time">Feedback (segundos):</label>
-            <input type="number" id="feedback-time" value="900" />
-          </div>
-          <div class="config-item">
-            <label for="feedback-desc">Descripción Feedback:</label>
-            <input
-              type="text"
-              id="feedback-desc"
-              value="Feedback"
-              placeholder="Ej: Feedback"
-            />
-          </div>
-        </div>
-      </div>
+        </details>
 
-      <!-- Configuración Controles -->
-      <div id="controles-config" class="config-section">
-        <h2>Configuración de Controles</h2>
-        <div class="config-grid">
-          <div class="config-item">
-            <label for="keyboard-controls-enabled">
-              <input
-                type="checkbox"
-                id="keyboard-controls-enabled"
-                checked
-                style="margin-right: 8px"
-              />
-              Activar controles de teclado
+        <!-- British Parliament -->
+        <details class="config-section" id="bp-config">
+          <summary class="section-header">
+            <span>British Parliament</span>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </summary>
+          <div class="section-body">
+            <div class="field-group">
+              <label for="bp-speech-time">Duración discursos (seg)</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn stepper-minus" data-target="bp-speech-time" data-step="30">−</button>
+                <input type="number" id="bp-speech-time" value="420" min="0" step="30" />
+                <button type="button" class="stepper-btn stepper-plus" data-target="bp-speech-time" data-step="30">+</button>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="equipo-camara-alta-favor">Cámara Alta (a favor)</label>
+              <input type="text" id="equipo-camara-alta-favor" value="Equipo A" placeholder="Ej: Equipo A" />
+            </div>
+            <div class="field-group">
+              <label for="equipo-camara-alta-contra">Cámara Alta (en contra)</label>
+              <input type="text" id="equipo-camara-alta-contra" value="Equipo B" placeholder="Ej: Equipo B" />
+            </div>
+            <div class="field-group">
+              <label for="equipo-camara-baja-favor">Cámara Baja (a favor)</label>
+              <input type="text" id="equipo-camara-baja-favor" value="Equipo C" placeholder="Ej: Equipo C" />
+            </div>
+            <div class="field-group">
+              <label for="equipo-camara-baja-contra">Cámara Baja (en contra)</label>
+              <input type="text" id="equipo-camara-baja-contra" value="Equipo D" placeholder="Ej: Equipo D" />
+            </div>
+          </div>
+        </details>
+
+        <!-- Fases Adicionales -->
+        <details class="config-section" id="fases-adicionales-config">
+          <summary class="section-header">
+            <span>Fases Adicionales</span>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </summary>
+          <div class="section-body">
+            <div class="field-group">
+              <label for="deliberacion-time">Deliberación (seg)</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn stepper-minus" data-target="deliberacion-time" data-step="60">−</button>
+                <input type="number" id="deliberacion-time" value="1200" min="0" step="60" />
+                <button type="button" class="stepper-btn stepper-plus" data-target="deliberacion-time" data-step="60">+</button>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="deliberacion-desc">Descripción Deliberación</label>
+              <input type="text" id="deliberacion-desc" value="Deliberación de jueces" placeholder="Ej: Deliberación de jueces" />
+            </div>
+            <div class="field-group">
+              <label for="feedback-time">Feedback (seg)</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn stepper-minus" data-target="feedback-time" data-step="60">−</button>
+                <input type="number" id="feedback-time" value="900" min="0" step="60" />
+                <button type="button" class="stepper-btn stepper-plus" data-target="feedback-time" data-step="60">+</button>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="feedback-desc">Descripción Feedback</label>
+              <input type="text" id="feedback-desc" value="Feedback" placeholder="Ej: Feedback" />
+            </div>
+          </div>
+        </details>
+
+        <!-- Controles -->
+        <details class="config-section" id="controles-config">
+          <summary class="section-header">
+            <span>Controles</span>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </summary>
+          <div class="section-body">
+            <label class="toggle-switch">
+              <input type="checkbox" id="keyboard-controls-enabled" checked />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              <span class="toggle-label">Activar controles de teclado</span>
             </label>
-            <small style="display: block; margin-top: 4px; color: #7f8c8d; font-size: 0.85rem;">
+            <p class="field-hint">
               Permite usar atajos de teclado para controlar el cronómetro (Espacio, flechas, etc.)
-            </small>
+            </p>
           </div>
-        </div>
+        </details>
       </div>
-
-      <!-- Botón aceptar configuración -->
-      <div class="config-actions">
-        <button class="apply-config-btn" id="apply-config-btn">
+      <div class="drawer-footer">
+        <button class="btn btn-primary" id="apply-config-btn">
           Guardar y Aplicar
         </button>
-        <button class="reset-defaults-btn" id="reset-defaults-btn">
-          Restaurar Valores por Defecto
+        <button class="btn btn-ghost" id="reset-defaults-btn">
+          Restaurar Valores
         </button>
       </div>
-    </div>
+    </aside>
+
     <div class="container">
       <!-- Header integrado en el mismo contenedor -->
       <header>
@@ -241,18 +236,20 @@
       <button class="phases-btn" id="phases-btn">Fases</button>
     </div>
 
-    <div id="phases-panel" class="phases-panel hidden">
-      <div class="phases-header">
-        <h3>Progreso del Debate</h3>
-        <div class="current-phase-info">
-          <span id="current-phase-display">Listo para comenzar</span>
-          <span id="phase-counter-display">0 / 0</span>
+    <div class="drawer-backdrop" id="phases-backdrop"></div>
+    <aside class="drawer drawer-right" id="phases-panel">
+      <div class="drawer-header">
+        <h3>Fases del Debate</h3>
+        <button class="drawer-close" id="phases-close">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 4.5l9 9m0-9l-9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="drawer-body">
+        <div class="phases-list" id="phases-list">
+          <!-- Fases generadas dinámicamente -->
         </div>
       </div>
-      <div class="phases-list" id="phases-list">
-        <!-- Las fases se generarán dinámicamente -->
-      </div>
-    </div>
+    </aside>
 
     <!-- Botón de toggle para modo oscuro -->
     <button class="toggle-btn" id="dark-mode-toggle" title="Alternar modo oscuro">

@@ -11,6 +11,7 @@ import './styles/components/progress-bar.css';
 import './styles/components/controls.css';
 import './styles/components/phase-list.css';
 import './styles/components/config-panel.css';
+import './styles/components/drawer.css';
 import './styles/components/format-selector.css';
 import './styles/components/dark-mode-toggle.css';
 import './styles/components/keyboard-help.css';

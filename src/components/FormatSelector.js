@@ -14,6 +14,8 @@ export class FormatSelector extends Component {
   mount() {
     this.container = document.querySelector('.format-selector-panel');
     this.bindEvents();
+    // Sync button visuals with the actual stored format on startup
+    this._updateActive();
   }
 
   bindEvents() {
@@ -30,6 +32,8 @@ export class FormatSelector extends Component {
     });
 
     this.listen('format:changed', () => this._updateActive());
+    this.listen('config:reset', () => this._updateActive());
+    this.listen('config:applied', () => this._updateActive());
   }
 
   _select(format) {
