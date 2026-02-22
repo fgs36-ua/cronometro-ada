@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# OpenSpec tooling (submodule/vendored)
+OpenSpec/
+
+# Legacy files (pre-refactor)
+script.legacy.js
+styles.legacy.css
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local

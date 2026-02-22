@@ -1,0 +1,27 @@
+/* ===========================================
+   Layout: Container & Header
+   =========================================== */
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  padding: 20px;
+  background: var(--bg-secondary);
+  border-radius: 20px;
+  box-shadow: 0 12px 40px var(--shadow-color);
+  backdrop-filter: blur(15px);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+header {
+  padding: 30px 30px 20px 30px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.logo {
+  height: 120px;
+  margin-bottom: 15px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}

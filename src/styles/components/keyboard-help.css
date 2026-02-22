@@ -1,0 +1,99 @@
+/* ===========================================
+   Component: Keyboard Help
+   =========================================== */
+
+#keyboard-help-indicator {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 16px;
+  border: 2px solid var(--help-border);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--help-indicator-bg);
+  color: white;
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+  min-width: 160px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+#keyboard-help-indicator:hover {
+  background: var(--overlay-bg);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#keyboard-help-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  background: var(--help-content-bg);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  z-index: 10001;
+  border: 1px solid var(--help-border);
+  font-family: 'Roboto', sans-serif;
+}
+
+.keyboard-help-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.keyboard-help-title {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.keyboard-help-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.keyboard-help-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.keyboard-help-section h4 {
+  color: var(--text-accent);
+  margin-bottom: 8px;
+}
+
+.keyboard-help-section h4:not(:first-child) {
+  margin-top: 15px;
+}
+
+.keyboard-help-item {
+  margin-bottom: 4px;
+}
+
+.keyboard-help-key {
+  font-weight: bold;
+}
+
+.keyboard-help-footer {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid var(--bg-tertiary);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+}

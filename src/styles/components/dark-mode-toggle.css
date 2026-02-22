@@ -1,0 +1,101 @@
+/* ===========================================
+   Component: Dark Mode Toggle
+   =========================================== */
+
+.toggle-btn {
+  --bg: #e8e8e8;
+  --fg: #212121;
+  background-color: var(--bg);
+  border-radius: 10px;
+  --dimensions: 50px;
+  width: var(--dimensions);
+  height: var(--dimensions);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-btn .main-circle {
+  --dimensions: 20px;
+  width: var(--dimensions);
+  height: var(--dimensions);
+  background-color: var(--fg);
+  border-radius: 50%;
+  position: absolute;
+  transition: transform 0.4s ease 0.2s;
+}
+
+.toggle-btn .main-circle::after {
+  content: "";
+  background-color: var(--bg);
+  border-radius: 50%;
+  --dimensions: 15px;
+  width: var(--dimensions);
+  height: var(--dimensions);
+  position: absolute;
+  top: 1px;
+  right: -1px;
+  transform-origin: right top;
+  transform: scale(0);
+  transition: transform 0.4s ease 0.2s;
+}
+
+.toggle-btn .sun-rays {
+  display: grid;
+  place-items: center;
+  transition: transform 0.4s ease 0.2s;
+}
+
+.toggle-btn .sun-rays,
+.toggle-btn .sun-rays::after,
+.toggle-btn .sun-rays::before {
+  --width: 3px;
+  --height: 6px;
+  width: var(--width);
+  height: var(--height);
+  background-color: var(--fg);
+  position: absolute;
+  box-shadow: 0 16px 0 var(--fg), 0 -16px 0 var(--fg);
+}
+
+.toggle-btn .sun-rays::after {
+  content: "";
+  transform: rotate(120deg);
+}
+
+.toggle-btn .sun-rays::before {
+  content: "";
+  transform: rotate(240deg);
+}
+
+[data-theme="dark"] .toggle-btn .main-circle {
+  transform: scale(1.2);
+}
+
+[data-theme="dark"] .toggle-btn .main-circle::after {
+  transform: scale(1);
+}
+
+[data-theme="dark"] .toggle-btn .sun-rays {
+  transform: scale(0);
+}
+
+[data-theme="dark"] .toggle-btn {
+  --bg: #212121;
+  --fg: #e8e8e8;
+}

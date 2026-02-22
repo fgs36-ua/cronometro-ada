@@ -1,0 +1,38 @@
+/* ===========================================
+   Component: Format Selector
+   =========================================== */
+
+.format-selector-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.format-btn {
+  padding: 10px 16px;
+  border: 2px solid var(--bg-tertiary);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--bg-tertiary);
+  color: white;
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+  min-width: 160px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.format-btn:hover {
+  background: var(--overlay-bg);
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.format-btn.active {
+  background: var(--bg-primary);
+  color: var(--text-accent);
+  box-shadow: 0 4px 15px var(--shadow-color);
+  text-shadow: none;
+}

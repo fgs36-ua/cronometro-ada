@@ -1,0 +1,113 @@
+/* ===========================================
+   CSS Custom Properties (Design Tokens)
+   =========================================== */
+
+:root {
+  /* Background */
+  --bg-primary: #fff;
+  --bg-secondary: rgba(255, 255, 255, 0.95);
+  --bg-tertiary: rgba(255, 255, 255, 0.2);
+
+  /* Text */
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --text-accent: #8b5cf6;
+
+  /* Borders & Shadows */
+  --border-color: rgba(139, 92, 246, 0.1);
+  --border-light: #ecf0f1;
+  --shadow-color: rgba(0, 0, 0, 0.15);
+  --overlay-bg: rgba(255, 255, 255, 0.3);
+
+  /* Gradient */
+  --gradient-bg: linear-gradient(135deg, #ce009a 0%, #890066 50%, #68004e 100%);
+
+  /* Button colors */
+  --btn-success: #27ae60;
+  --btn-success-hover: #219a52;
+  --btn-reset: #95a5a6;
+  --btn-reset-hover: #7f8c8d;
+  --btn-warn: #f39c12;
+  --btn-danger: #e74c3c;
+  --btn-primary: #3b82f6;
+  --btn-warning: #f59e0b;
+  --btn-error: #ef4444;
+  --btn-purple: #a855f7;
+
+  /* Progress bar colors */
+  --progress-success: linear-gradient(90deg, #27ae60, #2ecc71);
+  --progress-warning: linear-gradient(90deg, #f39c12, #f1c40f);
+  --progress-danger: linear-gradient(90deg, #e74c3c, #c0392b);
+
+  /* Phase colors */
+  --phase-default: rgba(139, 92, 246, 0.1);
+  --phase-completed: rgba(39, 174, 96, 0.1);
+  --phase-current: rgba(241, 196, 15, 0.1);
+  --phase-pending: rgba(149, 165, 166, 0.1);
+  --phase-active: rgba(139, 92, 246, 0.2);
+
+  /* Status colors */
+  --status-success: #27ae60;
+  --status-warning: #f39c12;
+  --status-danger: #e74c3c;
+  --status-current: #f1c40f;
+
+  /* Keyboard help colors */
+  --help-bg: rgba(255, 255, 255, 0.95);
+  --help-border: rgba(255, 255, 255, 0.2);
+  --help-content-bg: rgba(255, 255, 255, 0.98);
+  --help-indicator-bg: rgba(255, 255, 255, 0.2);
+  --help-indicator-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: rgba(26, 26, 26, 0.95);
+  --bg-tertiary: rgba(255, 255, 255, 0.1);
+  --text-primary: #e8e8e8;
+  --text-secondary: #a0a0a0;
+  --text-accent: #bb86fc;
+  --border-color: rgba(187, 134, 252, 0.2);
+  --border-light: #333;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --overlay-bg: rgba(0, 0, 0, 0.3);
+  --gradient-bg: linear-gradient(135deg, #1a1a1a 0%, #2d1b2e 50%, #1a1a1a 100%);
+
+  /* Button colors - darker theme versions */
+  --btn-success: #2ecc71;
+  --btn-success-hover: #27ae60;
+  --btn-reset: #7f8c8d;
+  --btn-reset-hover: #6c7b7d;
+  --btn-warn: #f1c40f;
+  --btn-danger: #e74c3c;
+  --btn-primary: #6366f1;
+  --btn-warning: #fbbf24;
+  --btn-error: #f87171;
+  --btn-purple: #c084fc;
+
+  /* Progress bar colors - darker theme versions */
+  --progress-success: linear-gradient(90deg, #2ecc71, #27ae60);
+  --progress-warning: linear-gradient(90deg, #f1c40f, #f39c12);
+  --progress-danger: linear-gradient(90deg, #e74c3c, #c0392b);
+
+  /* Phase colors - darker theme versions */
+  --phase-default: rgba(187, 134, 252, 0.2);
+  --phase-completed: rgba(46, 204, 113, 0.2);
+  --phase-current: rgba(241, 196, 15, 0.2);
+  --phase-pending: rgba(127, 140, 141, 0.2);
+  --phase-active: rgba(187, 134, 252, 0.3);
+
+  /* Status colors - darker theme versions */
+  --status-success: #2ecc71;
+  --status-warning: #f1c40f;
+  --status-danger: #e74c3c;
+  --status-current: #f1c40f;
+
+  /* Keyboard help colors - darker theme versions */
+  --help-bg: rgba(0, 0, 0, 0.9);
+  --help-border: rgba(255, 255, 255, 0.2);
+  --help-content-bg: rgba(26, 26, 26, 1);
+  --help-indicator-bg: rgba(255, 255, 255, 0.2);
+  --help-indicator-border: rgba(255, 255, 255, 0.1);
+}
