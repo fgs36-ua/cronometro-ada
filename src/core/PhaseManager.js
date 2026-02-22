@@ -57,11 +57,8 @@ export class PhaseManager {
       this._debateEnded = false;
       this._loadCurrent();
       eventBus.emit('phase:changed', this._phaseData());
-    } else {
-      // Last phase → debate ended
-      this._debateEnded = true;
-      eventBus.emit('debate:ended', {});
     }
+    // Last phase — do nothing; debate ends only via timer completion
   }
 
   previousPhase() {
