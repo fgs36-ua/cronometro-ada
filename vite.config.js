@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/cronometro-ada/',
+  base: process.env.GITHUB_ACTIONS ? '/cronometro-ada/' : '/',
   root: '.',
   build: {
     outDir: 'dist',
