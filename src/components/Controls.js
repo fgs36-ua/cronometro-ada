@@ -61,8 +61,8 @@ export class Controls extends Component {
         case 'resetDebate': if (!timer.isRunning) phaseManager.resetDebate(); break;
       }
 
-      // Time adjustments
-      if (action.startsWith('adjustTime')) {
+      // Time adjustments (only when not running)
+      if (action.startsWith('adjustTime') && !timer.isRunning) {
         const delta = parseInt(action.replace('adjustTime', ''), 10);
         timer.adjustTime(delta);
         this._showFeedback(`${delta > 0 ? '+' : ''}${delta}s`);
@@ -103,8 +103,8 @@ export class Controls extends Component {
     }
 
     // Disable nav / reset while running
-    this._prev.disabled = timer.isRunning;
-    this._next.disabled = timer.isRunning;
+    this._prev.disabled = timer.isRunning || phaseManager.currentIndex === 0;
+    this._next.disabled = timer.isRunning || phaseManager.currentIndex >= phaseManager.total - 1;
     this._reset.disabled = timer.isRunning;
     this._resetDebate.disabled = timer.isRunning;
   }
