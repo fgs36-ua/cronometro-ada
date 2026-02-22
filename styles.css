@@ -6,7 +6,8 @@
 
 body {
   font-family: 'Roboto', sans-serif;
-  background: var(--gradient-bg);
+  background: url('patron-tile.svg') repeat center center, var(--gradient-bg);
+  background-size: 300px auto, cover;
   min-height: 100vh;
   color: var(--text-primary);
   padding: 30px;
