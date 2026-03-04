@@ -24,7 +24,7 @@ export const BP_DEFAULTS = {
 };
 
 export const COMMON_DEFAULTS = {
-  deliberacionTime: 1200,
+  deliberacionTime: 600,
   deliberacionDesc: 'Deliberación de jueces',
   feedbackTime: 900,
   feedbackDesc: 'Feedback',
