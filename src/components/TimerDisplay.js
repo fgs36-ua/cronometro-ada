@@ -22,6 +22,7 @@ export class TimerDisplay extends Component {
 
   bindEvents() {
     this.listen('timer:tick', (d) => this._onTick(d));
+    this.listen('timer:reset', () => { document.title = 'Cronómetro de Debate'; });
     this.listen('phase:changed', () => this._updateSpeaker());
     this.listen('debate:ended', () => this._onDebateEnd());
     this.listen('debate:reset', () => this._updateSpeaker());
