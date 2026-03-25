@@ -113,6 +113,7 @@ export class ConfigPanel extends Component {
     return {
       currentFormat: configManager.getCurrentFormat(),
       keyboardControlsEnabled: q('keyboard-controls-enabled').checked,
+      progressTrackingEnabled: q('progress-tracking-enabled').checked,
       academico: {
         introTime: q('intro-time').value,
         preguntasTime: q('preguntas-time').value,
@@ -190,6 +191,7 @@ export class ConfigPanel extends Component {
     q('feedback-time').value = fb.time ?? COMMON_DEFAULTS.feedbackTime;
     q('feedback-desc').value = fb.description ?? COMMON_DEFAULTS.feedbackDesc;
     q('keyboard-controls-enabled').checked = cfg.keyboardControlsEnabled ?? true;
+    q('progress-tracking-enabled').checked = cfg.progressTrackingEnabled ?? false;
   }
 
   _onFormatChange(format) {

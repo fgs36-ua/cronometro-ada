@@ -68,8 +68,7 @@ export class Controls extends Component {
 
   _resetPhase() {
     timer.reset();
-    const phase = phaseManager.currentPhase;
-    if (phase) timer.load(phase.duration);
+    phaseManager.resetCurrentPhase();
     this._updateButtons();
   }
 

@@ -41,6 +41,9 @@ export function defaultKeyboardEnabled() {
   return window.innerWidth > 768;
 }
 
+/** Whether debate progress tracking is enabled by default. */
+export const DEFAULT_PROGRESS_TRACKING = false;
+
 /** Timer thresholds (seconds) for warning / danger colours. */
 export const TIMER_THRESHOLDS = {
   warningStart: 10,   // ≤ 10 s → warning (yellow)

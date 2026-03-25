@@ -5,6 +5,7 @@ import {
   BP_DEFAULTS,
   COMMON_DEFAULTS,
   DEFAULT_FORMAT,
+  DEFAULT_PROGRESS_TRACKING,
   STORAGE_KEYS,
   defaultKeyboardEnabled,
 } from './defaults.js';
@@ -52,6 +53,10 @@ export class ConfigManager {
     return this._config.keyboardControlsEnabled;
   }
 
+  isProgressTrackingEnabled() {
+    return this._config.progressTrackingEnabled;
+  }
+
   /* ── mutation ─────────────────────────────────────────── */
 
   set(key, value) {
@@ -93,6 +98,7 @@ export class ConfigManager {
     return {
       currentFormat: DEFAULT_FORMAT,
       keyboardControlsEnabled: defaultKeyboardEnabled(),
+      progressTrackingEnabled: DEFAULT_PROGRESS_TRACKING,
       academico: { ...ACADEMIC_DEFAULTS },
       bp: { ...BP_DEFAULTS },
       deliberacion: {
@@ -110,6 +116,9 @@ export class ConfigManager {
     if (source.currentFormat) this._config.currentFormat = source.currentFormat;
     if (source.keyboardControlsEnabled !== undefined) {
       this._config.keyboardControlsEnabled = source.keyboardControlsEnabled;
+    }
+    if (source.progressTrackingEnabled !== undefined) {
+      this._config.progressTrackingEnabled = source.progressTrackingEnabled;
     }
     if (source.academico) {
       Object.assign(this._config.academico, source.academico);

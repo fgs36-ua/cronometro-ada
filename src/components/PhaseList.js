@@ -1,6 +1,7 @@
 import Component from './Component.js';
 import timer from '../core/Timer.js';
 import phaseManager from '../core/PhaseManager.js';
+import configManager from '../core/ConfigManager.js';
 
 /**
  * PhaseList — right-side panel showing all phases with SVG status icons,
@@ -120,8 +121,22 @@ export class PhaseList extends Component {
         item.addEventListener('click', () => phaseManager.jumpToPhase(i));
       }
 
+      // Show saved time when progress tracking is enabled
+      let timeInfo = '';
+      if (configManager.isProgressTrackingEnabled()) {
+        const saved = phaseManager.getSavedTime(i);
+        if (saved !== null && i !== idx) {
+          const absTime = Math.abs(saved);
+          const mins = Math.floor(absTime / 60);
+          const secs = absTime % 60;
+          const sign = saved < 0 ? '-' : '';
+          timeInfo = `<span class="phase-saved-time">${sign}${mins}:${String(secs).padStart(2, '0')}</span>`;
+        }
+      }
+
       item.innerHTML = `
         <span class="phase-name">${phase.name}</span>
+        ${timeInfo}
         <span class="phase-status">${icon}</span>
       `;
       this._listEl.appendChild(item);
