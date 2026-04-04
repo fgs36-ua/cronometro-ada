@@ -24,7 +24,7 @@ export class TimerDisplay extends Component {
 
   bindEvents() {
     this.listen('timer:tick', (d) => this._onTick(d));
-    this.listen('timer:reset', () => { document.title = 'Cronómetro de Debate'; });
+    this.listen('timer:reset', () => this._setTitle('Cronómetro de Debate'));
     this.listen('phase:changed', () => this._updateSpeaker());
     this.listen('debate:ended', () => this._onDebateEnd());
     this.listen('debate:reset', () => this._updateSpeaker());
@@ -40,6 +40,13 @@ export class TimerDisplay extends Component {
   }
 
   /* ── private ──────────────────────────────────────────── */
+
+  _setTitle(title) {
+    if (title !== this._lastTitle) {
+      this._lastTitle = title;
+      document.title = title;
+    }
+  }
 
   _onTick({ currentTime, totalTime }) {
     if (!this._timerEl) return;
@@ -71,11 +78,7 @@ export class TimerDisplay extends Component {
 
     // Page title — update when running, paused, or after a seek (currentTime !== totalTime)
     if (totalTime > 0 && (timer.isRunning || timer.isPaused || currentTime !== totalTime)) {
-      const title = `${str} - Cronómetro de Debate`;
-      if (title !== this._lastTitle) {
-        this._lastTitle = title;
-        document.title = title;
-      }
+      this._setTitle(`${str} - Cronómetro de Debate`);
     }
   }
 
@@ -86,14 +89,14 @@ export class TimerDisplay extends Component {
 
     // Reset page title
     if (!timer.isRunning) {
-      document.title = 'Cronómetro de Debate';
+      this._setTitle('Cronómetro de Debate');
     }
   }
 
   _onDebateEnd() {
     if (this._speakerEl) this._speakerEl.textContent = '¡Debate terminado!';
     if (this._timerEl) this._timerEl.textContent = '00:00';
-    document.title = 'Cronómetro de Debate';
+    this._setTitle('Cronómetro de Debate');
   }
 
   /** Port of adjustTimerSize() */
