@@ -24,12 +24,8 @@
     <div class="config-toggle">
       <button class="config-btn" id="config-btn">Configuración</button>
 
-      <!-- Selector de formato -->
+      <!-- Selector de formato (rendered dynamically by FormatSelector) -->
       <div class="format-selector-panel">
-        <button class="format-btn active" data-format="academico">
-          Formato Académico
-        </button>
-        <button class="format-btn" data-format="bp">British Parliament</button>
       </div>
     </div>
 
@@ -265,6 +261,74 @@
       <div class="sun-rays"></div>
       <div class="main-circle"></div>
     </button>
+
+    <!-- Custom Format Editor Drawer -->
+    <div class="drawer-backdrop" id="custom-editor-backdrop"></div>
+    <aside class="drawer drawer-left" id="custom-format-editor">
+      <div class="drawer-header">
+        <h3 id="custom-editor-title">Nuevo Formato Personalizado</h3>
+        <button class="drawer-close" id="custom-editor-close">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 4.5l9 9m0-9l-9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="drawer-body">
+        <div id="custom-editor-error"></div>
+
+        <!-- Format name -->
+        <div class="custom-editor-section">
+          <h4>Nombre del formato</h4>
+          <div class="field-group">
+            <input type="text" id="custom-format-name" placeholder="Ej: Formato Lincoln-Douglas" maxlength="60" />
+          </div>
+        </div>
+
+        <!-- Teams -->
+        <div class="custom-editor-section">
+          <h4>Equipos</h4>
+          <p class="field-hint">Define los equipos. Usa <code>{equipo}</code> en el nombre de las fases para insertar el nombre del equipo.</p>
+          <div id="custom-teams-list"></div>
+          <button type="button" id="custom-add-team" class="custom-add-btn">+ Añadir equipo</button>
+        </div>
+
+        <!-- Blocks -->
+        <div class="custom-editor-section">
+          <h4>Bloques de fases</h4>
+          <p class="field-hint">Cada bloque agrupa fases que se repiten juntas. Usa <code>{n}</code> para el n.° de repetición. Arrastra los bloques para reordenarlos.</p>
+          <div id="custom-blocks-list"></div>
+          <button type="button" id="custom-add-block" class="custom-add-btn">+ Añadir bloque</button>
+        </div>
+
+        <!-- Options -->
+        <div class="custom-editor-section">
+          <h4>Opciones</h4>
+          <label class="toggle-switch">
+            <input type="checkbox" id="custom-include-deliberacion" checked />
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-label">Incluir fase de deliberación</span>
+          </label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="custom-include-feedback" checked />
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-label">Incluir fase de feedback</span>
+          </label>
+          <p class="field-hint">Los tiempos de deliberación y feedback se configuran en el panel de Fases Adicionales.</p>
+        </div>
+
+        <!-- Preview -->
+        <div class="custom-editor-section">
+          <h4>Vista previa de fases generadas</h4>
+          <div id="custom-preview-list"></div>
+        </div>
+      </div>
+      <div class="drawer-footer">
+        <button class="btn btn-primary" id="custom-format-save">
+          Guardar Formato
+        </button>
+        <button class="btn btn-ghost btn-danger-text" id="custom-format-delete" style="display:none">
+          Eliminar Formato
+        </button>
+      </div>
+    </aside>
 
     <script type="module" src="/src/main.js"></script>
   </body>

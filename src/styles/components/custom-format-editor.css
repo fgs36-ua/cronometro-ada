@@ -1,0 +1,643 @@
+/* ===========================================
+   Component: Custom Format Editor (V2 Block-based)
+   =========================================== */
+
+/* ── Editor sections ─────────────────── */
+
+.custom-editor-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 16px;
+}
+
+.custom-editor-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.custom-editor-section h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* ── Error message ───────────────────── */
+
+#custom-editor-error {
+  display: none;
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--btn-danger);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ── Add buttons (shared) ────────────── */
+
+.custom-add-btn {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed var(--border-light);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.custom-add-btn:hover {
+  border-color: var(--text-accent);
+  background: var(--phase-default);
+}
+
+/* ── Teams section ───────────────────── */
+
+#custom-teams-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.team-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-name-input {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease;
+}
+
+.team-name-input:focus {
+  outline: none;
+  border-color: var(--text-accent);
+}
+
+.team-remove-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.team-remove-btn:hover {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--btn-danger);
+  border-color: var(--btn-danger);
+}
+
+.teams-empty-hint {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 8px 0;
+  margin: 0;
+}
+
+/* ── Blocks container ────────────────── */
+
+#custom-blocks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 2px;
+}
+
+.blocks-empty-hint {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  padding: 20px;
+  margin: 0;
+}
+
+/* ── Block card ──────────────────────── */
+
+.block-card {
+  border: 1.5px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--bg-primary);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.block-card:hover {
+  border-color: var(--text-accent);
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.08);
+}
+
+.block-card.dragging {
+  opacity: 0.4;
+}
+
+.block-card.drag-over {
+  border-color: var(--text-accent);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25);
+}
+
+/* ── Block card header ───────────────── */
+
+.block-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+}
+
+.block-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Shared move button base ─────────── */
+
+.move-btn {
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.move-btn:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--text-accent);
+  border-color: var(--text-accent);
+}
+
+.move-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.block-move-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 0.6rem;
+}
+
+.block-drag-handle {
+  cursor: grab;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  user-select: none;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.block-drag-handle:active {
+  cursor: grabbing;
+}
+
+.block-name-input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1.5px solid transparent;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  background: transparent;
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.block-name-input:focus {
+  outline: none;
+  border-color: var(--text-accent);
+  background: var(--bg-primary);
+}
+
+.block-remove-btn {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.block-remove-btn:hover {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--btn-danger);
+  border-color: var(--btn-danger);
+}
+
+/* ── Block phases ────────────────────── */
+
+.block-card-phases {
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.block-phase-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 8px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.block-phase-row:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.block-phase-row.dragging {
+  opacity: 0.4;
+}
+
+.block-phase-row.drag-over {
+  background: rgba(139, 92, 246, 0.08);
+  border-color: var(--text-accent);
+  border-style: dashed;
+}
+
+.phase-drag-handle {
+  cursor: grab;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  user-select: none;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+
+.phase-drag-handle:active {
+  cursor: grabbing;
+}
+
+.block-phase-row:hover .phase-drag-handle {
+  opacity: 1;
+}
+
+.block-phase-name {
+  flex: 1 1 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease;
+}
+
+.block-phase-name:focus {
+  outline: none;
+  border-color: var(--text-accent);
+}
+
+.block-phase-stepper {
+  max-width: 160px;
+  flex-shrink: 0;
+}
+
+.block-phase-stepper input[type="number"] {
+  font-size: 0.8rem;
+}
+
+.block-phase-team-toggle {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.block-phase-team-toggle:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: var(--text-accent);
+  transform: scale(1.1);
+}
+
+.block-phase-team-toggle.active {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: var(--text-accent);
+  box-shadow: 0 0 0 1px var(--text-accent);
+}
+
+.block-phase-remove {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.block-phase-remove:hover:not(:disabled) {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--btn-danger);
+  border-color: var(--btn-danger);
+}
+
+.block-phase-remove:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ── Phase actions (arrows + remove) ─── */
+
+.phase-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.phase-move-btn {
+  width: 22px;
+  height: 22px;
+  font-size: 0.55rem;
+}
+
+/* ── Block add-phase button ──────────── */
+
+.block-add-phase-btn {
+  width: calc(100% - 24px);
+  margin: 4px 12px 8px;
+  padding: 6px;
+  border: 1.5px dashed var(--border-light);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.block-add-phase-btn:hover {
+  border-color: var(--text-accent);
+  background: var(--phase-default);
+}
+
+/* ── Block options ───────────────────── */
+
+.block-card-options {
+  padding: 8px 12px 10px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.block-option-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.block-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.block-toggle input[type="checkbox"] {
+  accent-color: var(--text-accent);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.block-repeat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.block-repeat-stepper {
+  max-width: 120px;
+  flex-shrink: 0;
+}
+
+.block-repeat-stepper input[type="number"] {
+  font-size: 0.8rem;
+}
+
+/* ── Preview section ─────────────────── */
+
+#custom-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 30vh;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.preview-phase {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  font-size: 0.82rem;
+}
+
+.preview-phase-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--text-accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.preview-phase-name {
+  flex: 1;
+  color: var(--text-primary);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview-phase-dur {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.preview-empty {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  padding: 12px;
+  margin: 0;
+}
+
+/* ── Format management buttons (selector) ── */
+
+.format-btn-new {
+  padding: 10px 16px;
+  border: 2px dashed var(--bg-tertiary);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  min-width: 160px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.format-btn-new:hover {
+  background: var(--bg-tertiary);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.format-btn-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.format-btn-wrapper .format-btn {
+  flex: 1;
+}
+
+.format-btn-edit {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 2px solid var(--bg-tertiary);
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.format-btn-edit:hover {
+  background: var(--overlay-bg);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* ── Delete button ───────────────────── */
+
+.btn-danger-text {
+  color: var(--btn-danger) !important;
+  border-color: var(--btn-danger) !important;
+}
+
+.btn-danger-text:hover {
+  background: rgba(231, 76, 60, 0.1) !important;
+}
+
+/* ── Responsive ──────────────────────── */
+
+@media (max-width: 480px) {
+  .block-phase-row {
+    flex-wrap: wrap;
+  }
+
+  .block-phase-name {
+    width: 100%;
+  }
+
+  .block-option-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .format-btn-wrapper {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

@@ -34,7 +34,8 @@ export class ConfigManager {
   getFormatConfig(format) {
     if (format === 'academico') return { ...this._config.academico };
     if (format === 'bp') return { ...this._config.bp };
-    return null;
+    // Custom formats don't have separate config — phases are stored in CustomFormatManager
+    return {};
   }
 
   getCommon() {

@@ -1,5 +1,6 @@
 import Component from './Component.js';
 import configManager from '../core/ConfigManager.js';
+import formatRegistry from '../formats/FormatRegistry.js';
 import { ACADEMIC_DEFAULTS, BP_DEFAULTS, COMMON_DEFAULTS } from '../core/defaults.js';
 
 /**
@@ -195,9 +196,17 @@ export class ConfigPanel extends Component {
   _onFormatChange(format) {
     const acad = this.container.querySelector('#academico-config');
     const bpEl = this.container.querySelector('#bp-config');
-    // Both sections always visible — just auto-expand the active format
-    if (acad && format === 'academico') acad.open = true;
-    if (bpEl && format === 'bp') bpEl.open = true;
+    const isCustom = !formatRegistry.isBuiltin(format);
+
+    // Hide built-in sections when a custom format is active
+    if (acad) {
+      acad.style.display = isCustom ? 'none' : '';
+      if (format === 'academico') acad.open = true;
+    }
+    if (bpEl) {
+      bpEl.style.display = isCustom ? 'none' : '';
+      if (format === 'bp') bpEl.open = true;
+    }
   }
 
   /** Reset <details> open state: only the active format expanded, rest closed */
@@ -207,8 +216,16 @@ export class ConfigPanel extends Component {
     const bpEl = this.container.querySelector('#bp-config');
     const fasesAd = this.container.querySelector('#fases-adicionales-config');
     const controles = this.container.querySelector('#controles-config');
-    if (acad) acad.open = fmt === 'academico';
-    if (bpEl) bpEl.open = fmt === 'bp';
+    const isCustom = !formatRegistry.isBuiltin(fmt);
+
+    if (acad) {
+      acad.style.display = isCustom ? 'none' : '';
+      acad.open = fmt === 'academico';
+    }
+    if (bpEl) {
+      bpEl.style.display = isCustom ? 'none' : '';
+      bpEl.open = fmt === 'bp';
+    }
     if (fasesAd) fasesAd.open = false;
     if (controles) controles.open = false;
   }
