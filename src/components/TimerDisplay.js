@@ -69,8 +69,8 @@ export class TimerDisplay extends Component {
       this._timerEl.className = cssClass;
     }
 
-    // Page title
-    if (timer.isRunning && !timer.isPaused) {
+    // Page title — update when running, paused, or after a seek (currentTime !== totalTime)
+    if (totalTime > 0 && (timer.isRunning || timer.isPaused || currentTime !== totalTime)) {
       const title = `${str} - Cronómetro de Debate`;
       if (title !== this._lastTitle) {
         this._lastTitle = title;
