@@ -6,17 +6,20 @@ const STORAGE_KEY = 'ada-custom-formats';
 /**
  * CustomFormatManager — CRUD operations for user-defined debate formats.
  *
- * V2 block-based format shape:
+ * V4 format shape (global teams + per-block exclusion):
  * {
  *   id: string,
  *   name: string,
  *   teams: string[],
  *   blocks: Array<{
  *     name: string,
+ *     excludedTeams: number[],
  *     phases: Array<{ name: string, duration: number }>,
  *     repeat: number,
  *     perTeam: boolean,
+ *     interleave: boolean,
  *     reverseTeams: boolean,
+ *     invertTeams: boolean,
  *   }>,
  *   includeDeliberacion: boolean,
  *   includeFeedback: boolean,
@@ -40,24 +43,52 @@ class CustomFormatManager {
     }
   }
 
-  /** Migrate V1 flat format → V2 block format if needed. */
+  /** Migrate V1/V2/V3 formats → V4 (global teams + per-block exclusion). */
   _migrate(f) {
-    if (Array.isArray(f.blocks)) return f; // already V2
-    // V1 had flat phases[] — wrap in a single block
-    return {
-      id: f.id,
-      name: f.name,
-      teams: [],
-      blocks: [{
-        name: 'Bloque 1',
-        phases: Array.isArray(f.phases) ? f.phases : [],
-        repeat: 1,
-        perTeam: false,
-        reverseTeams: false,
-      }],
-      includeDeliberacion: f.includeDeliberacion ?? true,
-      includeFeedback: f.includeFeedback ?? true,
-    };
+    // V1: had flat phases[] — wrap in a single block
+    if (!Array.isArray(f.blocks)) {
+      return {
+        id: f.id,
+        name: f.name,
+        teams: [],
+        blocks: [{
+          name: 'Bloque 1',
+          excludedTeams: [],
+          phases: Array.isArray(f.phases) ? f.phases : [],
+          repeat: 1,
+          perTeam: false,
+          interleave: false,
+          reverseTeams: false,
+          invertTeams: false,
+        }],
+        includeDeliberacion: f.includeDeliberacion ?? true,
+        includeFeedback: f.includeFeedback ?? true,
+      };
+    }
+    // V3: per-block teams[] → collect unique teams globally, compute exclusions
+    if (!Array.isArray(f.teams)) {
+      const allTeams = [];
+      const seen = new Set();
+      for (const block of f.blocks) {
+        for (const t of (block.teams || [])) {
+          if (!seen.has(t)) { allTeams.push(t); seen.add(t); }
+        }
+      }
+      f.teams = allTeams;
+      for (const block of f.blocks) {
+        const blockTeamSet = new Set(block.teams || []);
+        block.excludedTeams = allTeams
+          .map((t, i) => blockTeamSet.has(t) ? -1 : i)
+          .filter((i) => i >= 0);
+        delete block.teams;
+      }
+    }
+    // V2: had global teams[] but blocks may still have old teams[]
+    for (const block of f.blocks) {
+      if (Array.isArray(block.teams)) delete block.teams;
+      if (!Array.isArray(block.excludedTeams)) block.excludedTeams = [];
+    }
+    return f;
   }
 
   _save() {

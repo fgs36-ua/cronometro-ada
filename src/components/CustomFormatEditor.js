@@ -7,8 +7,8 @@ import { createCustomFormatModule } from '../formats/CustomFormat.js';
 /**
  * CustomFormatEditor — Drawer for creating / editing custom debate formats.
  *
- * V2: Block-based model with teams, drag & drop blocks, per-team phases,
- * repeat/loop, reverse team order, and live preview.
+ * V4: Global teams with per-block exclusion. Define teams once at format level;
+ * each block includes all teams by default and lets you uncheck specific ones.
  */
 export class CustomFormatEditor extends Component {
   constructor() {
@@ -24,6 +24,8 @@ export class CustomFormatEditor extends Component {
   mount() {
     this.container = document.querySelector('#custom-format-editor');
     this._backdrop = document.querySelector('#custom-editor-backdrop');
+    this._teamsListEl = this.container.querySelector('#custom-teams-list');
+    this._blocksListEl = this.container.querySelector('#custom-blocks-list');
     this.bindEvents();
   }
 
@@ -39,30 +41,33 @@ export class CustomFormatEditor extends Component {
     this.container.querySelector('#custom-format-delete')
       .addEventListener('click', () => this._delete());
 
-    // Teams
-    this.container.querySelector('#custom-add-team')
-      .addEventListener('click', () => this._addTeam());
-    this._teamsListEl = this.container.querySelector('#custom-teams-list');
-    this._teamsListEl.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-team-action]');
-      if (!btn) return;
-      const idx = parseInt(btn.dataset.teamIndex, 10);
-      if (btn.dataset.teamAction === 'remove') this._removeTeam(idx);
-    });
-    this._teamsListEl.addEventListener('input', (e) => {
-      const input = e.target;
-      if (input.dataset.teamField === 'name') {
-        this._teams[parseInt(input.dataset.teamIndex, 10)] = input.value;
-        this._renderPreview();
-      }
-    });
-
     // Add block
     this.container.querySelector('#custom-add-block')
       .addEventListener('click', () => this._addBlock());
 
+    // ── Global teams ───────────────────────
+    this.container.querySelector('#custom-add-team')
+      .addEventListener('click', () => this._addTeam());
+    this._teamsListEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-team-action]');
+      if (!btn) return;
+      const ti = parseInt(btn.dataset.teamIndex, 10);
+      if (btn.dataset.teamAction === 'remove') this._removeTeam(ti);
+    });
+    this._teamsListEl.addEventListener('input', (e) => {
+      const input = e.target;
+      const ti = parseInt(input.dataset.teamIndex, 10);
+      if (!isNaN(ti) && input.dataset.teamField === 'name') {
+        this._teams[ti] = input.value;
+        // Update checkbox labels in blocks without re-rendering
+        this._blocksListEl.querySelectorAll(`[data-team-label-index="${ti}"]`).forEach(
+          (label) => { label.querySelector('.team-check-name').textContent = input.value || `Equipo ${ti + 1}`; }
+        );
+        this._renderPreview();
+      }
+    });
+
     // Block container — event delegation
-    this._blocksListEl = this.container.querySelector('#custom-blocks-list');
     this._blocksListEl.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-block-action]');
       if (!btn) return;
@@ -93,6 +98,19 @@ export class CustomFormatEditor extends Component {
       const boolFields = ['perTeam', 'reverseTeams', 'invertTeams', 'interleave'];
       if (boolFields.includes(field)) {
         this._blocks[bi][field] = input.checked;
+        this._renderPreview();
+        return;
+      }
+      // Team inclusion checkbox
+      const tci = parseInt(input.dataset.teamCheckIndex, 10);
+      if (!isNaN(tci)) {
+        const block = this._blocks[bi];
+        if (!block.excludedTeams) block.excludedTeams = [];
+        if (input.checked) {
+          block.excludedTeams = block.excludedTeams.filter((i) => i !== tci);
+        } else {
+          if (!block.excludedTeams.includes(tci)) block.excludedTeams.push(tci);
+        }
         this._renderPreview();
       }
     });
@@ -214,6 +232,7 @@ export class CustomFormatEditor extends Component {
     this._teams = ['Equipo A', 'Equipo B'];
     this._blocks = [{
       name: 'Bloque 1',
+      excludedTeams: [],
       phases: [
         { name: 'Discurso {equipo}', duration: 300 },
       ],
@@ -241,6 +260,7 @@ export class CustomFormatEditor extends Component {
     this._teams = [...(fmt.teams || [])];
     this._blocks = (fmt.blocks || []).map((b) => ({
       ...b,
+      excludedTeams: [...(b.excludedTeams || [])],
       phases: b.phases.map((p) => ({ ...p })),
     }));
     this._populateForm({
@@ -272,39 +292,45 @@ export class CustomFormatEditor extends Component {
     return this._visible;
   }
 
-  /* ── Teams ────────────────────────────── */
+  /* ── Global Teams ──────────────────────── */
 
   _addTeam() {
-    const letter = String.fromCharCode(65 + this._teams.length); // A, B, C, D...
+    const letter = String.fromCharCode(65 + this._teams.length);
     this._teams.push(`Equipo ${letter}`);
     this._renderTeams();
+    this._renderBlocks();
     this._renderPreview();
   }
 
-  _removeTeam(idx) {
-    if (this._teams.length <= 0) return;
-    this._teams.splice(idx, 1);
+  _removeTeam(ti) {
+    this._teams.splice(ti, 1);
+    for (const block of this._blocks) {
+      if (!block.excludedTeams) continue;
+      block.excludedTeams = block.excludedTeams
+        .filter((i) => i !== ti)
+        .map((i) => (i > ti ? i - 1 : i));
+    }
     this._renderTeams();
+    this._renderBlocks();
     this._renderPreview();
   }
 
   _renderTeams() {
-    const list = this._teamsListEl;
-    list.innerHTML = '';
-    this._teams.forEach((team, i) => {
-      const row = document.createElement('div');
-      row.className = 'team-row';
-      row.innerHTML = `
-        <input type="text" class="team-name-input"
-          data-team-index="${i}" data-team-field="name"
-          value="${this._esc(team)}" placeholder="Nombre equipo" />
-        <button type="button" class="team-remove-btn" data-team-action="remove" data-team-index="${i}" title="Eliminar equipo">✕</button>
-      `;
-      list.appendChild(row);
-    });
+    const el = this._teamsListEl;
     if (this._teams.length === 0) {
-      list.innerHTML = '<p class="teams-empty-hint">Sin equipos. La opción "Por equipo" en los bloques no tendrá efecto.</p>';
+      el.innerHTML = '<p class="teams-empty-hint">No hay equipos definidos.</p>';
+      return;
     }
+    el.innerHTML = this._teams.map((t, ti) => `
+      <div class="team-row">
+        <input type="text" class="team-name-input"
+          data-team-index="${ti}" data-team-field="name"
+          value="${this._esc(t)}" placeholder="Nombre equipo" />
+        <button type="button" class="team-remove-btn"
+          data-team-action="remove" data-team-index="${ti}"
+          title="Eliminar equipo">✕</button>
+      </div>
+    `).join('');
   }
 
   /* ── Blocks ───────────────────────────── */
@@ -312,6 +338,7 @@ export class CustomFormatEditor extends Component {
   _addBlock() {
     this._blocks.push({
       name: `Bloque ${this._blocks.length + 1}`,
+      excludedTeams: [],
       phases: [{ name: 'Nueva fase', duration: 300 }],
       repeat: 1,
       perTeam: false,
@@ -445,6 +472,25 @@ export class CustomFormatEditor extends Component {
           </div>`;
       });
 
+      // Team checkboxes for this block (based on global teams)
+      let teamChecksHtml = '';
+      if (this._teams.length > 0) {
+        const excluded = block.excludedTeams || [];
+        teamChecksHtml = `
+          <div class="block-teams-section">
+            <span class="block-teams-label">Equipos en este bloque</span>
+            <div class="block-teams-checks">
+              ${this._teams.map((t, ti) => `
+                <label class="block-team-check" data-team-label-index="${ti}">
+                  <input type="checkbox" data-block-index="${bi}" data-team-check-index="${ti}"
+                    ${!excluded.includes(ti) ? 'checked' : ''} />
+                  <span class="team-check-name">${this._esc(t)}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>`;
+      }
+
       card.innerHTML = `
         <div class="block-card-header">
           <span class="block-drag-handle" title="Arrastrar para reordenar">⠿</span>
@@ -499,6 +545,7 @@ export class CustomFormatEditor extends Component {
                 data-block-action="repeat-plus" data-block-index="${bi}">+</button>
             </div>
           </div>
+          ${teamChecksHtml}
         </div>
       `;
       container.appendChild(card);
@@ -571,6 +618,7 @@ export class CustomFormatEditor extends Component {
       teams: this._teams.filter((t) => t.trim()),
       blocks: this._blocks.map((b) => ({
         name: b.name || 'Bloque',
+        excludedTeams: b.excludedTeams || [],
         phases: b.phases.map((p) => ({ name: p.name || 'Fase', duration: p.duration })),
         repeat: Math.max(1, b.repeat || 1),
         perTeam: !!b.perTeam,
@@ -597,10 +645,10 @@ export class CustomFormatEditor extends Component {
   }
 
   _syncFromDOM() {
-    // Sync team names
+    // Sync global teams
     this._teamsListEl.querySelectorAll('[data-team-field="name"]').forEach((input) => {
-      const idx = parseInt(input.dataset.teamIndex, 10);
-      this._teams[idx] = input.value;
+      const ti = parseInt(input.dataset.teamIndex, 10);
+      if (ti < this._teams.length) this._teams[ti] = input.value;
     });
 
     // Sync block data
@@ -611,6 +659,14 @@ export class CustomFormatEditor extends Component {
 
       const nameInput = card.querySelector(`[data-block-field="name"]`);
       if (nameInput) block.name = nameInput.value;
+
+      // Sync block excluded teams from checkboxes
+      const excluded = [];
+      card.querySelectorAll('[data-team-check-index]').forEach((cb) => {
+        const ti = parseInt(cb.dataset.teamCheckIndex, 10);
+        if (!cb.checked) excluded.push(ti);
+      });
+      block.excludedTeams = excluded;
 
       card.querySelectorAll('.block-phase-row').forEach((row) => {
         const nameIn = row.querySelector('[data-phase-field="name"]');

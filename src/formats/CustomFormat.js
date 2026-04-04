@@ -22,9 +22,11 @@ export function createCustomFormatModule(formatDef) {
     name: formatDef.id,
     generatePhases(cfg = {}) {
       const phases = [];
-      const teams = formatDef.teams || [];
+      const globalTeams = formatDef.teams || [];
 
       for (const block of formatDef.blocks) {
+        const excluded = new Set(block.excludedTeams || []);
+        const teams = globalTeams.filter((_, i) => !excluded.has(i));
         const repeat = Math.max(1, block.repeat || 1);
 
         for (let r = 0; r < repeat; r++) {

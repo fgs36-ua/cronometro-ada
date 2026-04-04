@@ -1,5 +1,5 @@
 /* ===========================================
-   Component: Custom Format Editor (V2 Block-based)
+   Component: Custom Format Editor
    =========================================== */
 
 /* ── Editor sections ─────────────────── */
@@ -59,12 +59,58 @@
   background: var(--phase-default);
 }
 
-/* ── Teams section ───────────────────── */
+/* ── Teams (global list) ─────────────── */
 
 #custom-teams-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+/* ── Teams (per-block checkboxes) ────── */
+
+.block-teams-section {
+  border-top: 1px solid var(--border-light);
+  padding-top: 10px;
+  margin-top: 6px;
+}
+
+.block-teams-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.block-teams-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+.block-team-check {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.block-team-check input[type="checkbox"] {
+  accent-color: var(--text-accent);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.team-check-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
 .team-row {
