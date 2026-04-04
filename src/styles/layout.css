@@ -9,9 +9,14 @@
   background: var(--bg-secondary);
   border-radius: 20px;
   box-shadow: 0 12px 40px var(--shadow-color);
-  backdrop-filter: blur(15px);
   text-align: center;
   transition: all 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    backdrop-filter: blur(15px);
+  }
 }
 
 header {

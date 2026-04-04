@@ -51,9 +51,11 @@
 .timer.warning {
   color: var(--status-warning);
   animation: pulse 1s infinite;
+  will-change: transform;
 }
 
 .timer.danger {
   color: var(--status-danger);
   animation: pulse 0.5s infinite;
+  will-change: transform;
 }

@@ -12,6 +12,8 @@ export class TimerDisplay extends Component {
     super(container);
     this._timerEl = null;
     this._speakerEl = null;
+    this._lastCssClass = '';
+    this._lastTitle = '';
   }
 
   mount() {
@@ -56,16 +58,24 @@ export class TimerDisplay extends Component {
     this._timerEl.setAttribute('data-prev-time', str);
 
     // Colour classes
-    this._timerEl.className = 'timer';
+    let cssClass = 'timer';
     if (currentTime <= TIMER_THRESHOLDS.dangerStart) {
-      this._timerEl.classList.add('danger');
+      cssClass = 'timer danger';
     } else if (currentTime <= TIMER_THRESHOLDS.warningStart && currentTime >= TIMER_THRESHOLDS.warningEnd) {
-      this._timerEl.classList.add('warning');
+      cssClass = 'timer warning';
+    }
+    if (cssClass !== this._lastCssClass) {
+      this._lastCssClass = cssClass;
+      this._timerEl.className = cssClass;
     }
 
     // Page title
     if (timer.isRunning && !timer.isPaused) {
-      document.title = `${str} - Cronómetro de Debate`;
+      const title = `${str} - Cronómetro de Debate`;
+      if (title !== this._lastTitle) {
+        this._lastTitle = title;
+        document.title = title;
+      }
     }
   }
 

@@ -13,6 +13,8 @@ export class ProgressBar extends Component {
     this._fillEl = null;
     this._tooltip = null;
     this._isDragging = false;
+    this._lastCssClass = '';
+    this._cachedRect = null;
   }
 
   mount() {
@@ -26,12 +28,21 @@ export class ProgressBar extends Component {
 
     // Mouse
     this._barEl.addEventListener('mousedown', (e) => this._onMouseDown(e));
-    this._barEl.addEventListener('mousemove', (e) => this._onMouseMove(e));
+    this._barEl.addEventListener('mousemove', (e) => {
+      if (!this._isDragging) this._showTooltip(e);
+    });
     this._barEl.addEventListener('mouseleave', () => this._hideTooltip());
 
+    this._docMouseMove = (e) => {
+      if (this._isDragging) {
+        this._handleInteraction(e, true);
+        this._showTooltip(e);
+      }
+    };
     this._docMouseUp = () => {
       if (this._isDragging) this._endDrag();
     };
+    document.addEventListener('mousemove', this._docMouseMove);
     document.addEventListener('mouseup', this._docMouseUp);
 
     this._barEl.addEventListener('click', (e) => {
@@ -49,6 +60,7 @@ export class ProgressBar extends Component {
 
   destroy() {
     super.destroy();
+    document.removeEventListener('mousemove', this._docMouseMove);
     document.removeEventListener('mouseup', this._docMouseUp);
     document.removeEventListener('touchend', this._docTouchEnd);
     this._hideTooltip(true);
@@ -61,11 +73,15 @@ export class ProgressBar extends Component {
     const pct = Math.max(0, ((totalTime - currentTime) / totalTime) * 100);
     this._fillEl.style.width = `${pct}%`;
 
-    this._fillEl.className = 'progress-fill';
+    let cssClass = 'progress-fill';
     if (currentTime <= TIMER_THRESHOLDS.dangerStart) {
-      this._fillEl.classList.add('danger');
+      cssClass = 'progress-fill danger';
     } else if (currentTime <= TIMER_THRESHOLDS.warningStart && currentTime >= TIMER_THRESHOLDS.warningEnd) {
-      this._fillEl.classList.add('warning');
+      cssClass = 'progress-fill warning';
+    }
+    if (cssClass !== this._lastCssClass) {
+      this._lastCssClass = cssClass;
+      this._fillEl.className = cssClass;
     }
   }
 
@@ -73,22 +89,19 @@ export class ProgressBar extends Component {
 
   _onMouseDown(e) {
     this._isDragging = true;
+    this._cachedRect = this._barEl.getBoundingClientRect();
+    this._fillEl.style.transition = 'none';
     this._handleInteraction(e, true);
     this._showTooltip(e);
     e.preventDefault();
-  }
-
-  _onMouseMove(e) {
-    if (this._isDragging) {
-      this._handleInteraction(e, true);
-    }
-    this._showTooltip(e);
   }
 
   /* ── touch ─────────────────────────────────────────────── */
 
   _onTouchStart(e) {
     this._isDragging = true;
+    this._cachedRect = this._barEl.getBoundingClientRect();
+    this._fillEl.style.transition = 'none';
     this._handleInteraction(e.touches[0], true);
     e.preventDefault();
   }
@@ -102,6 +115,8 @@ export class ProgressBar extends Component {
 
   _endDrag() {
     this._isDragging = false;
+    this._cachedRect = null;
+    this._fillEl.style.transition = '';
     this._hideTooltip();
     // Full update after drag
     const td = timer.currentTime;
@@ -114,7 +129,7 @@ export class ProgressBar extends Component {
   _handleInteraction(event, optimized) {
     if (phaseManager.total === 0) return;
 
-    const rect = this._barEl.getBoundingClientRect();
+    const rect = this._cachedRect || this._barEl.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const pct = Math.max(0, Math.min(1, x / rect.width));
 
@@ -177,7 +192,8 @@ export class ProgressBar extends Component {
     const str = `${previewTime < 0 ? '-' : ''}${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
     this._tooltip.textContent = str;
-    this._tooltip.style.left = `${event.clientX}px`;
+    const clampedX = Math.max(rect.left, Math.min(rect.right, event.clientX));
+    this._tooltip.style.left = `${clampedX}px`;
     this._tooltip.style.top = `${rect.top - 30}px`;
     this._tooltip.style.opacity = '1';
   }
