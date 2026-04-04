@@ -13,6 +13,7 @@ export class Timer {
     this._isPaused = false;
     this._interval = null;
     this._startTimestamp = null;
+    this._lastWarningLevel = null;
   }
 
   /* ── getters ──────────────────────────────────────────── */
@@ -46,6 +47,7 @@ export class Timer {
     this._isRunning = false;
     this._isPaused = false;
     this._startTimestamp = null;
+    this._lastWarningLevel = null;
     eventBus.emit('timer:tick', this._tickData());
   }
 
@@ -93,6 +95,7 @@ export class Timer {
     this._isRunning = false;
     this._isPaused = false;
     this._startTimestamp = null;
+    this._lastWarningLevel = null;
     eventBus.emit('timer:reset', {});
     eventBus.emit('timer:tick', this._tickData());
   }
@@ -175,13 +178,20 @@ export class Timer {
 
   _emitWarningLevel() {
     const t = this._currentTime;
+    let level = null;
     if (t <= TIMER_THRESHOLDS.dangerStart) {
-      eventBus.emit('timer:warning', { level: 'danger' });
+      level = 'danger';
     } else if (
       t <= TIMER_THRESHOLDS.warningStart &&
       t >= TIMER_THRESHOLDS.warningEnd
     ) {
-      eventBus.emit('timer:warning', { level: 'warning' });
+      level = 'warning';
+    }
+    if (level !== this._lastWarningLevel) {
+      this._lastWarningLevel = level;
+      if (level) {
+        eventBus.emit('timer:warning', { level });
+      }
     }
   }
 }

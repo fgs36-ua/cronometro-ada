@@ -25,6 +25,8 @@ export class PhaseList extends Component {
   constructor(container) {
     super(container);
     this._visible = false;
+    this._lastPhaseText = '';
+    this._lastCounterText = '';
   }
 
   mount() {
@@ -46,6 +48,16 @@ export class PhaseList extends Component {
     this.listen('debate:reset', () => this._rebuild());
     this.listen('debate:ended', () => this._rebuild());
     this.listen('timer:tick', () => this._updateHeader());
+
+    // Delegated click on phase items
+    if (this._listEl) {
+      this._listEl.addEventListener('click', (e) => {
+        const item = e.target.closest('.phase-item.clickable');
+        if (!item) return;
+        const idx = Number(item.dataset.index);
+        if (!Number.isNaN(idx)) phaseManager.jumpToPhase(idx);
+      });
+    }
 
     // Toggle phases panel
     if (this._phasesBtn) {
@@ -98,6 +110,7 @@ export class PhaseList extends Component {
     this._listEl.innerHTML = '';
     const phases = phaseManager.phases;
     const idx = phaseManager.currentIndex;
+    const fragment = document.createDocumentFragment();
 
     phases.forEach((phase, i) => {
       const item = document.createElement('div');
@@ -117,27 +130,37 @@ export class PhaseList extends Component {
 
       if (!timer.isRunning) {
         item.classList.add('clickable');
-        item.addEventListener('click', () => phaseManager.jumpToPhase(i));
       }
+      item.dataset.index = i;
 
       item.innerHTML = `
         <span class="phase-name">${phase.name}</span>
         <span class="phase-status">${icon}</span>
       `;
-      this._listEl.appendChild(item);
+      fragment.appendChild(item);
     });
+    this._listEl.appendChild(fragment);
   }
 
   _updateHeader() {
     if (!this._phaseDisplay || !this._counterDisplay) return;
     const phases = phaseManager.phases;
+    let phaseText, counterText;
     if (phases.length === 0) {
-      this._phaseDisplay.textContent = 'Configura el formato de debate';
-      this._counterDisplay.textContent = '0 / 0';
+      phaseText = 'Configura el formato de debate';
+      counterText = '0 / 0';
     } else {
       const cur = phaseManager.currentPhase;
-      this._phaseDisplay.textContent = cur ? cur.name : 'Listo para comenzar';
-      this._counterDisplay.textContent = `${phaseManager.currentIndex + 1} / ${phases.length}`;
+      phaseText = cur ? cur.name : 'Listo para comenzar';
+      counterText = `${phaseManager.currentIndex + 1} / ${phases.length}`;
+    }
+    if (phaseText !== this._lastPhaseText) {
+      this._lastPhaseText = phaseText;
+      this._phaseDisplay.textContent = phaseText;
+    }
+    if (counterText !== this._lastCounterText) {
+      this._lastCounterText = counterText;
+      this._counterDisplay.textContent = counterText;
     }
   }
 }
