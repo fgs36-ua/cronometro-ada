@@ -1,159 +1,163 @@
-# Cronómetro de Debate - ADA
+# ADA Debate Timer
 
-Cronómetro web profesional diseñado para la Asociación de Debate de Alicante (ADA) que soporta múltiples formatos de debate con configuración flexible y visualización optimizada para proyección.
+[Versión en español](README.es.md) | [Open live application](https://cronometro-ada.vercel.app/)
 
-## Características
+A projection-ready web timer designed and built as a personal project for the **Alicante Debate Association (ADA)**. It supports Academic and British Parliamentary debate formats, configurable timings, phase navigation, keyboard operation, and persistent local settings.
 
-### Formatos de Debate
+> The interface is in Spanish because the application was created for ADA's speakers, judges, and tournament staff in Alicante.
 
-- **Formato Académico**: Configurable con introducciones, preguntas cruzadas, refutaciones y conclusiones
-- **British Parliament**: 8 discursos secuenciales con configuración de equipos por cámaras
+## Why This Project
 
-### Funcionalidades Principales
+Debate sessions contain many timed interventions with different speakers, durations, and rules. A generic stopwatch forces organizers to track that sequence separately and is difficult to read when projected in a room.
 
-- **Cronómetro con conteo negativo**: Continúa contando después de llegar a cero
-- **Alertas visuales**: Cambios de color (amarillo a los 10s, rojo a los -11s)
-- **Modo oscuro inteligente**: Tema claro/oscuro con detección automática del sistema
-- **Diseño responsive**: Optimizado para móviles, tablets y proyección
-- **Navegación por fases**: Salto directo a cualquier fase del debate
-- **Configuración avanzada**: Nombres de equipos, tiempos personalizables
-- **Guardado automático**: Las configuraciones se guardan automáticamente en el navegador
+ADA Debate Timer combines the complete running order with a large-format countdown. It lets the operator configure a debate once, move safely between phases, and keep the current speaker and remaining time visible to everyone.
 
-### Controles Específicos
+## Features
 
-- **Iniciar/Pausar/Reanudar**: Control total del cronómetro
-- **Resetear Fase**: Reinicia solo la fase actual
-- **Resetear Debate**: Reinicia todo el debate desde el inicio
-- **Navegación**: Botones anterior/siguiente (deshabilitados durante reproducción)
-- **Modo Oscuro**: Botón de alternancia en esquina inferior derecha para cambio de tema
+- **Two debate formats:** configurable Academic Debate and eight-speech British Parliamentary.
+- **Projection-ready display:** large responsive timer, current speaker, phase progress, and clear visual states.
+- **Overtime tracking:** continues below zero instead of stopping when an intervention runs over time.
+- **Visual warnings:** changes to yellow during the final 10 seconds and red after 10 seconds of overtime.
+- **Flexible configuration:** team names, speech durations, number of rebuttal rounds, shorter final rebuttals, deliberation, and feedback.
+- **Phase control:** previous, next, and direct phase navigation, disabled while the timer is running to prevent accidental changes.
+- **Interactive timeline:** click, drag, or touch the progress bar to adjust the current phase.
+- **Keyboard-first operation:** shortcuts for timing, navigation, configuration, format selection, and theme switching.
+- **Responsive interface:** designed for projectors, laptops, tablets, and mobile devices.
+- **Persistent preferences:** configuration and theme are stored in the browser with `localStorage`; no account or backend is required.
+- **Adaptive theme:** light and dark modes with system-preference detection.
 
-## Controles de Teclado
+## Supported Formats
 
-### Controles Principales del Cronómetro
+### Academic Debate
 
-- **Espacio**: Iniciar/Pausar/Reanudar el cronómetro
-- **R**: Resetear la fase actual
-- **D**: Resetear todo el debate
+The Academic format generates the full sequence from configurable values:
 
-### Navegación y Ajustes de Tiempo
+1. Introduction by Team A and cross-examination.
+2. Introduction by Team B and cross-examination.
+3. Alternating rebuttal rounds for both teams.
+4. Conclusion by Team B followed by Team A.
+5. Judges' deliberation and feedback.
 
-- **← →**: Cambiar entre fases del debate (anterior/siguiente)
-- **↑ ↓**: Ajustar tiempo de la fase actual (±10 segundos)
-- **+ -**: Ajustar tiempo de la fase actual (±30 segundos)
+Default timings are 4-minute introductions, 2-minute cross-examinations, three 5-minute rebuttal rounds with an optional 90-second final round, and 3-minute conclusions.
 
-### Gestión de Paneles
+### British Parliamentary
 
-- **C**: Abrir panel de configuración
-- **F**: Abrir panel de fases del debate
-- **ESC**: Cerrar paneles abiertos
-- **Enter**: Aplicar configuración cuando hay un panel abierto
+The British Parliamentary format includes the standard eight speeches:
 
-### Formatos y Ayuda
+1. Prime Minister
+2. Leader of the Opposition
+3. Deputy Prime Minister
+4. Deputy Leader of the Opposition
+5. Member of Government
+6. Member of the Opposition
+7. Government Whip
+8. Opposition Whip
 
-- **1**: Cambiar a formato Académico
-- **2**: Cambiar a formato British Parliament
-- **H**: Mostrar/ocultar ayuda de controles de teclado
-- **T**: Alternar entre modo claro y oscuro
+Speech duration defaults to 7 minutes. Team names are configurable for the opening and closing government and opposition benches. Deliberation and feedback phases are included after the speeches.
 
-### Configuración de Controles de Teclado
+## Architecture
 
-Los controles de teclado pueden activarse o desactivarse desde el panel de configuración:
+The application uses framework-free JavaScript modules. UI components communicate through a small event bus, keeping the timer engine, phase generation, browser storage, and DOM rendering independent.
 
-- **Ubicación**: Panel de Configuración → Configuración de Controles
-- **Estado por defecto**: Activado
-- **Funcionamiento**:
-  - **Activado**: Todos los atajos de teclado funcionan y se muestra el indicador de ayuda
-  - **Desactivado**: Los atajos de teclado no responden y se oculta el indicador de ayuda
-- **Guardado**: La configuración se guarda automáticamente y persiste entre sesiones
+```mermaid
+flowchart LR
+  Input[Buttons, keyboard,<br/>mouse and touch] --> Components[UI components]
+  Components <--> Bus[EventBus]
+  Bus <--> Core[Timer, PhaseManager<br/>and ConfigManager]
+  Core --> Formats[Academic and BP<br/>phase generators]
+  Core <--> Services[Storage, keyboard<br/>and theme services]
+  Components --> View[Projected timer,<br/>progress and phase list]
+  Services <--> LocalStorage[(Browser localStorage)]
+```
 
-### Limitaciones de los Controles de Teclado
+The timer is synchronized against wall-clock timestamps rather than relying only on interval ticks. This reduces drift when the browser is busy or deprioritizes the tab.
 
-- Los controles de teclado respetan las mismas limitaciones que los controles con ratón
-- La navegación entre fases está deshabilitada mientras el cronómetro está en ejecución
-- Los ajustes de tiempo están limitados al rango permitido (-300s a duración)
-- Los controles se desactivan cuando hay campos de texto activos para evitar conflictos
+## Technology Stack
 
-### Disponibilidad en Dispositivos
+| Area | Technology |
+| --- | --- |
+| Application | Vanilla JavaScript, ES modules, HTML5 |
+| Styling | Modular CSS, custom properties, responsive breakpoints |
+| Build tooling | Vite 7 |
+| Persistence | Browser `localStorage` |
+| Hosting | Vercel |
+| CI deployment | GitHub Actions workflow for GitHub Pages |
 
-- **Escritorio/Laptop**: 
-  - Todos los controles de teclado están disponibles
-  - Indicador de ayuda visible en la esquina inferior izquierda
-  - Botón de modo oscuro visible en la esquina inferior derecha
-  - Configuración de controles disponible en el panel de configuración
-- **Tablet/Móvil**: 
-  - Los controles de teclado están ocultos automáticamente en pantallas menores a 1024px de ancho
-  - La sección de configuración de controles de teclado se oculta en pantallas menores a 768px
-  - Botón de modo oscuro disponible en todos los tamaños de pantalla
-  - Interfaz optimizada para experiencia táctil sin elementos de teclado innecesarios
+## Project Structure
 
-## Configuración del Formato Académico
+```text
+src/
+|-- components/     # Timer, controls, phase list, configuration and theme UI
+|-- core/           # Timer engine, phase manager, configuration and event bus
+|-- formats/        # Academic and British Parliamentary phase generators
+|-- services/       # Browser storage, keyboard shortcuts and theme preference
+|-- styles/         # Design tokens, layout, component and responsive styles
+`-- main.js         # Application composition and event wiring
+```
 
-### Tiempos Configurables
+## Keyboard Controls
 
-- **Introducción**: (por defecto: 240s)
-- **Preguntas cruzadas**: (por defecto: 120s)
-- **Refutación**: (por defecto: 300s)
-- **Conclusión**: (por defecto: 180s)
-- **Número de refutaciones**: (por defecto: 2)
+Keyboard controls can be disabled from the configuration panel and are ignored while typing in form fields.
 
-### Funcionalidad Avanzada
+<details>
+<summary>Show all shortcuts</summary>
 
-- **Tiempo diferente para última refutación**: Opción para configurar un tiempo específico para la ronda final de refutaciones (útil para réplicas más cortas)
+| Key | Action |
+| --- | --- |
+| `Space` | Start, pause, or resume |
+| `R` | Reset the current phase |
+| `D` | Reset the complete debate |
+| `Left` / `Right` | Previous or next phase |
+| `Up` / `Down` | Add or subtract 10 seconds |
+| `+` / `-` | Add or subtract 30 seconds |
+| `,` / `.` | Add or subtract 1 second |
+| `C` | Open or close configuration |
+| `F` | Open or close the phase list |
+| `1` / `2` | Select Academic or British Parliamentary format |
+| `H` | Show or hide keyboard help |
+| `T` | Toggle light and dark mode |
+| `Enter` | Apply the open configuration form |
+| `Escape` | Close open panels |
 
-### Secuencia del Debate Académico
+</details>
 
-1. Introducción Equipo A → Preguntas cruzadas a A
-2. Introducción Equipo B → Preguntas cruzadas a B
-3. Refutaciones alternadas (A → B → A → B...)
-4. Conclusión Equipo B → Conclusión Equipo A
+## Run Locally
 
-## Configuración British Parliament
+### Requirements
 
-### Estructura de 8 Discursos
+- Node.js `20.19+` or `22.12+`
+- npm
 
-1. **Primer Ministro** (Cámara Alta - A favor)
-2. **Líder de Oposición** (Cámara Alta - En contra)
-3. **Viceprimer Ministro** (Cámara Alta - A favor)
-4. **Vicelíder de Oposición** (Cámara Alta - En contra)
-5. **Extensión de Gobierno** (Cámara Baja - A favor)
-6. **Extensión de la Oposición** (Cámara Baja - En contra)
-7. **Látigo de Gobierno** (Cámara Baja - A favor)
-8. **Látigo de la Oposición** (Cámara Baja - En contra)
+Install dependencies and start the development server:
 
-### Configuración
+```bash
+npm install
+npm run dev
+```
 
-- **Duración de discursos**: (por defecto: 420s)
-- **Nombres de equipos**: Configurables para cada cámara
+The application opens at [http://localhost:3000](http://localhost:3000).
 
-## Gestión de Configuraciones
+Create and preview a production build:
 
-### Guardado Automático
+```bash
+npm run build
+npm run preview
+```
 
-- Las configuraciones se guardan automáticamente en el navegador al hacer clic en "Guardar y Aplicar"
-- No requiere login ni conexión a internet
-- Las configuraciones persisten entre sesiones del navegador
+## Data and Privacy
 
-### Opciones de Configuración
+The application has no backend and does not collect user data. Debate configuration and theme preferences remain in the current browser. Clearing site storage removes those preferences.
 
-- **Guardar y Aplicar**: Guarda la configuración actual y la aplica al cronómetro
-- **Restaurar Valores por Defecto**: 
-  - Restablece todos los valores a la configuración inicial de ADA
-  - **Comportamiento inteligente**: En dispositivos móviles (≤768px) desactiva automáticamente los controles de teclado
-  - En desktop mantiene los controles de teclado activados por defecto
+The deployed application loads its assets over the network; local persistence means that using the timer does not require registration or a remote database, not that the deployment is an installable offline PWA.
 
-### Limitaciones
+## Deployment
 
-- Las configuraciones solo se guardan en el navegador específico donde se configuraron
-- Si se borra el caché del navegador, se perderán las configuraciones guardadas
+The production application is hosted on Vercel:
 
-## Contribuciones
+**[cronometro-ada.vercel.app](https://cronometro-ada.vercel.app/)**
 
-Este proyecto fue desarrollado específicamente para la Asociación de Debate de Alicante (ADA). Las mejoras y sugerencias son bienvenidas.
+The repository also contains a GitHub Actions workflow that builds the Vite application for GitHub Pages on pushes to `master`.
 
-## Licencia
+## Background
 
-Proyecto de código abierto desarrollado para uso educativo y de debate académico.
-
----
-
-**Desarrollado con 💜 para la Asociación de Debate de Alicante**
+This is a personal project developed for the [Alicante Debate Association](https://www.instagram.com/debatealicante/). It translates real debate-room requirements into a focused tool for speakers, judges, and event organizers.
