@@ -160,4 +160,4 @@ The repository also contains a GitHub Actions workflow that builds the Vite appl
 
 ## Background
 
-This is a personal project developed for the [Alicante Debate Association](https://www.instagram.com/debatealicante/). It translates real debate-room requirements into a focused tool for speakers, judges, and event organizers.
+This is a personal project developed for the [Alicante Debate Association](https://www.instagram.com/ada_debate/). It translates real debate-room requirements into a focused tool for speakers, judges, and event organizers.
