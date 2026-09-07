@@ -99,3 +99,38 @@
   --bg: #212121;
   --fg: #e8e8e8;
 }
+
+/* ===========================================
+   Back link (junto al toggle de modo oscuro)
+   =========================================== */
+
+.back-link {
+  position: fixed;
+  bottom: 20px;
+  right: 82px; /* 20px margen + 50px toggle + 12px separación */
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 18px;
+  border: 2px solid var(--help-border);
+  border-radius: 10px;
+  background: var(--help-indicator-bg);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  background: var(--overlay-bg);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  outline: none;
+}
